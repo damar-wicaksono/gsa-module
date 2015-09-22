@@ -17,6 +17,13 @@ def create(n, d, seed):
     :returns: (ndarray) a numpy array of `n`-by-`d` filled with randomly
         generated random numbers of uniform variate
     """
-    np.random.seed(seed)
+    if not isinstance(n, int):
+        raise TypeError
+    elif not isinstance(d, int):
+        raise TypeError
+    elif not isinstance(seed, int):
+        raise TypeError
+    else:
+        np.random.seed(seed)
 
     return np.random.rand(n, d)
