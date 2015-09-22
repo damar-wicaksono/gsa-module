@@ -18,9 +18,14 @@ class DesignSRSTestCase(unittest.TestCase):
         self.d = 10         # 10-dimensional parameter space
 
     def test_is_123_the_correct_num_samples(self):
-        """Is 123 is the number of generated samples?"""
+        """Is 123 the number of generated samples?"""
         dm_test = design_srs.create(self.n, self.d, self.seed)
         self.assertEqual(dm_test.shape[0], self.n)
+
+    def test_is_10_the_correct_num_dimension(self):
+        """Is 10 the number of dimension?"""
+        dm_test = design_srs.create(self.n, self.d, self.seed)
+        self.assertEqual(dm_test.shape[1], self.d)
 
 if __name__ == "__main__":
     unittest.main()
