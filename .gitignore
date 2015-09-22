@@ -1,2 +1,6 @@
 *.pyc
 __pycache__
+_build
+_static
+make.bat
+Makefile
