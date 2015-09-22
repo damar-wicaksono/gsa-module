@@ -2,7 +2,7 @@
 """
 import numpy as np
 
-__author__ = 'wicaksono_d'
+__author__ = "Damar Wicaksono"
 
 
 def create(n, d, seed):
