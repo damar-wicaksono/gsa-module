@@ -20,15 +20,15 @@ class DesignLHSTestCase(unittest.TestCase):
 
     def test_is_n_other_than_integer_acceptable(self):
         """Is other than integer for the number of samples acceptable?"""
-        self.assertRaises(TypeError, design_lhs.create, 100.1, self.d, self.seed)
+        self.assertRaises(TypeError, design_lhs.create, 25.8, self.d, self.seed)
 
     def test_is_d_other_than_integer_acceptable(self):
         """Is other than integer for the number of dimensions acceptable?"""
-        self.assertRaises(TypeError, design_lhs, self.n, "abc", self.seed)
+        self.assertRaises(TypeError, design_lhs.create, self.n, "ab", self.seed)
 
     def test_is_seed_other_than_integer_acceptable(self):
         """Is other than integer for the seed number accepatable?"""
-        self.assertRaises(TypeError, design_lhs, self.n, self.d, 1.234)
+        self.assertRaises(TypeError, design_lhs.create, self.n, self.d, 1.234)
 
 if __name__ == "__main__":
     unittest.main()

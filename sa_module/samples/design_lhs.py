@@ -9,7 +9,7 @@ def create(n, d, seed):
     The function returns a numpy array of n-row and d-dimension filled with
     randomly generated number from uniform variate of [0, 1].
     The sampling is done in stratified manner to ensure that each 1/n interval
-    is represented by the samples, see [1] for additional detail/
+    is represented by the samples, see [1] for additional detail.
 
     **Reference**:
 
@@ -25,4 +25,11 @@ def create(n, d, seed):
         generated random numbers of uniform variate in LHS class
 
     """
-    pass
+    if not isinstance(n, int):
+        raise TypeError
+    elif not isinstance(d, int):
+        raise TypeError
+    elif not isinstance(seed, int):
+        raise TypeError
+    else:
+        pass
