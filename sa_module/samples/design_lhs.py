@@ -32,4 +32,14 @@ def create(n, d, seed):
     elif (not isinstance(seed, int)) or seed < 0:
         raise TypeError
     else:
-        pass
+        np.random.seed(seed)
+
+        dm = np.empty([n, d])
+
+        for j in range(d):
+            for i in range(n):
+                dm[i,j] = np.random.uniform(low=i/n, high=(i+1)/n)
+
+            np.random.shuffle(dm[:,j])
+
+    return dm

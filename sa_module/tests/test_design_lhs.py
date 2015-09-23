@@ -42,5 +42,23 @@ class DesignLHSTestCase(unittest.TestCase):
         """Is a negative value for the number of samples acceptable?"""
         self.assertRaises(TypeError, design_lhs.create, self.n, self.d, -123)
 
+    def test_is_100_the_correct_num_samples(self):
+        """Is 100 the number of generated samples?"""
+        self.assertEqual(self.dm.shape[0], self.n)
+
+    def test_is_20_the_correct_num_dimension(self):
+        """Is 20 the number of dimension?"""
+        self.assertEqual(self.dm.shape[1], self.d)
+
+    def test_is_dm_repeatable(self):
+        """Is the design matrix repeatable given the same seed number?"""
+        new_seed = self.seed
+        new_n = self.n
+        new_d = self.d
+        new_dm = design_lhs.create(new_n, new_d, new_seed)
+        for i in range(self.dm.shape[0]):
+            for j in range(self.dm.shape[1]):
+                self.assertEqual(self.dm[i,j], new_dm[i,j])
+
 if __name__ == "__main__":
     unittest.main()
