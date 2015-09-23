@@ -60,5 +60,17 @@ class DesignLHSTestCase(unittest.TestCase):
             for j in range(self.dm.shape[1]):
                 self.assertEqual(self.dm[i,j], new_dm[i,j])
 
+    def test_is_dm_below_one(self):
+        """Is the element values in the design matrix less than 1.0?"""
+        for i in range(self.dm.shape[0]):
+            for j in range(self.dm.shape[1]):
+                self.assertLess(self.dm[i, j], 1.0)
+
+    def test_is_dm_above_zero(self):
+        """Is the element values in the design matrix greater than 0.0?"""
+        for i in range(self.dm.shape[0]):
+            for j in range(self.dm.shape[1]):
+                self.assertGreater(self.dm[i,j], 0.0)
+
 if __name__ == "__main__":
     unittest.main()
