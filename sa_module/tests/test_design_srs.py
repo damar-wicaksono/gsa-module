@@ -52,13 +52,25 @@ class DesignSRSTestCase(unittest.TestCase):
         """Is other than integer for the parameters is acceptable?"""
         self.assertRaises(TypeError, design_srs.create, 10.1, self.d, self.seed)
 
+    def test_is_n_negative_acceptable(self):
+        """Is a negative value for the number of samples acceptable"""
+        self.assertRaises(TypeError, design_srs.create, -10, self.d, self.seed)
+
     def test_is_d_other_than_int_acceptable(self):
         """Is other than integer for the parameters is acceptable?"""
         self.assertRaises(TypeError, design_srs.create, self.n, 1.5, self.seed)
 
+    def test_is_d_negative_acceptable(self):
+        """Is a negative value for the number of dimensions acceptable"""
+        self.assertRaises(TypeError, design_srs.create, self.n, -10, self.seed)
+
     def test_is_seed_other_than_int_acceptable(self):
         """Is other than integer for the parameters is acceptable?"""
         self.assertRaises(TypeError, design_srs.create, self.n, self.d, "a")
+
+    def test_is_seed_negative_acceptable(self):
+        """Is a negative value for the number of samples acceptable"""
+        self.assertRaises(TypeError, design_srs.create, self.n, self.d, -141403)
 
 if __name__ == "__main__":
     unittest.main()
