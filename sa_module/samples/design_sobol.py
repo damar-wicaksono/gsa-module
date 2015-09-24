@@ -7,8 +7,8 @@ __author__ = "Damar Wicaksono"
 
 
 def create(n, d,
-           generator="./sobol_seq_gen/sobol.o",
-           dirnumfile="./sobol_seq_gen/new-joe-kuo-6.21201"):
+           generator="./sa_module/samples/sobol_seq_gen/sobol.o",
+           dirnumfile="./sa_modules/samples/sobol_seq_gen/new-joe-kuo-6.21201"):
     r"""Generate `d`-dimensional Sobol' sequence of length `n`
 
     This function only serves as a wrapper to call a generator from the shell,
@@ -50,7 +50,7 @@ def create(n, d,
 
     # Convert the string into float
     for i in range(len(sobol_seq)):
-        sobol_seq[i] = [float(_) for _ in sobol_seq[i].split]
+        sobol_seq[i] = [float(_) for _ in sobol_seq[i].split()]
 
     # Convert to numpy array
     sobol_seq = np.array(sobol_seq)
@@ -58,7 +58,7 @@ def create(n, d,
     return sobol_seq
 
 
-def makegen(action="make", gen_sourcedir="./sobol_seq_gen"):
+def makegen(action="make", gen_sourcedir="./sa_module/samples/sobol_seq_gen"):
     r"""Compile the generator routine from C++ source file
 
     By default a C++ source is supplied in this module
