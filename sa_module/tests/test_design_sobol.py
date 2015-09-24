@@ -18,8 +18,9 @@ class DesignSobolTestCase(unittest.TestCase):
         self.d = 20
         self.testpath = "../samples/sobol_seq_gen"
         self.genfull = "../samples/sobol_seq_gen/sobol.o"
+        self.numfull = "../samples/sobol_seq_gen/new-joe-kuo-6.21201"
         self.inffull = "../samples/sobol_seq_gen/sobol.info"
-        self.benchmark = np.loadtxt("/benchmark.txt" .format(self.testpath),
+        self.benchmark = np.loadtxt("{}/benchmark.txt" .format(self.testpath),
                                     skiprows=1)
 
     def test_is_make_all_works(self):
@@ -40,19 +41,31 @@ class DesignSobolTestCase(unittest.TestCase):
 
     def test_is_n_other_than_integer_acceptable(self):
         """Is other than integer for the number of samples acceptable?"""
-        pass
+        design_sobol.makegen("make", self.testpath)
+        self.assertRaises(TypeError, design_sobol.create, 25.1, self.d,
+                          self.genfull, self.numfull)
+        design_sobol.makegen("clean", self.testpath)
 
     def test_is_n_negative_acceptable(self):
         """Is negative number of samples acceptable?"""
-        pass
+        design_sobol.makegen("make", self.testpath)
+        self.assertRaises(TypeError, design_sobol.create, -100, self.d,
+                          self.genfull, self.numfull)
+        design_sobol.makegen("clean", self.testpath)
 
     def test_is_d_other_than_integer_acceptable(self):
         """Is other than integer for the number of dimensions acceptable?"""
-        pass
+        design_sobol.makegen("make", self.testpath)
+        self.assertRaises(TypeError, design_sobol.create, self.n, "abc",
+                          self.genfull, self.numfull)
+        design_sobol.makegen("clean", self.testpath)
 
     def test_is_d_negative_acceptable(self):
         """Is negative number of dimensions acceptable?"""
-        pass
+        design_sobol.makegen("make", self.testpath)
+        self.assertRaises(TypeError, design_sobol.create, self.n, -20,
+                          self.genfull, self.numfull)
+        design_sobol.makegen("clean", self.testpath)
 
     def test_is_dm_same_as_the_benchmark(self):
         """Is the design matrix match the reference?"""

@@ -34,26 +34,31 @@ def create(n, d,
     :returns: (ndarray) a numpy array of `n`-by-`d` filled with Sobol'
         quasirandom sequence
     """
+    # input parameters checks
+    if (not isinstance(n, int)) or n < 0:
+        raise TypeError
+    elif (not isinstance(d, int)) or d < 0:
+        raise TypeError
+    else:
+        cmd = [generator, str(n), str(d), dirnumfile]
 
-    cmd = [generator, str(n), str(d), dirnumfile]
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = p.communicate()
 
-    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, err = p.communicate()
+        # stdout in subprocess is in byte codes
+        # convert to string and split into array with newline as separator
+        sobol_seq = out.decode("utf-8").split("\n")
 
-    # stdout in subprocess is in byte codes
-    # convert to string and split into array with newline as separator
-    sobol_seq = out.decode("utf-8").split("\n")
+        # Remove the last two lines
+        sobol_seq.pop(-1)
+        sobol_seq.pop(-1)
 
-    # Remove the last two lines
-    sobol_seq.pop(-1)
-    sobol_seq.pop(-1)
+        # Convert the string into float
+        for i in range(len(sobol_seq)):
+            sobol_seq[i] = [float(_) for _ in sobol_seq[i].split()]
 
-    # Convert the string into float
-    for i in range(len(sobol_seq)):
-        sobol_seq[i] = [float(_) for _ in sobol_seq[i].split()]
-
-    # Convert to numpy array
-    sobol_seq = np.array(sobol_seq)
+        # Convert to numpy array
+        sobol_seq = np.array(sobol_seq)
 
     return sobol_seq
 
