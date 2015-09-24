@@ -1,10 +1,14 @@
 """Module to generate Sobol' Sequence design matrix
 """
+import subprocess
+import numpy as np
 
 __author__ = "Damar Wicaksono"
 
 
-def create(n, d, seed, generator, dirnumfile):
+def create(n, d,
+           generator="./sobol_seq_gen/sobol.o",
+           dirnumfile="./sobol_seq_gen/new-joe-kuo-6.21201"):
     r"""Generate `d`-dimensional Sobol' sequence of length `n`
 
     This function only serves as a wrapper to call a generator from the shell,
@@ -30,3 +34,44 @@ def create(n, d, seed, generator, dirnumfile):
     :returns: (ndarray) a numpy array of `n`-by-`d` filled with Sobol'
         quasirandom sequence
     """
+
+    cmd = [generator, str(n), str(d), dirnumfile]
+
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = p.communicate()
+
+    # stdout in subprocess is in byte codes
+    # convert to string and split into array with newline as separator
+    sobol_seq = out.decode("utf-8").split("\n")
+
+    # Remove the last two lines
+    sobol_seq.pop(-1)
+    sobol_seq.pop(-1)
+
+    # Convert the string into float
+    for i in range(len(sobol_seq)):
+        sobol_seq[i] = [float(_) for _ in sobol_seq[i].split]
+
+    # Convert to numpy array
+    sobol_seq = np.array(sobol_seq)
+
+    return sobol_seq
+
+
+def makegen(action="make", gen_sourcedir="./sobol_seq_gen"):
+    r"""Compile the generator routine from C++ source file
+
+    By default a C++ source is supplied in this module
+
+    :param action: (str) makefile action, make executable or clean
+    :param gen_sourcedir: (str) the generator source code directory
+    """
+
+    if action == "make":
+        cmd = ["make", "all"]
+    elif action == "clean":
+        cmd = ["make", "clean"]
+
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                         cwd=gen_sourcedir)
+    out, err = p.communicate()
