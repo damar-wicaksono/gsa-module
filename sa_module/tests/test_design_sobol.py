@@ -3,6 +3,7 @@
 import unittest
 import env
 import numpy as np
+import os.path
 from samples import design_sobol
 
 __author__ = "Damar Wicaksono"
@@ -13,15 +14,29 @@ class DesignSobolTestCase(unittest.TestCase):
 
     def setUp(self):
         """Test fixture build"""
-        pass
+        self.n = 100
+        self.d = 20
+        self.testpath = "../samples/sobol_seq_gen"
+        self.genfull = "../samples/sobol_seq_gen/sobol.o"
+        self.inffull = "../samples/sobol_seq_gen/sobol.info"
+        self.benchmark = np.loadtxt("/benchmark.txt" .format(self.testpath),
+                                    skiprows=1)
 
     def test_is_make_all_works(self):
         """Test whether make will produce the requested files?"""
-        pass
+        design_sobol.makegen("make", self.testpath)
+        self.assertTrue(os.path.exists(self.genfull))
+        self.assertTrue(os.path.exists(self.inffull))
+        design_sobol.makegen("clean", self.testpath)
 
     def test_is_make_clean_works(self):
         """Test whether make clean will remove the requested files?"""
-        pass
+        design_sobol.makegen("make", self.testpath)
+        self.assertTrue(os.path.exists(self.genfull))
+        self.assertTrue(os.path.exists(self.inffull))
+        design_sobol.makegen("clean", self.testpath)
+        self.assertTrue(not os.path.exists(self.genfull))
+        self.assertTrue(not os.path.exists(self.inffull))
 
     def test_is_n_other_than_integer_acceptable(self):
         """Is other than integer for the number of samples acceptable?"""
