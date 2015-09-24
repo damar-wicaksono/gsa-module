@@ -2,6 +2,7 @@
 """
 import subprocess
 import numpy as np
+import os.path
 
 __author__ = "Damar Wicaksono"
 
@@ -39,6 +40,10 @@ def create(n, d,
         raise TypeError
     elif (not isinstance(d, int)) or d <= 0:
         raise TypeError
+    elif (not isinstance(generator, str)) or (not os.path.exists(generator)):
+        raise TypeError
+    elif (not isinstance(dirnumfile, str)) or (not os.path.exists(dirnumfile)):
+        raise TypeError
     else:
         cmd = [generator, str(n), str(d), dirnumfile]
 
@@ -66,7 +71,7 @@ def create(n, d,
 def makegen(action="make", gen_sourcedir="./sa_module/samples/sobol_seq_gen"):
     r"""Compile the generator routine from C++ source file
 
-    By default a C++ source is supplied in this module
+    By default, a C++ source is supplied in this module
 
     :param action: (str) makefile action, make executable or clean
     :param gen_sourcedir: (str) the generator source code directory

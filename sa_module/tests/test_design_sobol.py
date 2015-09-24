@@ -69,11 +69,21 @@ class DesignSobolTestCase(unittest.TestCase):
 
     def test_is_generator_file_exists(self):
         """Is the executable for the generator file exist?"""
-        pass
+        design_sobol.makegen("make", self.testpath)
+        self.assertRaises(TypeError, design_sobol.create, self.n, self.d,
+                          "abc", self.numfull)
+        self.assertRaises(TypeError, design_sobol.create, self.n, self.d,
+                          123, self.numfull)
+        design_sobol.makegen("clean", self.testpath)
 
     def test_is_dirnum_file_exists(self):
         """Is the directional number file exists?"""
-        pass
+        design_sobol.makegen("make", self.testpath)
+        self.assertRaises(TypeError, design_sobol.create, self.n, self.d,
+                          self.genfull, "lalala")
+        self.assertRaises(TypeError, design_sobol.create, self.n, self.d,
+                          self.genfull, 123)
+        design_sobol.makegen("clean", self.testpath)
 
     def test_is_dm_same_as_the_benchmark(self):
         """Is the design matrix match the reference?"""
