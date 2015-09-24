@@ -35,9 +35,9 @@ def create(n, d,
         quasirandom sequence
     """
     # input parameters checks
-    if (not isinstance(n, int)) or n < 0:
+    if (not isinstance(n, int)) or n <= 0:
         raise TypeError
-    elif (not isinstance(d, int)) or d < 0:
+    elif (not isinstance(d, int)) or d <= 0:
         raise TypeError
     else:
         cmd = [generator, str(n), str(d), dirnumfile]
