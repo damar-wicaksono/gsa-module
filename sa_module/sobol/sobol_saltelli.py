@@ -1,7 +1,8 @@
 """Module to generate Sobol'-Saltelli design used to estimate Sobol' indices
 """
 import numpy as np
-from .. import samples
+from . import env
+import samples
 
 __author__ = 'wicaksono_d'
 
@@ -20,3 +21,16 @@ def create(n, k, scheme, params):
         arrays of which each rows correspond to the normalized (0, 1) parameter
         values for model evaluation
     """
+    # Generate 2 sample sets of the same dimensions for "sample" and "resample"
+    if scheme == "srs":
+        a = samples.design_srs.create(n, k, params[0])
+        b = samples.design_srs.create(n, k, params[1])
+    elif scheme == "lhs":
+        a = samples.design_lhs.create(n, k, params[0])
+        b = samples.design_lhs.create(n, k, params[1])
+    elif scheme == "sobol":
+        ab = samples.design_sobol.create(n, 2*k, params[0], params[1])
+        a = ab[:, 0:k]
+        b = ab[:, k:2*k]
+    else:
+        raise NameError
