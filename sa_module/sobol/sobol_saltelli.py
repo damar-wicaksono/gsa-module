@@ -1,5 +1,6 @@
 """Module to generate Sobol'-Saltelli design used to estimate Sobol' indices
 """
+import os
 import numpy as np
 import env
 import samples
@@ -22,22 +23,39 @@ def create(n, k, scheme, params):
         values for model evaluation
     """
     # Check the input arguments for n and k
-    if not isinstance(n, int) or n <= 0:
+    if (not isinstance(n, int)) or n <= 0:
         raise TypeError
-    elif not isinstance(k, int) or k <= 0:
+    elif (not isinstance(k, int)) or k <= 0:
+        raise TypeError
+    elif (not isinstance(params, list)) or len(params) != 2:
         raise TypeError
 
     # Check the scheme argument and, if valid, generate 2 sample sets
     # of the same dimensions for "sample" and "resample"
     if scheme == "srs":
-        a = samples.design_srs.create(n, k, params[0])
-        b = samples.design_srs.create(n, k, params[1])
+        if (not isinstance(params[0], int)) or params[0] <= 0:
+            raise TypeError
+        elif (not isinstance(params[0], int)) or params[1] <= 0:
+            raise TypeError
+        else:
+            a = samples.design_srs.create(n, k, params[0])
+            b = samples.design_srs.create(n, k, params[1])
     elif scheme == "lhs":
-        a = samples.design_lhs.create(n, k, params[0])
-        b = samples.design_lhs.create(n, k, params[1])
+        if (not isinstance(params[0], int)) or params[0] <= 0:
+            raise TypeError
+        elif (not isinstance(params[0], int)) or params[1] <= 0:
+            raise TypeError
+        else:
+            a = samples.design_lhs.create(n, k, params[0])
+            b = samples.design_lhs.create(n, k, params[1])
     elif scheme == "sobol":
-        ab = samples.design_sobol.create(n, 2*k, params[0], params[1])
-        a = ab[:, 0:k]
-        b = ab[:, k:2*k]
+        if (not isinstance(params[0], str)) or (not os.path.exists(params[0])):
+            raise TypeError
+        elif (not isinstance(params[1], str)) or (not os.path.exists(params[1])):
+            raise TypeError
+        else:
+            ab = samples.design_sobol.create(n, 2*k, params[0], params[1])
+            a = ab[:, 0:k]
+            b = ab[:, k:2*k]
     else:
         raise NameError
