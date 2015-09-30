@@ -84,3 +84,15 @@ def create(n, k, scheme, params):
         sobol_saltelli[key] = temp
 
     return sobol_saltelli
+
+def write(sobol_saltelli_dict, tag, format="%1.6e"):
+    r"""Write Sobol'-Saltelli design matrices into set of files according to key
+
+    :param sobol_saltelli_dict: (dict of ndArray) the Sobol'-Saltelli matrices
+    :param tag: (str) the tag for matrices filenames
+    :param format: (str) the print format of the number
+    """
+
+    for key in sobol_saltelli_dict:
+        fname = "{}_{}.csv" .format(tag, key)
+        np.savetxt(fname, sobol_saltelli_dict[key], fmt=format, delimiter=",")
