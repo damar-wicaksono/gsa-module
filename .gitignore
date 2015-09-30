@@ -4,3 +4,5 @@ _build
 _static
 make.bat
 Makefile
+docs-sphinx
+.ipynb_checkpoints
