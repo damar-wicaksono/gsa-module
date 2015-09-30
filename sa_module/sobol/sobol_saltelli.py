@@ -1,7 +1,7 @@
 """Module to generate Sobol'-Saltelli design used to estimate Sobol' indices
 """
 import numpy as np
-from . import env
+import env
 import samples
 
 __author__ = 'wicaksono_d'
@@ -11,7 +11,7 @@ def create(n, k, scheme, params):
     r"""Generate Sobol'-Saltelli design matrix
 
     :param n: (int) the number of samples
-    :param d: (int) the number of dimension
+    :param k: (int) the number of parameters
     :param scheme: (str) the scheme to generate the design. e.g., "srs", "lhs",
         "sobol"
     :param params: (list of int) the seed numbers for "srs" and "lhs"
@@ -21,7 +21,14 @@ def create(n, k, scheme, params):
         arrays of which each rows correspond to the normalized (0, 1) parameter
         values for model evaluation
     """
-    # Generate 2 sample sets of the same dimensions for "sample" and "resample"
+    # Check the input arguments for n and k
+    if not isinstance(n, int) or n <= 0:
+        raise TypeError
+    elif not isinstance(k, int) or k <= 0:
+        raise TypeError
+
+    # Check the scheme argument and, if valid, generate 2 sample sets
+    # of the same dimensions for "sample" and "resample"
     if scheme == "srs":
         a = samples.design_srs.create(n, k, params[0])
         b = samples.design_srs.create(n, k, params[1])
