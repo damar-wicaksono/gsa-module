@@ -2,7 +2,7 @@
 """
 import os
 import numpy as np
-import env
+from . import env
 import samples
 
 __author__ = 'wicaksono_d'
