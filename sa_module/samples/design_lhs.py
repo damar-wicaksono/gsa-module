@@ -25,11 +25,11 @@ def create(n, d, seed):
         generated random numbers of uniform variate in LHS class
 
     """
-    if (not isinstance(n, int)) or n < 0:
+    if (not isinstance(n, int)) or n <= 0:
         raise TypeError
-    elif (not isinstance(d, int)) or d < 0:
+    elif (not isinstance(d, int)) or d <= 0:
         raise TypeError
-    elif (not isinstance(seed, int)) or seed < 0:
+    elif (not isinstance(seed, int)) or seed <= 0:
         raise TypeError
     else:
         np.random.seed(seed)
