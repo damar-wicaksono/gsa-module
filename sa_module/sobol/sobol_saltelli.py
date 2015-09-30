@@ -11,6 +11,19 @@ __author__ = 'wicaksono_d'
 def create(n, k, scheme, params):
     r"""Generate Sobol'-Saltelli design matrix
 
+    Sobol'-Saltelli design matrix is used to calculate the Sobol' sensitivity
+    indices using Monte Carlo simulation by sampling-resampling scheme as
+    proposed in [1]. The design requires :math:`n \times (k+2)` function
+    evaluations for 1st- and total-order sensivitiy indices and
+    :math:`n \times (2k+2)` function evaluations for additional 2nd-order
+    sensitivity indices.
+
+    **References:**
+
+    (1) Andrea Saltelli, et al., "Variance based sensitivity analysis of model
+        output. Design and estimator for the total sensitivity index," Computer
+        Physics Communications, 181, pp. 259-270, (2010)
+
     :param n: (int) the number of samples
     :param k: (int) the number of parameters
     :param scheme: (str) the scheme to generate the design. e.g., "srs", "lhs",
@@ -89,7 +102,7 @@ def write(sobol_saltelli_dict, tag, format="%1.6e"):
     r"""Write Sobol'-Saltelli design matrices into set of files according to key
 
     :param sobol_saltelli_dict: (dict of ndArray) the Sobol'-Saltelli matrices
-    :param tag: (str) the tag for matrices filenames
+    :param tag: (str) the tag for matrices filenames (for identifier purpose)
     :param format: (str) the print format of the number
     """
 
