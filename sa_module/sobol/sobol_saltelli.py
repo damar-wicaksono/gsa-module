@@ -31,7 +31,7 @@ def create(n, k, scheme, params):
         raise TypeError
 
     # Check the scheme argument and, if valid, generate 2 sample sets
-    # of the same dimensions for "sample" and "resample"
+    # of the same dimensions for "sample" (A) and "resample" (B)
     if scheme == "srs":
         if (not isinstance(params[0], int)) or params[0] <= 0:
             raise TypeError
@@ -59,3 +59,28 @@ def create(n, k, scheme, params):
             b = ab[:, k:2*k]
     else:
         raise NameError
+
+    # Matrix A and B in a python dict
+    sobol_saltelli = dict()
+    sobol_saltelli["a"] = a
+    sobol_saltelli["b"] = b
+
+    # AB_i: replace the i-th column of A matrix by i-th column of B matrix
+    # These sets of samples are used to calculate the first- and total-order
+    # Sobol' indices (together with A and B)
+    for i in range(k):
+        key = "ab_{}" .format(str(i+1))
+        temp = np.copy(a)
+        temp[:,i] = b[:,i]
+        sobol_saltelli[key] = temp
+
+    # BA_i: replace the i-th column of B matrix by i-th column of A matrix
+    # these sets of samples are used to calculate the second-order Sobol'
+    # indices
+    for i in range(k):
+        key = "ba_{}" .format(i+1)
+        temp = np.copy(b)
+        temp[:,i] = a[:,i]
+        sobol_saltelli[key] = temp
+
+    return sobol_saltelli
