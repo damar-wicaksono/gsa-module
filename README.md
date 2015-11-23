@@ -12,6 +12,7 @@ gives an output for a given set of inputs.
 ## Scope
  
 The package contains several sub-package to carry out this task:
+
 1. `sample`: the package responsible to generate pseudorandom and/or
   low-discrepancy sequences
 2. `qoi`: the package responsible to extract the quantity of interest 
