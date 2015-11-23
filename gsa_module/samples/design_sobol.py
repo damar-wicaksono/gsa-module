@@ -1,4 +1,5 @@
-"""Module to generate Sobol' Sequence design matrix
+# -*- coding: utf-8 -*-
+"""design_sobol.py: Module to generate randoms samples from Sobol' sequences
 """
 import subprocess
 import numpy as np
@@ -7,8 +8,8 @@ import os.path
 __author__ = "Damar Wicaksono"
 
 
-def create(n, d,
-           generator="./sa_module/samples/sobol_seq_gen/sobol.o",
+def create(n: int, d: int,
+           generator: str="./sa_module/samples/sobol_seq_gen/sobol.o",
            dirnumfile="./sa_modules/samples/sobol_seq_gen/new-joe-kuo-6.21201"):
     r"""Generate `d`-dimensional Sobol' sequence of length `n`
 
@@ -45,9 +46,11 @@ def create(n, d,
     elif (not isinstance(dirnumfile, str)) or (not os.path.exists(dirnumfile)):
         raise TypeError
     else:
-        cmd = [generator, str(n), str(d), dirnumfile]
+        cmd = [generator, str(n+1), str(d), dirnumfile]
 
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen(cmd,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
         out, err = p.communicate()
 
         # stdout in subprocess is in byte codes
@@ -57,6 +60,8 @@ def create(n, d,
         # Remove the last two lines
         sobol_seq.pop(-1)
         sobol_seq.pop(-1)
+        # Remove the first line as it was only the "nominal" set of parameters
+        sobol_seq.pop(0)
 
         # Convert the string into float
         for i in range(len(sobol_seq)):
