@@ -1,10 +1,14 @@
-"""Module to generate Sobol'-Saltelli design used to estimate Sobol' indices
+# -*- coding: utf-8 -*-
+"""sobol_saltelli.py: Module to generate a set of Sobol'-Saltelli design matrix
+The design matrices will be used to evaluate model which outputs are used to
+calculate the Sobol' indices
 """
 import os
 import numpy as np
-import samples
+from .. import samples
 
-__author__ = 'wicaksono_d'
+
+__author__ = "Damar Wicaksono"
 
 
 def create(n: int, k: int, scheme: str, params) -> dict:
