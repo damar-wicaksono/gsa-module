@@ -1,4 +1,5 @@
 *.pyc
+*.csv
 make.bat
 Makefile
 docs-sphinx
