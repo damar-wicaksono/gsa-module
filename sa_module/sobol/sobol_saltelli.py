@@ -2,13 +2,12 @@
 """
 import os
 import numpy as np
-from . import env
 import samples
 
 __author__ = 'wicaksono_d'
 
 
-def create(n, k, scheme, params):
+def create(n: int, k: int, scheme: str, params) -> dict:
     r"""Generate Sobol'-Saltelli design matrix
 
     Sobol'-Saltelli design matrix is used to calculate the Sobol' sensitivity
@@ -84,7 +83,7 @@ def create(n, k, scheme, params):
     for i in range(k):
         key = "ab_{}" .format(str(i+1))
         temp = np.copy(a)
-        temp[:,i] = b[:,i]
+        temp[:, i] = b[:, i]
         sobol_saltelli[key] = temp
 
     # BA_i: replace the i-th column of B matrix by i-th column of A matrix
@@ -93,19 +92,20 @@ def create(n, k, scheme, params):
     for i in range(k):
         key = "ba_{}" .format(i+1)
         temp = np.copy(b)
-        temp[:,i] = a[:,i]
+        temp[:, i] = a[:, i]
         sobol_saltelli[key] = temp
 
     return sobol_saltelli
 
-def write(sobol_saltelli_dict, tag, format="%1.6e"):
+
+def write(sobol_saltelli: dict, tag: str, fmt="%1.6e"):
     r"""Write Sobol'-Saltelli design matrices into set of files according to key
 
-    :param sobol_saltelli_dict: (dict of ndArray) the Sobol'-Saltelli matrices
+    :param sobol_saltelli: (dict of ndArray) the Sobol'-Saltelli matrices
     :param tag: (str) the tag for matrices filenames (for identifier purpose)
     :param format: (str) the print format of the number
     """
 
-    for key in sobol_saltelli_dict:
+    for key in sobol_saltelli:
         fname = "{}_{}.csv" .format(tag, key)
-        np.savetxt(fname, sobol_saltelli_dict[key], fmt=format, delimiter=",")
+        np.savetxt(fname, sobol_saltelli[key], fmt=fmt, delimiter=",")
