@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""design_sobol.py: Module to generate randoms samples from Sobol' sequences
+"""sobol.py: Module to generate design matrix by Sobol' sequences
 """
 import subprocess
 import numpy as np

@@ -1,10 +1,13 @@
-"""Module to generate simple Latin Hypercube Sampling Design matrix
+# -*- coding: utf-8 -*-
+"""lhs.py: Module to generate design matrix from Latin Hypercube Sampling (LHS)
 """
 import numpy as np
 
+__author__ = "Damar Wicaksono"
 
-def create(n, d, seed):
-    r"""Generate n samples of d-dimension design matrix
+
+def create(n: int, d: int, seed: int) -> np.ndarray:
+    """Generate `n` samples of `d` dimension design matrix
 
     The function returns a numpy array of n-row and d-dimension filled with
     randomly generated number from uniform variate of [0, 1].
@@ -23,7 +26,6 @@ def create(n, d, seed):
     :param seed: (int) the random seed number
     :returns: (ndarray) a numpy array of `n`-by-`d` filled with randomly
         generated random numbers of uniform variate in LHS class
-
     """
     if (not isinstance(n, int)) or n <= 0:
         raise TypeError
@@ -38,8 +40,8 @@ def create(n, d, seed):
 
         for j in range(d):
             for i in range(n):
-                dm[i,j] = np.random.uniform(low=i/n, high=(i+1)/n)
+                dm[i, j] = np.random.uniform(low=i/n, high=(i+1)/n)
 
-            np.random.shuffle(dm[:,j])
+            np.random.shuffle(dm[:, j])
 
     return dm
