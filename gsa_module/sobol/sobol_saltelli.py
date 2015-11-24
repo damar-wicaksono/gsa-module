@@ -70,9 +70,11 @@ def create(dm1: np.ndarray, dm2: np.ndarray) -> dict:
 def write(sobol_saltelli: dict, tag: str, fmt="%1.6e"):
     r"""Write Sobol'-Saltelli design matrices into set of files according to key
 
+    The files will be written in csv format, each is a complete design matrix
+
     :param sobol_saltelli: (dict of ndArray) the Sobol'-Saltelli matrices
-    :param tag: (str) the tag for matrices filenames (for identifier purpose)
-    :param format: (str) the print format of the number
+    :param tag: (str) the tag for matrices filenames, for identifier purpose
+    :param fmt: (str) the print format of the number
     """
 
     for key in sobol_saltelli:
