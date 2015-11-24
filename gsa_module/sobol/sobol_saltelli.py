@@ -80,9 +80,3 @@ def write(sobol_saltelli: dict, tag: str, fmt="%1.6e"):
     for key in sobol_saltelli:
         fname = "{}_{}.csv" .format(tag, key)
         np.savetxt(fname, sobol_saltelli[key], fmt=fmt, delimiter=",")
-
-
-def read(y_vectors: list, n: int, k: int) -> dict:
-    """Read a list of numpy array a return a dictionary of numpy array
-    """
-    pass
