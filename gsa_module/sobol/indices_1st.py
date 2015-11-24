@@ -16,8 +16,20 @@ def evaluate(y_dict: dict,
     pass
 
 
-def janon(fb: np.ndarray, fab_i: np.ndarray) -> np.ndarray:
+def janon(fb: np.ndarray, fab_i: np.ndarray) -> float:
     """Calculate the 1st-order Sobol' indices using the Janon estimator
+
+    This function is an implementation of Janon's second estimator given by
+    Equation (6), pp. 4, in [1].
+
+    **References:**
+    (1) A. Janon, et al., "Asymptotic normality and efficiency of two Sobol'
+        index estimators," ESAIM: Probability and Statistics, EDP Sciences,
+        2003
+
+    :param fb: numpy array of model output with matrix B
+    :param fab_i: numpy array of model output with matrix AB_i
+    :return: (float) the 1st-order index for parameter-i
     """
     pass
 
@@ -27,7 +39,7 @@ def sobol_saltelli(fa: np.ndarray,
                    fab_i: np.ndarray) -> float:
     """Calculate the 1st-order index for parameter-i using Sobol'-Saltelli
 
-    The 1st-order Sobol' index is based on the Sobol'-Saltelli Design given in
+    The implementation below is based on the Sobol'-Saltelli Design given in
     Table 2 of [1] (equation (b)). This estimator is still the same as the one
     proposed in the older publication, given in Table 1 of [2].
 
