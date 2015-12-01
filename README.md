@@ -17,14 +17,15 @@ The package contains several sub-package to carry out this task:
   low-discrepancy sequences
 2. `qoi`: the package responsible to extract the quantity of interest 
   from a set of csv files
-3. `sobol`: the package responsible to generate set of sobol-saltelli 
+3. `sobol`: the package responsible to generate set of Sobol'-Saltelli
   sampling-resampling design matrices, read the set of csv output files,
   and calculate the 1st-order, 2nd-order, and total-order indices
 4. `morris`: the package used to generate Morris trajectories matrix, read 
   the set of csv output files, and calculate the elementary effects and their
   statistics
-5. `pearson`: the package to calculate the Person correlation from a set of csv 
-  output files.
+5. `nonparam`: the package to calculate sensitivity measures based on quantities
+  from non-parametric statistics, such as the rank correlation coefficient or
+  the partial rank correlation coefficient
  
 All of these packages as well as modules and functions within them are stiched
 together with the use of *driver* script. 
