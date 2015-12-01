@@ -1,12 +1,13 @@
-"""Module to generate Simple Random Sample (SRS) Design matrix
+# -*- coding: utf-8 -*-
+"""srs.py: Module to generate a design matrix by Simple Random Sample (SRS)
 """
 import numpy as np
 
 __author__ = "Damar Wicaksono"
 
 
-def create(n, d, seed):
-    r"""Generate n samples of d dimension using Simple Random Sampling
+def create(n: int, d: int, seed: int) -> np.ndarray:
+    r"""Generate `n` samples of `d` dimension using Simple Random Sampling
 
     The function returns a numpy array of `n`-rows and `d`-dimension filled
     with randomly generated number from uniform variate of [0, 1].

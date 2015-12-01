@@ -1,6 +1,6 @@
 *.pyc
-__pycache__
-_build
-_static
+*.csv
 make.bat
+Makefile
 docs-sphinx
+.ipynb_checkpoints
