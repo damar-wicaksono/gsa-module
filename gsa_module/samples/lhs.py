@@ -42,6 +42,8 @@ def create(n: int, d: int, seed: int) -> np.ndarray:
             for i in range(n):
                 dm[i, j] = np.random.uniform(low=i/n, high=(i+1)/n)
 
-            np.random.shuffle(dm[:, j])
+            if j > 0:
+                # Shuffle only the d-1 dimension
+                np.random.shuffle(dm[:, j])
 
     return dm
