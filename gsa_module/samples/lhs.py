@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""lhs.py: Module to generate design matrix from Latin Hypercube Sampling (LHS)
+"""lhs1.py: Module to generate design matrix from Latin Hypercube Sampling (LHS)
 """
 import numpy as np
 
