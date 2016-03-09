@@ -79,7 +79,10 @@ def max_inner(n: int, k: int) -> int:
     return int(2*pairs*k/num_candidate(n))
 
 
-def perturb(dm, num_dimension, num_candidate, obj_function):
+def perturb(dm: np.ndarray,
+            num_dimension: int,
+            j: int,
+            obj_func: types.FunctionType) -> np.ndarray:
     """Create new configuration of a design matrix according to ESE algorithm
 
     According to the algorithm, a distinct `num_candidate` designs have to be
@@ -89,13 +92,31 @@ def perturb(dm, num_dimension, num_candidate, obj_function):
 
     :param dm: the current design matrix
     :param num_dimension: the column of design matrix to be perturbed
-    :param num_candidate: the number of distinct candidates to be generated
-    :param obj_function: the select objective function
+    :param j: the number of distinct candidates to be generated
+    :param obj_func: the select objective function
     :return: the perturbed state of the current design
     """
-    pass
+    import itertools
 
+    # Create pairs of all possible combination
+    n = dm.shape[0]
+    pairs = list(itertools.combinations([_ for _ in range(n)], 2))
+    # Create random choices for the pair of perturbation, w/o replacement
+    rand_choices = np.random.choice(len(pairs), j, replace=False)
+    obj_func_current = np.inf
+    dm_current = dm
+    for i in rand_choices:
+        dm_try = dm.copy() # Always perturb from the design passed in argument
+        # Do column-wise operation in a given column 'num_dimension'
+        dm_try[pairs[i][0], num_dimension] = dm[pairs[i][1], num_dimension]
+        dm_try[pairs[i][1], num_dimension] = dm[pairs[i][0], num_dimension]
+        obj_func_try = obj_func(dm_try)
+        if obj_func_try < obj_func_current:
+            # Select the best trial from all the perturbation trials
+            obj_func_current = obj_func_try
+            dm_current = dm_try
 
+    return obj_func_current, dm_current
 
 
 def optimize(dm: np.ndarray,
@@ -133,17 +154,50 @@ def optimize(dm: np.ndarray,
     k = dm.shape[1]     # number of dimension
     obj_func = pick_obj_function(obj_function)  # Choose objective function
     if threshold_init < 0.0:
-        threshold_init = init_threshold(dm, obj_func)   # Initial threshold
+        threshold = init_threshold(dm, obj_func)   # Initial threshold
+    else:
+        threshold = threshold_init
     if j <= 0:
         j = num_candidate(n)    # number of candidates in perturbation process
     if m <= 0:
         m = max_inner(n, k)     # maximum number of inner iterations
-        
+
+    dm_current = dm.copy()
+    flag_imp = False            # Outer iteration found improved solution flag
+
+    obj_func_best = obj_func(dm)
     # Begin Outer Iteration
-    # Initialization of Inner Iteration
-    # Begin Inner Iteration
-    # Perturbed Current Design
-    # Accept/Reject
+    outer = 0
+    while outer < max_outer:
+        # Initialization of Inner Iteration
+        n_accepted = 0              # number of accepted trial
+        n_improved = 0              # number of improved trial
+
+        # Begin Inner Iteration
+        for inner in range(m):
+            obj_func_current = obj_func(dm_current)
+            # Perturb current design
+            obj_func_try, dm_try = perturb(dm, inner, j, obj_func)
+            if (obj_func_try - obj_func_current) <= threshold * np.random.rand():
+                # Accept solution
+                dm_current = dm_try.copy()
+                n_accepted += 1
+                if obj_func_try < obj_func_best:
+                    # Best solution found
+                    dm_best = dm_current.copy()
+                    n_improved += 1
+
+    # Accept/Reject as Best Solution for convergence
+    if (obj_func_best - obj_func(dm_best))/obj_func_best > 1e6:
+        obj_func_best = obj_func(dm_best)
+        flag_imp = True
+        outer -= 1
+    else:
+        flag_imp = False
+        outer += 1
+
     # Improve vs. Explore Phase
     # Threshold Update
-    return threshold_init, j, m
+    # Update Stopping Criteria
+
+    return dm_try
