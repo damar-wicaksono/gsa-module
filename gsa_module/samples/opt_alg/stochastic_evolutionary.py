@@ -66,13 +66,17 @@ def num_candidate(n: int) -> int:
     return int(pairs/fac)
 
 
-def max_inner(k: int) -> int:
+def max_inner(n: int, k: int) -> int:
     """Calculate the maximum number of inner iterations
 
+    :math:`\frac{2 \times n_e \times k}{J}`
+
+    :param n: the number of samples in the design
     :param k: the number of design dimension
     :return: the maximum number of inner iterations/loop
     """
-    pass
+    pairs = math.factorial(n) / math.factorial(n-2) / math.factorial(2)
+    return int(2*pairs*k/num_candidate(n))
 
 
 def perturb(dm, num_dimension, num_candidate, obj_function):
@@ -132,7 +136,9 @@ def optimize(dm: np.ndarray,
         threshold_init = init_threshold(dm, obj_func)   # Initial threshold
     if j <= 0:
         j = num_candidate(n)    # number of candidates in perturbation process
-
+    if m <= 0:
+        m = max_inner(n, k)     # maximum number of inner iterations
+        
     # Begin Outer Iteration
     # Initialization of Inner Iteration
     # Begin Inner Iteration
@@ -140,4 +146,4 @@ def optimize(dm: np.ndarray,
     # Accept/Reject
     # Improve vs. Explore Phase
     # Threshold Update
-    return threshold_init, j
+    return threshold_init, j, m
