@@ -2,17 +2,18 @@
 """stochastic_evolutionary.py: Module containing functionalities to optimize
 a given Latin Hypercube Design using an implementation of Enhanced Stochastic
 Evolutionary Algorithm proposed by Jin, Chen, and Sudjianto (1). Details can
-be found in (1) and (2)
+be found in (1) for the enhanced version and (2) for the original version.
 
 **References**
 
  (1) R. Jin, W. Chen, and A. Sudjianto, "An Efficient Algorithm for Constructing
-     Optimal Design of Computer Experiments," Proceedings of DETC'03 ASME 2003
+     Optimal Design of Computer Experiments," Proceedings of DETC'03, ASME 2003
      Design Engineering Technical Conferences and Computers and Information in
      Engineering Conference, Chicago, Illinois, Sept. 2-6, 2003.
  (2) Y.G. Saab and V.B. Rao, "Combinatorial Optimization by Stochastic
      Evolution," IEEE Transactions on Computer-Aided Design, vol. 10(4), 1981.
 """
+import types
 import numpy as np
 from . import objective_functions
 
@@ -20,13 +21,33 @@ from . import objective_functions
 __author__ = "Damar Wicaksono"
 
 
-def init_threshold(dm: np.ndarray):
+def pick_obj_function(obj_function: str) -> types.FunctionType:
+    """Function to select by name the objective function to optimize
+
+    :param obj_function: the name of the objective function
+    :return: the objective function (FunctionType data type)
+    """
+    if obj_function == "w2_discrepancy":
+        return objective_functions.w2_discrepancy
+    else:
+        raise TypeError("Unsupported objective function")
+
+
+def init_threshold(dm: np.ndarray,
+                   obj_function: types.FunctionType,
+                   multiplier: float = 0.005):
     """Calculate the initial threshold as recommended in the article
 
     :param dm: the initial design matrix
+    :param obj_function: the objective function
+    :param multiplier: the multiplier to have a very small value of threshold
+        based on the initial design's objective function (default = 0.005)
     :return: the initial threshold
     """
-    pass
+
+    #obj_func = pick_obj_function(obj_function)
+
+    return multiplier*obj_function(dm)
 
 
 def num_candidate(n: int) -> int:
@@ -53,7 +74,7 @@ def perturb(dm, num_dimension, num_candidate, obj_function):
 
     According to the algorithm, a distinct `num_candidate` designs have to be
     generated from the current design by carrying out a column-wise perturbation
-    on a given colum, `num_dimension`. The best design according to the select
+    on a given column `num_dimension`. The best design according to the select
     `obj_function` will be selected as the "perturbed" design
 
     :param dm: the current design matrix
@@ -63,6 +84,8 @@ def perturb(dm, num_dimension, num_candidate, obj_function):
     :return: the perturbed state of the current design
     """
     pass
+
+
 
 
 def optimize(dm: np.ndarray,
@@ -95,4 +118,17 @@ def optimize(dm: np.ndarray,
         (4) the warming multiplier for the threshold
     :return: a collection of obj_function evolution and best design
     """
-    pass
+    # Initialization of Outer Iteration
+    # Choose objective function
+    obj_func = pick_obj_function(obj_function)
+    # Initial threshold
+    if threshold_init < 0.0:
+        threshold_init = init_threshold(dm, obj_func)
+    # Begin Outer Iteration
+    # Initialization of Inner Iteration
+    # Begin Inner Iteration
+    # Perturbed Current Design
+    # Accept/Reject
+    # Improve vs. Explore Phase
+    # Threshold Update
+    return threshold_init
