@@ -34,20 +34,20 @@ def pick_obj_function(obj_function: str) -> types.FunctionType:
 
 
 def init_threshold(dm: np.ndarray,
-                   obj_function: types.FunctionType,
-                   multiplier: float = 0.005):
+                   obj_func: types.FunctionType,
+                   multiplier: float = 0.005) -> float:
     """Calculate the initial threshold as recommended in the article
 
+    The initial threshold is obtained by multiplying the objective function of
+    the initial design by a very small multiplier to get a small threshold.
+
     :param dm: the initial design matrix
-    :param obj_function: the objective function
+    :param obj_func: the objective function (FunctionType data type)
     :param multiplier: the multiplier to have a very small value of threshold
         based on the initial design's objective function (default = 0.005)
     :return: the initial threshold
     """
-
-    #obj_func = pick_obj_function(obj_function)
-
-    return multiplier*obj_function(dm)
+    return multiplier*obj_func(dm)
 
 
 def num_candidate(n: int) -> int:
