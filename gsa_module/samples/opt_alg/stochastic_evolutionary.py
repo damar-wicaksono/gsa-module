@@ -14,6 +14,7 @@ be found in (1) for the enhanced version and (2) for the original version.
      Evolution," IEEE Transactions on Computer-Aided Design, vol. 10(4), 1981.
 """
 import types
+import math
 import numpy as np
 from . import objective_functions
 
@@ -53,11 +54,16 @@ def init_threshold(dm: np.ndarray,
 def num_candidate(n: int) -> int:
     """Calculate the number of candidates from perturbing the current design
 
+    Recommended in the article is the maximum number of pair combination from a
+    given column divided by a factor of 5.
+
     :param n: the number of elements to be permuted
     :return: the number of candidates from perturbing the current design
         column-wise
     """
-    pass
+    pairs = math.factorial(n) / math.factorial(n-2) / math.factorial(2)
+    fac = 5 # The factor recommended in the article
+    return int(pairs/fac)
 
 
 def max_inner(k: int) -> int:
@@ -103,9 +109,9 @@ def optimize(dm: np.ndarray,
     :param threshold_init: the initial threshold, if negative calculate from
         the recommended value
     :param j: the number of candidates obtained by perturbing current design,
-        if 0 calculate from the recommended value
-    :param m: the maximum number of inner iterations, if 0 calculate from the
-        recommended value
+        0 or less means calculate from the recommended value
+    :param m: the maximum number of inner iterations, 0 or less means calculate
+        from the recommended value
     :param max_outer: the maximum number of outer iterations, served as the
         stopping criterion for the optimization algorithm
     :param improving_params: The 2 parameters used in improving process phase
@@ -119,11 +125,14 @@ def optimize(dm: np.ndarray,
     :return: a collection of obj_function evolution and best design
     """
     # Initialization of Outer Iteration
-    # Choose objective function
-    obj_func = pick_obj_function(obj_function)
-    # Initial threshold
+    n = dm.shape[0]     # number of samples
+    k = dm.shape[1]     # number of dimension
+    obj_func = pick_obj_function(obj_function)  # Choose objective function
     if threshold_init < 0.0:
-        threshold_init = init_threshold(dm, obj_func)
+        threshold_init = init_threshold(dm, obj_func)   # Initial threshold
+    if j <= 0:
+        j = num_candidate(n)    # number of candidates in perturbation process
+
     # Begin Outer Iteration
     # Initialization of Inner Iteration
     # Begin Inner Iteration
@@ -131,4 +140,4 @@ def optimize(dm: np.ndarray,
     # Accept/Reject
     # Improve vs. Explore Phase
     # Threshold Update
-    return threshold_init
+    return threshold_init, j
