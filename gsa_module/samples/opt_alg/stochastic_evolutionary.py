@@ -30,7 +30,7 @@ def pick_obj_function(obj_function: str) -> types.FunctionType:
     :return: the objective function (FunctionType data type)
     """
     if obj_function == "w2_discrepancy":
-        return objective_functions.w2_discrepancy
+        return objective_functions.w2_discrepancy_fast
     else:
         raise TypeError("Unsupported objective function")
 
@@ -173,7 +173,7 @@ def adjust_threshold(threshold: float,
         if float(n_accepted/num_candidates) < exploring_params[0]:
             # Reach below limit, ramp up explore, increase threshold
             flag_explore = True
-        elif (n_accepted > exploring_params[1] * max_iter):
+        elif n_accepted > exploring_params[1] * max_iter:
             # Reach above limit, slow down exploration, decrease threshold
             flag_explore = False
 
@@ -193,6 +193,7 @@ def optimize(dm: np.ndarray,
              j: int = 0,
              m: int = 0,
              max_outer: int = 100,
+             reward: bool = True,
              improving_params: list = [0.1, 0.8],
              exploring_params: list = [0.1, 0.8, 0.9, 0.7]):
     """
@@ -207,6 +208,8 @@ def optimize(dm: np.ndarray,
         from the recommended value
     :param max_outer: the maximum number of outer iterations, served as the
         stopping criterion for the optimization algorithm
+    :param reward: flag to do reward iteration, reduce the current outer loop
+        counter by one if a new best solution is found
     :param improving_params: The 2 parameters used in improving process phase
         (1) the cut-off value to decrease the threshold
         (2) the multiplier to decrease or increase the threshold
@@ -265,10 +268,13 @@ def optimize(dm: np.ndarray,
             obj_func_best_old = obj_func(dm_best)
             flag_explore = False  # Reset the explore flag after new best found
             flag_imp = True       # Outer iteration found improved solution flag
+            if reward:
+                outer -= 1        # Update the stopping criterion
+            else:
+                outer += 1
         else:
             flag_imp = False      # Outer iteration found improved solution flag
-
-        outer += 1  # Update stopping criteria, the maximum number of iterations
+            outer += 1
 
         # Improve vs. Explore Phase and Threshold Update
         flag_explore, threshold = adjust_threshold(threshold, flag_imp,
