@@ -220,12 +220,18 @@ def optimize(dm: np.ndarray,
         (4) the warming multiplier for the threshold
     :return: a collection of obj_function evolution and best design
     """
+    import collections
+
+    # Initialize output structure
+    OptSolution = collections.namedtuple("OptSolution",
+                                         "dm_init dm_best best_evol try_evol")
+
     # Initialization of Outer Iteration
     n = dm.shape[0]     # number of samples
     k = dm.shape[1]     # number of dimension
-    obj_func = pick_obj_function(obj_function)  # Choose objective function
+    obj_func = pick_obj_function(obj_function)      # Choose objective function
     if threshold_init < 0.0:
-        threshold = init_threshold(dm, obj_func)   # Initial threshold
+        threshold = init_threshold(dm, obj_func)    # Initial threshold
     else:
         threshold = threshold_init
     if j <= 0:
@@ -233,12 +239,14 @@ def optimize(dm: np.ndarray,
     if m <= 0:
         m = max_inner(n, k)     # maximum number of inner iterations
 
-    dm_current = dm.copy()
-    val_evol = []
-    candidates = []
-    obj_func_best = obj_func(dm)
-    obj_func_best_old = obj_func(dm)
-    flag_explore = False
+    dm_current = dm.copy()              # the current design
+    obj_func_best = obj_func(dm)        # the best value of obj. func. so far
+    obj_func_best_old = obj_func(dm)    # the old value of objective function
+    flag_explore = False                # flag whether to explore or to improve
+
+    best_evol = []                      # Keep track the best solution
+    try_evol = []                       # Keep track the accepted trial solution
+
     # Begin Outer Iteration
     outer = 0
     while outer < max_outer:
@@ -255,10 +263,10 @@ def optimize(dm: np.ndarray,
                 # Accept solution
                 dm_current = dm_try.copy()
                 n_accepted += 1
-                candidates.append(obj_func_try)
+                try_evol.append(obj_func_try)
                 if obj_func_try < obj_func_best:
                     # Best solution found
-                    val_evol.append(obj_func_try)
+                    best_evol.append(obj_func_try)
                     dm_best = dm_current.copy()
                     obj_func_best = obj_func(dm_best)
                     n_improved += 1
@@ -269,7 +277,7 @@ def optimize(dm: np.ndarray,
             flag_explore = False  # Reset the explore flag after new best found
             flag_imp = True       # Outer iteration found improved solution flag
             if reward:
-                outer -= 1        # Update the stopping criterion
+                outer -= 1        # Reward if new solution is found
             else:
                 outer += 1
         else:
@@ -283,4 +291,7 @@ def optimize(dm: np.ndarray,
                                                    improving_params,
                                                    exploring_params)
 
-    return candidates, val_evol, dm_best
+        output = OptSolution(dm_init = dm, dm_best = dm_best,
+                             best_evol = best_evol, try_evol = try_evol)
+
+    return output
