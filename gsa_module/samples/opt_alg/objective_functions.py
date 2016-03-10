@@ -82,16 +82,18 @@ def w2_discrepancy(D: np.ndarray) -> float:
         :return: A matrix with elements of discrepancy between points
         """
         N = D.shape[0]
-        disc_matrix = np.empty((N, N))
+        dm = np.empty((N, N))
         for i in range(N):
-            for j in range(N):
-                disc_matrix[i,j] = discrepancy(D[i,:], D[j,:])
+            for j in range(N-i):
+                dm[i,i+j] = discrepancy(D[i,:], D[i+j,:])
 
-        return disc_matrix
+        return dm
 
     disc_matrix = discrepancy_matrix(D)
     N = D.shape[0]  # Number of points, rows in D
     K = D.shape[1]  # Number of dimensions, columns in D
-    w2_disc = -1 * (4.0/3.0)**K + 1.0/N**2 * np.sum(disc_matrix)
+    w2_disc = -1 * (4.0/3.0)**K + 1.0/N**2 * \
+                                  (np.diag(disc_matrix).sum() + 2*\
+                                   np.triu(disc_matrix,1).sum())
 
     return w2_disc
