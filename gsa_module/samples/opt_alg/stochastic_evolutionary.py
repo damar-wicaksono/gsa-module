@@ -192,7 +192,7 @@ def optimize(dm: np.ndarray,
              threshold_init: float = -1.0,
              j: int = 0,
              m: int = 0,
-             max_outer: int = 100,
+             max_outer: int = 20,
              reward: bool = True,
              improving_params: list = [0.1, 0.8],
              exploring_params: list = [0.1, 0.8, 0.9, 0.7]):
