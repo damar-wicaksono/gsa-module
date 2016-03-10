@@ -169,7 +169,7 @@ def adjust_threshold(threshold: float,
 
     else:
         # No new best solution found during last iteration, do exploring process
-        # Exploring process
+        # Exploring process, ramping up vs. slowing down
         if float(n_accepted/num_candidates) < exploring_params[0]:
             # Reach below limit, ramp up explore, increase threshold
             flag_explore = True
@@ -232,6 +232,7 @@ def optimize(dm: np.ndarray,
 
     dm_current = dm.copy()
     val_evol = []
+    candidates = []
     obj_func_best = obj_func(dm)
     obj_func_best_old = obj_func(dm)
     flag_explore = False
@@ -251,6 +252,7 @@ def optimize(dm: np.ndarray,
                 # Accept solution
                 dm_current = dm_try.copy()
                 n_accepted += 1
+                candidates.append(obj_func_try)
                 if obj_func_try < obj_func_best:
                     # Best solution found
                     val_evol.append(obj_func_try)
@@ -260,52 +262,19 @@ def optimize(dm: np.ndarray,
 
         # Accept/Reject as Best Solution for convergence
         if (obj_func_best_old - obj_func(dm_best))/obj_func_best > 1e-6:
-            #print(outer, obj_func_best_old, obj_func(dm_best))
             obj_func_best_old = obj_func(dm_best)
             flag_explore = False  # Reset the explore flag after new best found
             flag_imp = True       # Outer iteration found improved solution flag
-            #outer -= 1            # update stopping criteria
         else:
             flag_imp = False      # Outer iteration found improved solution flag
-            #outer += 1            # update stopping criteria
-        outer += 1
+
+        outer += 1  # Update stopping criteria, the maximum number of iterations
+
         # Improve vs. Explore Phase and Threshold Update
         flag_explore, threshold = adjust_threshold(threshold, flag_imp,
                                                    flag_explore, n_accepted,
                                                    n_improved, j, m,
                                                    improving_params,
                                                    exploring_params)
-        # if flag_imp:
-        #     print(float(n_accepted/j), n_accepted, n_improved, threshold)
-        #     # Improving process
-        #     if (float(n_accepted/j) > improving_params[0]) & \
-        #             (n_accepted > n_improved):
-        #
-        #         # Lots acceptance but less improvement, reduce threshold
-        #         threshold *= improving_params[1]
-        #     else:
-        #         # Few acceptance or no acceptance, increase threshold
-        #         threshold /= improving_params[1]
-        #
-        # else:
-        #
-        #     # Exploring process
-        #
-        #     if (float(n_accepted/j) < exploring_params[0]):
-        #         # Rapidly increase threshold
-        #         #threshold /= exploring_params[3]
-        #         flag_explore = True
-        #     #elif flag_explore & (float(n_accepted/j) < exploring_params[1]):
-        #
-        #      #   flag_explore = True
-        #     elif (n_accepted > exploring_params[1] * m):
-        #         # Decrease threshold slowly
-        #         #threshold *= exploring_params[2]
-        #         flag_explore = False
-        #
-        #     if flag_explore & (n_accepted < exploring_params[1] * m):
-        #         threshold /= exploring_params[3]
-        #     elif (not flag_explore) & (float(n_accepted/j) > exploring_params[0]):
-        #         threshold *= exploring_params[2]
 
-    return val_evol, dm_best
+    return candidates, val_evol, dm_best
