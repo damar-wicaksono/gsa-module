@@ -4,10 +4,13 @@ implementation below is taken verbatim from (1) based on algorithm in (2)
 
 It is not recommended to generate a Hammersley sequency more than 10 dimension
 
+ **References**
+
  (1) https://github.com/PhaethonPrime/hammersley
  (2) T-T. Wong, W-S. Luk, and P-A. Heng, "Sampling with Hammersley and Halton
      Points,"
 """
+import numpy as np
 from six import moves, iteritems
 
 # this list of primes allows up to a size 120 vector
@@ -34,9 +37,19 @@ def get_phi(p, k):
     return phi
 
 
-def create(n_points=100, n_dims=2,  primes=None):
+def generate_hammersley(n_points=100, n_dims=2,  primes=None):
     primes = primes if primes is not None else saved_primes
     for k in moves.range(n_points):
         points = [k/n_points] + \
                  [get_phi(primes[d], k) for d in moves.range(n_dims-1)]
         yield points
+
+def create(n_points=100, n_dims=2):
+    """Wrapper function to generate Hammersley sequence
+    """
+    hammersley_gen = generate_hammersley(n_points, n_dims)
+    hammersley_points = []
+    for point in hammersley_gen:
+        hammersley_points.append(point)
+
+    return np.array(hammersley_points)
