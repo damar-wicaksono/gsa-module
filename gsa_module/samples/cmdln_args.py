@@ -50,7 +50,7 @@ def get():
     parser.add_argument(
         "-sep", "--delimiter",
         type=str,
-        choices=["csv", "tsv", "ssv"],
+        choices=["csv", "tsv", "txt"],
         required=False,
         default="csv",
         help="the delimiter for the file (default: %(default)s)"
