@@ -8,13 +8,11 @@ import os.path
 __author__ = "Damar Wicaksono"
 
 
-def create(n: int, d: int,
-           generator: str="./sa_module/samples/sobol_seq_gen/sobol.o",
-           dirnumfile="./sa_modules/samples/sobol_seq_gen/new-joe-kuo-6.21201"):
+def create(n: int, d: int, generator: str, dirnumfile: str) -> np.ndarray:
     r"""Generate `d`-dimensional Sobol' sequence of length `n`
 
     This function only serves as a wrapper to call a generator from the shell,
-    execute it with a file containing the directional numbers.
+    make and execute it with a file containing the directional numbers.
     The one used here is the generator provided by Joe and Kuo [1] of which the
     technical detail can be found in [2] and [3].
 
@@ -33,15 +31,11 @@ def create(n: int, d: int,
     :param d: (int) the number of dimension
     :param generator: (str) the executable fullname for the generator
     :param dirnumfile: (str) the directional numbers fullname
-    :returns: (ndarray) a numpy array of `n`-by-`d` filled with Sobol'
+    :returns: (np.ndarray) a numpy array of `n`-by-`d` filled with Sobol'
         quasirandom sequence
     """
     # input parameters checks
-    if (not isinstance(n, int)) or n <= 0:
-        raise TypeError
-    elif (not isinstance(d, int)) or d <= 0:
-        raise TypeError
-    elif (not isinstance(generator, str)) or (not os.path.exists(generator)):
+    if (not isinstance(generator, str)) or (not os.path.exists(generator)):
         raise TypeError
     elif (not isinstance(dirnumfile, str)) or (not os.path.exists(dirnumfile)):
         raise TypeError
@@ -60,8 +54,8 @@ def create(n: int, d: int,
         # Remove the last two lines
         sobol_seq.pop(-1)
         sobol_seq.pop(-1)
-        # Remove the first line as it was only the "nominal" set of parameters
-        sobol_seq.pop(0)
+        # Remove the second as it was only the "nominal" set of parameters
+        sobol_seq.pop(1)
 
         # Convert the string into float
         for i in range(len(sobol_seq)):
@@ -71,22 +65,3 @@ def create(n: int, d: int,
         sobol_seq = np.array(sobol_seq)
 
     return sobol_seq
-
-
-def makegen(action="make", gen_sourcedir="./sa_module/samples/sobol_seq_gen"):
-    r"""Compile the generator routine from C++ source file
-
-    By default, a C++ source is supplied in this module
-
-    :param action: (str) makefile action, make executable or clean
-    :param gen_sourcedir: (str) the generator source code directory
-    """
-
-    if action == "make":
-        cmd = ["make", "all"]
-    elif action == "clean":
-        cmd = ["make", "clean"]
-
-    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                         cwd=gen_sourcedir)
-    out, err = p.communicate()
