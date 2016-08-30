@@ -32,7 +32,7 @@ def get():
     parser.add_argument(
         "-m", "--method",
         type=str,
-        choices=["srs", "lhs"],
+        choices=["srs", "lhs", "sobol"],
         required=False,
         default="srs",
         help="The statistical method to generate sample (default: %(default)s)"
@@ -64,6 +64,24 @@ def get():
         help="The random seed number"
     )
 
+    # The path to sobol generator
+    parser.add_argument(
+        "-sobol", "--sobol_generator",
+        type=str,
+        required=False,
+        help="The path to Sobol' sequence generator executable"
+             "(only for Sobol' method)"
+    )
+
+    # The path to sobol generator
+    parser.add_argument(
+        "-dirnum", "--direction_numbers",
+        type=str,
+        required=False,
+        help="The path to Sobol' sequence generator direction numbers file"
+             "(only for Sobol' method)"
+    )
+
     # Get the command line arguments
     args = parser.parse_args()
 
@@ -74,6 +92,13 @@ def get():
     # Check the validity of the number of dimensions
     if args.num_dimensions <= 0:
         raise ValueError
+
+    # Check the validity of inputs if Sobol' number is used
+    if args.method == "sobol":
+        if args.sobol_generator is None:
+            raise ValueError("Sobol' method requires generator executable")
+        elif args.direction_numbers is None:
+            raise ValueError("Sobol' method requires direction numbers file")
 
     # Check the delimiter
     if args.delimiter == "csv":
@@ -104,7 +129,9 @@ def get():
               "method": args.method,
               "filename": output_file,
               "delimiter": delimiter,
-              "seed_number": seed_number
+              "seed_number": seed_number,
+              "sobol_generator": args.sobol_generator,
+              "direction_numbers": args.direction_numbers
               }
 
     return inputs
