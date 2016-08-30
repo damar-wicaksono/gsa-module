@@ -9,5 +9,5 @@ setup(name="gsa-module",
       author_email="damar.wicaksono@gmail.com",
       license="MIT",
       packages=["gsa_module"],
-      scripts=["bin/create_sample.py"],
+      scripts=["bin/create_sample"],
       zip_safe=False)
