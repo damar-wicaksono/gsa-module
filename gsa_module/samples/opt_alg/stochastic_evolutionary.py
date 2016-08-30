@@ -52,7 +52,7 @@ def init_threshold(dm: np.ndarray,
     return multiplier*obj_func(dm)
 
 
-def num_candidate(n: int) -> int:
+def calc_num_candidate(n: int) -> int:
     """Calculate the number of candidates from perturbing the current design
 
     Recommended in the article is the maximum number of pair combination from a
@@ -71,7 +71,7 @@ def num_candidate(n: int) -> int:
     return min(int(pairs/fac), 50)
 
 
-def max_inner(n: int, k: int) -> int:
+def calc_max_inner(n: int, k: int) -> int:
     """Calculate the maximum number of inner iterations
 
     :math:`\frac{2 \times n_e \times k}{J}`
@@ -83,12 +83,12 @@ def max_inner(n: int, k: int) -> int:
     """
     pairs = math.factorial(n) / math.factorial(n-2) / math.factorial(2)
 
-    return min(int(2*pairs*k/num_candidate(n)), 100)
+    return min(int(2*pairs*k/calc_num_candidate(n)), 100)
 
 
 def perturb(dm: np.ndarray,
             num_dimension: int,
-            j: int,
+            num_exchanges: int,
             obj_func: types.FunctionType) -> np.ndarray:
     """Create new configuration of a design matrix according to ESE algorithm
 
@@ -99,19 +99,20 @@ def perturb(dm: np.ndarray,
 
     :param dm: the current design matrix
     :param num_dimension: the column of design matrix to be perturbed
-    :param j: the number of distinct candidates to be generated
+    :param num_exchanges: the number of distinct candidates to be generated
     :param obj_func: the select objective function
     :return: the perturbed state of the current design
     """
     import itertools
 
     # Create pairs of all possible combination
-    n = dm.shape[0]
-    pairs = list(itertools.combinations([_ for _ in range(n)], 2))
+    num_samples = dm.shape[0]
+    pairs = list(itertools.combinations([_ for _ in range(num_samples)], 2))
     # Create random choices for the pair of perturbation, w/o replacement
-    rand_choices = np.random.choice(len(pairs), j, replace=False)
+    rand_choices = np.random.choice(len(pairs), num_exchanges, replace=False)
+    # Initialize the search
     obj_func_current = np.inf
-    dm_current = dm
+    dm_current = dm.copy()
     for i in rand_choices:
         dm_try = dm.copy() # Always perturb from the design passed in argument
         # Do column-wise operation in a given column 'num_dimension'
@@ -121,9 +122,9 @@ def perturb(dm: np.ndarray,
         if obj_func_try < obj_func_current:
             # Select the best trial from all the perturbation trials
             obj_func_current = obj_func_try
-            dm_current = dm_try
+            dm_current = dm_try.copy()
 
-    return obj_func_current, dm_current
+    return dm_current
 
 
 def adjust_threshold(threshold: float,
@@ -131,8 +132,7 @@ def adjust_threshold(threshold: float,
                      flag_explore: bool,
                      n_accepted: int,
                      n_improved: int,
-                     num_candidates: int,
-                     max_iter: int,
+                     num_exchanges: int,
                      improving_params: list,
                      exploring_params: list) -> tuple:
     """Calculate the new threshold based on the results of previous iteration
@@ -142,8 +142,7 @@ def adjust_threshold(threshold: float,
     :param flag_explore: the flag indicating whether in exploration mode
     :param n_accepted: the number of accepted solution in the previous iteration
     :param n_improved: the number of new best solution found in previous iter.
-    :param num_candidates: the number of candidates considered from curr. design
-    :param max_iter: the maximum number of iteration
+    :param num_exchanges: the number of candidates considered from curr. design
     :param improving_params: The 2 parameters used in improving process phase
         (1) the cut-off value to decrease the threshold
         (2) the multiplier to decrease or increase the threshold
@@ -156,60 +155,57 @@ def adjust_threshold(threshold: float,
         and the adjusted threshold
     """
     # Improve vs. Explore Phase and Threshold Update
-    if flag_imp:
+    if flag_imp:    # Improve
         # New best solution found, carry out improvement process
-        # Improving process
-        if (float(n_accepted/num_candidates) > improving_params[0]) & \
+        if (float(n_accepted/num_exchanges) > improving_params[0]) & \
                 (n_accepted > n_improved):
-            # Lots acceptance but less improvement, reduce threshold
+            # Lots acceptance but not all of them is improvement,
+            # reduce threshold, make it harder to accept a trial
             threshold *= improving_params[1]
         else:
-            # Few acceptance or no acceptance or all accept, increase threshold
+            # Few acceptance or all trials are improvement, increase threshold
+            # make it easier to accept a trial
             threshold /= improving_params[1]
 
-    else:
-        # No new best solution found during last iteration, do exploring process
-        # Exploring process, ramping up vs. slowing down
-        if float(n_accepted/num_candidates) < exploring_params[0]:
-            # Reach below limit, ramp up explore, increase threshold
+    else:           # Explore, No new best solution found during last iteration
+        # Exploring process, warming up vs. cooling down
+        if n_accepted < exploring_params[0] * num_exchanges:
+            # Reach below limit, increase threshold ("warming up")
             flag_explore = True
-        elif n_accepted > exploring_params[1] * max_iter:
-            # Reach above limit, slow down exploration, decrease threshold
+        elif n_accepted > exploring_params[1] * num_exchanges:
+            # Reach above limit, decrease threshold ("cooling down")
             flag_explore = False
 
-        if flag_explore & (n_accepted < exploring_params[1] * max_iter):
+        if flag_explore:
             # Ramp up exploration and below upper limit, increase threshold
             threshold /= exploring_params[3]
-        elif (not flag_explore) & \
-                (float(n_accepted/num_candidates) > exploring_params[0]):
+        elif not flag_explore:
             # Slow down exploration and above lower limit, decrease threshold
             threshold *= exploring_params[2]
 
     return flag_explore, threshold
 
-def optimize(dm: np.ndarray,
-             obj_function: str = "w2_discrepancy",
-             threshold_init: float = -1.0,
-             j: int = 0,
-             m: int = 0,
-             max_outer: int = 20,
-             reward: bool = True,
-             improving_params: list = [0.1, 0.8],
-             exploring_params: list = [0.1, 0.8, 0.9, 0.7]):
-    """
 
-    :param dm: the initial design matrix
-    :param obj_function: the objective function used in the optimization
-    :param threshold_init: the initial threshold, if negative calculate from
-        the recommended value
-    :param j: the number of candidates obtained by perturbing current design,
+def optimize(dm_init: np.ndarray,
+             obj_func_name: str,
+             threshold_init: float,
+             num_exchanges: int,
+             max_inner: int,
+             max_outer: int,
+             improving_params: list,
+             exploring_params: list):
+    """Optimize a given design using Enhanced Evolutionary Algorithm
+
+    :param dm_init: the initial design matrix
+    :param obj_func_name: the objective function used in the optimization
+    :param threshold_init: the initial threshold, if equal or less than zero,
+        then calculate from the recommended value
+    :param num_exchanges: the number of candidates obtained by perturbing current design,
         0 or less means calculate from the recommended value
-    :param m: the maximum number of inner iterations, 0 or less means calculate
+    :param max_inner: the maximum number of inner iterations, 0 or less means calculate
         from the recommended value
     :param max_outer: the maximum number of outer iterations, served as the
         stopping criterion for the optimization algorithm
-    :param reward: flag to do reward iteration, reduce the current outer loop
-        counter by one if a new best solution is found
     :param improving_params: The 2 parameters used in improving process phase
         (1) the cut-off value to decrease the threshold
         (2) the multiplier to decrease or increase the threshold
@@ -227,71 +223,70 @@ def optimize(dm: np.ndarray,
                                          "dm_init dm_best best_evol try_evol")
 
     # Initialization of Outer Iteration
-    n = dm.shape[0]     # number of samples
-    k = dm.shape[1]     # number of dimension
-    obj_func = pick_obj_function(obj_function)      # Choose objective function
-    if threshold_init < 0.0:
-        threshold = init_threshold(dm, obj_func)    # Initial threshold
+    n = dm_init.shape[0]     # number of samples
+    k = dm_init.shape[1]     # number of dimension
+    obj_function = pick_obj_function(obj_func_name)  # Choose objective function
+    if threshold_init <= 0.0:
+        threshold = init_threshold(dm_init, obj_function)   # Initial threshold
     else:
         threshold = threshold_init
-    if j <= 0:
-        j = num_candidate(n)    # number of candidates in perturbation process
-    if m <= 0:
-        m = max_inner(n, k)     # maximum number of inner iterations
+    if num_exchanges <= 0:                  # number of exchanges
+        num_exchanges = calc_num_candidate(n)
+    if max_inner <= 0:                      # maximum number of inner iterations
+        max_inner = calc_max_inner(n, k)
 
-    dm_current = dm.copy()              # the current design
-    obj_func_best = obj_func(dm)        # the best value of obj. func. so far
-    obj_func_best_old = obj_func(dm)    # the old value of objective function
-    flag_explore = False                # flag whether to explore or to improve
+    dm = dm_init.copy()                     # the current design
+    obj_func_best = obj_function(dm)        # the best value of obj.func. so far
+    obj_func_best_old = obj_function(dm)    # the old value of obj.func.
+    flag_explore = False                    # improved flag
 
     best_evol = []                      # Keep track the best solution
     try_evol = []                       # Keep track the accepted trial solution
 
     # Begin Outer Iteration
-    outer = 0
-    while outer < max_outer:
+    for outer in range(max_outer):
         # Initialization of Inner Iteration
         n_accepted = 0              # number of accepted trial
         n_improved = 0              # number of improved trial
 
         # Begin Inner Iteration
-        for inner in range(m):
-            obj_func_current = obj_func(dm_current)
+        for inner in range(max_inner):
+            obj_func = obj_function(dm)
             # Perturb current design
-            obj_func_try, dm_try = perturb(dm_current, inner%k, j, obj_func)
-            if (obj_func_try - obj_func_current) <= threshold * np.random.rand():
+            dm_try = perturb(dm, inner % k, num_exchanges, obj_function)
+            obj_func_try = obj_function(dm_try)
+            # Check whether solution is acceptable
+            if (obj_func_try - obj_func) <= threshold * np.random.rand():
                 # Accept solution
-                dm_current = dm_try.copy()
+                dm = dm_try.copy()
                 n_accepted += 1
                 try_evol.append(obj_func_try)
                 if obj_func_try < obj_func_best:
                     # Best solution found
-                    best_evol.append(obj_func_try)
-                    dm_best = dm_current.copy()
-                    obj_func_best = obj_func(dm_best)
+                    dm_best = dm.copy()
+                    obj_func_best = obj_func_try
+                    best_evol.append(obj_func_best)
                     n_improved += 1
 
-        # Accept/Reject as Best Solution for convergence
-        if (obj_func_best_old - obj_func(dm_best))/obj_func_best > 1e-6:
-            obj_func_best_old = obj_func(dm_best)
+        # Accept/Reject as Best Solution for convergence checking
+        if ((obj_func_best_old - obj_func_best)/obj_func_best) > 1e-6:
+            # Improvement found
+            obj_func_best_old = obj_func_best
             flag_explore = False  # Reset the explore flag after new best found
-            flag_imp = True       # Outer iteration found improved solution flag
-            if reward:
-                outer -= 1        # Reward if new solution is found
-            else:
-                outer += 1
+            flag_imp = True
         else:
-            flag_imp = False      # Outer iteration found improved solution flag
-            outer += 1
+            # Improvement not found
+            flag_imp = False
 
         # Improve vs. Explore Phase and Threshold Update
         flag_explore, threshold = adjust_threshold(threshold, flag_imp,
                                                    flag_explore, n_accepted,
-                                                   n_improved, j, m,
+                                                   n_improved,
+                                                   num_exchanges,
                                                    improving_params,
                                                    exploring_params)
 
-        output = OptSolution(dm_init = dm, dm_best = dm_best,
-                             best_evol = best_evol, try_evol = try_evol)
+    output = OptSolution(dm_init = dm_init, dm_best = dm_best,
+                         best_evol = best_evol, try_evol = try_evol)
 
     return output
