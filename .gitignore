@@ -2,5 +2,7 @@
 *.csv
 make.bat
 Makefile
-docs-sphinx
+docs/build
+docs/source
+docs/_build
 .ipynb_checkpoints
