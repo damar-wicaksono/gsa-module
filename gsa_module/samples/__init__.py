@@ -4,6 +4,7 @@ from . import cmdln_args
 from . import gp_validation
 from . import hammersley
 from . import lhs
+from . import lhs_opt
 from . import sobol
 from . import srs
 
