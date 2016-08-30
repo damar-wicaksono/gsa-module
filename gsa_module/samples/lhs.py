@@ -27,13 +27,7 @@ def create(n: int, d: int, seed: int = -1) -> np.ndarray:
     :returns: (ndarray) a numpy array of `n`-by-`d` filled with randomly
         generated random numbers of uniform variate in LHS class
     """
-    if (not isinstance(n, int)) or n <= 0:
-        raise TypeError
-    elif (not isinstance(d, int)) or d <= 0:
-        raise TypeError
-    elif (not isinstance(seed, int)) or seed <= 0:
-        np.random.seed()
-    else:
+    if seed is not None:
         np.random.seed(seed)
 
     dm = np.empty([n, d])
