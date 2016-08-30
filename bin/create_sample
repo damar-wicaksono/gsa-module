@@ -19,6 +19,12 @@ def main():
         # Create Latin Hypercube Sampling design
         dm = samples.lhs.create(inputs["num_samples"], inputs["num_dimensions"],
                                 seed=inputs["seed_number"])
+    elif inputs["method"] == "sobol":
+        # Create Sobol' quasirandom sequence design
+        dm = samples.sobol.create(inputs["num_samples"],
+                                  inputs["num_dimensions"],
+                                  generator=inputs["sobol_generator"],
+                                  dirnumfile=inputs["direction_numbers"])
     else:
         pass
 
