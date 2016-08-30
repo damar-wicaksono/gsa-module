@@ -15,7 +15,7 @@ def create(n: int, d: int, seed: int) -> np.ndarray:
     :param n: (int) the number of samples
     :param d: (int) the number of dimension
     :param seed: (int) the random seed number
-    :returns: (ndarray) a numpy array of `n`-by-`d` filled with randomly
+    :returns: (np.ndarray) a numpy array of `n`-by-`d` filled with randomly
         generated random numbers of uniform variate
     """
     if seed is not None:
