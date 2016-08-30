@@ -25,8 +25,12 @@ def main():
                                   inputs["num_dimensions"],
                                   generator=inputs["sobol_generator"],
                                   dirnumfile=inputs["direction_numbers"])
-    else:
-        pass
+    elif inputs["method"] == "lhs-opt":
+        # Create an optimized latin hypercube design
+        dm = samples.lhs_opt.create_ese(inputs["num_samples"],
+                                        inputs["num_dimensions"],
+                                        seed=inputs["seed_number"],
+                                        max_outer=inputs["num_iterations"])
 
     # Save the design into file
     np.savetxt(inputs["filename"], dm,
