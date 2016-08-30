@@ -32,7 +32,7 @@ def get():
     parser.add_argument(
         "-m", "--method",
         type=str,
-        choices=["srs", "lhs", "sobol"],
+        choices=["srs", "lhs", "sobol", "lhs-opt"],
         required=False,
         default="srs",
         help="The statistical method to generate sample (default: %(default)s)"
@@ -79,7 +79,17 @@ def get():
         type=str,
         required=False,
         help="The path to Sobol' sequence generator direction numbers file"
-             "(only for Sobol' method)"
+             " (only for Sobol' method)"
+    )
+
+    # The number of iteration for optimization algorithm
+    parser.add_argument(
+        "-nopt", "--num_iterations",
+        type=int,
+        required=False,
+        default=100,
+        help="The maximum number of iterations for optimization of LHS"
+             " (only for LHS)"
     )
 
     # Get the command line arguments
@@ -93,7 +103,7 @@ def get():
     if args.num_dimensions <= 0:
         raise ValueError
 
-    # Check the validity of inputs if Sobol' number is used
+    # Check the validity of inputs if Sobol' sequence is used
     if args.method == "sobol":
         if args.sobol_generator is None:
             raise ValueError("Sobol' method requires generator executable")
@@ -131,7 +141,8 @@ def get():
               "delimiter": delimiter,
               "seed_number": seed_number,
               "sobol_generator": args.sobol_generator,
-              "direction_numbers": args.direction_numbers
+              "direction_numbers": args.direction_numbers,
+              "num_iterations": args.num_iterations
               }
 
     return inputs
