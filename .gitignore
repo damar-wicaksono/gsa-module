@@ -6,3 +6,7 @@ docs/build
 docs/source
 docs/_build
 .ipynb_checkpoints
+# Word Document
+*.docx
+*.pdf
+*.pptx
