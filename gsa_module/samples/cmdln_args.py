@@ -82,6 +82,22 @@ def get():
              " (only for Sobol' method)"
     )
 
+    # Flag to include the nominal point in the design
+    parser.add_argument(
+        "-nom", "--include_nominal",
+        action="store_true",
+        required=False,
+        help="Include the nominal point in the design (only for Sobol')"
+    )
+
+    # Flag to randomized the design (only for Sobol')
+    parser.add_argument(
+        "-rand", "--randomize_sobol",
+        action="store_true",
+        required=False,
+        help="Randomized Sobol' design by random shifting (only for Sobol')"
+    )
+
     # The number of iteration for optimization algorithm
     parser.add_argument(
         "-nopt", "--num_iterations",
@@ -142,6 +158,8 @@ def get():
               "seed_number": seed_number,
               "sobol_generator": args.sobol_generator,
               "direction_numbers": args.direction_numbers,
+              "include_nominal": args.include_nominal,
+              "randomize_sobol": args.randomize_sobol,
               "num_iterations": args.num_iterations
               }
 

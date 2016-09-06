@@ -8,7 +8,9 @@ import os.path
 __author__ = "Damar Wicaksono"
 
 
-def create(n: int, d: int, generator: str, dirnumfile: str) -> np.ndarray:
+def create(n: int, d: int,
+           generator: str, dirnumfile: str, incl_nom: bool,
+           randomize: bool) -> np.ndarray:
     r"""Generate `d`-dimensional Sobol' sequence of length `n`
 
     This function only serves as a wrapper to call a generator from the shell,
@@ -31,6 +33,8 @@ def create(n: int, d: int, generator: str, dirnumfile: str) -> np.ndarray:
     :param d: (int) the number of dimension
     :param generator: (str) the executable fullname for the generator
     :param dirnumfile: (str) the directional numbers fullname
+    :param incl_nom: (bool) the flag to include the nominal point at [0.5]^d
+    :param randomize: (bool) the flag to randomize the Sobol' design
     :returns: (np.ndarray) a numpy array of `n`-by-`d` filled with Sobol'
         quasirandom sequence
     """
@@ -39,29 +43,58 @@ def create(n: int, d: int, generator: str, dirnumfile: str) -> np.ndarray:
         raise TypeError
     elif (not isinstance(dirnumfile, str)) or (not os.path.exists(dirnumfile)):
         raise TypeError
-    else:
-        cmd = [generator, str(n+1), str(d), dirnumfile]
 
-        p = subprocess.Popen(cmd,
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE)
-        out, err = p.communicate()
+    if not incl_nom:
+        # Add one more point as nominal values will be removed
+        n += 1
 
-        # stdout in subprocess is in byte codes
-        # convert to string and split into array with newline as separator
-        sobol_seq = out.decode("utf-8").split("\n")
+    cmd = [generator, str(n), str(d), dirnumfile]
 
-        # Remove the last two lines
-        sobol_seq.pop(-1)
-        sobol_seq.pop(-1)
+    p = subprocess.Popen(cmd,
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE)
+    out, err = p.communicate()
+
+    # stdout in subprocess is in byte codes
+    # convert to string and split into array with newline as separator
+    sobol_seq = out.decode("utf-8").split("\n")
+
+    # Remove the last two lines
+    sobol_seq.pop(-1)
+    sobol_seq.pop(-1)
+
+    if not incl_nom:
         # Remove the second as it was only the "nominal" set of parameters
         sobol_seq.pop(1)
 
-        # Convert the string into float
-        for i in range(len(sobol_seq)):
-            sobol_seq[i] = [float(_) for _ in sobol_seq[i].split()]
+    # Convert the string into float
+    for i in range(len(sobol_seq)):
+        sobol_seq[i] = [float(_) for _ in sobol_seq[i].split()]
 
-        # Convert to numpy array
-        sobol_seq = np.array(sobol_seq)
+    # Convert to numpy array
+    sobol_seq = np.array(sobol_seq)
 
-    return sobol_seq
+    # Randomize the design if requested
+    if randomize:
+        return random_shift(sobol_seq)
+    else:
+        return sobol_seq
+
+
+def random_shift(dm: np.ndarray) -> np.ndarray:
+    """Randomize a given Sobol' design by random shifting
+
+    **Reference:**
+
+    (1) C. Lemieux, "Monte Carlo and Quasi-Monte Carlo Sampling," Springer
+        Series in Statistics 692, Springer Science+Business Media, New York,
+        2009
+
+    :param dm: Original Sobol' design matrix, n-by-d
+    :returns: Randomized Sobol' design matrix
+    """
+    # Generate random shift matrix from uniform distribution
+    shift = np.random.rand(dm.shape[0], dm.shape[1])
+
+    # Return the shifted Sobol' design
+    return (dm + shift) % 1

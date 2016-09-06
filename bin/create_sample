@@ -24,7 +24,9 @@ def main():
         dm = samples.sobol.create(inputs["num_samples"],
                                   inputs["num_dimensions"],
                                   generator=inputs["sobol_generator"],
-                                  dirnumfile=inputs["direction_numbers"])
+                                  dirnumfile=inputs["direction_numbers"],
+                                  incl_nom=inputs["include_nominal"],
+                                  randomize=inputs["randomize_sobol"])
     elif inputs["method"] == "lhs-opt":
         # Create an optimized latin hypercube design
         dm = samples.lhs_opt.create_ese(inputs["num_samples"],
