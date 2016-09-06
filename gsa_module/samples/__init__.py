@@ -1,7 +1,7 @@
 """Package containing routines to generate design using various sampling schemes
 """
 from . import cmdln_args
-from . import gp_validation
+from . import test_sample
 from . import hammersley
 from . import lhs
 from . import lhs_opt

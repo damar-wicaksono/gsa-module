@@ -1,18 +1,18 @@
-"""Module to parse command line arguments in creating sample
+"""Module to parse command line arguments in creating sample or validation data
 """
 
 __author__ = "Damar Wicaksono"
 
 
-def get():
-    """Get the passed command line arguments"""
+def get_create_sample():
+    """Get the passed command line arguments for creating sample"""
     import argparse
 
     parser = argparse.ArgumentParser(
         description="gsa-module create_sample - Generate Design Matrix File"
     )
 
-    # the number of samples
+    # The number of samples
     parser.add_argument(
         "-n", "--num_samples",
         type=int,
@@ -20,7 +20,7 @@ def get():
         required=True
     )
 
-    # the number of dimension
+    # The number of dimension
     parser.add_argument(
         "-d", "--num_dimensions",
         type=int,
@@ -28,7 +28,7 @@ def get():
         required=True
     )
 
-    # the method to generate sample
+    # The method to generate sample
     parser.add_argument(
         "-m", "--method",
         type=str,
@@ -38,7 +38,7 @@ def get():
         help="The statistical method to generate sample (default: %(default)s)"
     )
 
-    # the design matrix filename
+    # The design matrix filename
     parser.add_argument(
         "-o", "--output_file",
         type=str,
@@ -161,6 +161,88 @@ def get():
               "include_nominal": args.include_nominal,
               "randomize_sobol": args.randomize_sobol,
               "num_iterations": args.num_iterations
+              }
+
+    return inputs
+
+
+def get_create_validset():
+    """Get the passed command line arguments for creating sample"""
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="gsa-module create_validset - Generate Validation Data Set"
+    )
+
+    # The design matrix fullname
+    parser.add_argument(
+        "-dm", "--dm_fullname",
+        type=str,
+        required=True,
+        help="The design matrix fullname (file + path)",
+    )
+
+    # The number of test points
+    parser.add_argument(
+        "-n", "--num_tests",
+        type=int,
+        required=True,
+        help="The number of test points to be generated"
+    )
+
+    # The validation data set filename
+    parser.add_argument(
+        "-o", "--output_file",
+        type=str,
+        required=False,
+        help="The output filename"
+    )
+
+    # The number of candidates
+    parser.add_argument(
+        "-nc", "--num_candidates",
+        type=int,
+        required=False,
+        default=10000,
+        help="The number of candidates from the Hammersley sequence"
+    )
+
+    # Get the command line arguments
+    args = parser.parse_args()
+
+    # Check the existence of the design matrix file
+
+    # Check the validity of number of test points
+    if args.num_tests <= 0:
+        raise ValueError
+
+    # Check the validity of number of candidates
+    if args.num_candidates <= 0:
+        raise ValueError
+
+    # Determine the delimiter inside the file
+    delimiter = args.dm_fullname.split("/")[-1].split(".")[-1]
+    if delimiter == "csv":
+        str_delimiter = ","
+    elif delimiter == "tsv":
+        str_delimiter = "\t"
+    else:
+        str_delimiter = " "
+
+    # Create default filename if not passed
+    if args.output_file is None:
+        dm_name = args.dm_fullname.split("/")[-1]
+        output_file = "{}_test_{}.{}" .format(dm_name.split(".")[0],
+                                              args.num_tests, delimiter)
+    else:
+        output_file = args.output_file
+
+    # Return the parsed command line arguments as a dictionary
+    inputs = {"dm_fullname": args.dm_fullname,
+              "num_tests": args.num_tests,
+              "num_candidates": args.num_candidates,
+              "filename": output_file,
+              "str_delimiter": str_delimiter
               }
 
     return inputs
