@@ -18,7 +18,7 @@ be seen in the figure below.
 
 .. image:: ./docs/figures/flowchart.png
 
-Features (v0.3.0)
+Features (v0.4.0)
 -----------------
 
  - Capability to generate design of computer experiments using 4 different 
@@ -27,6 +27,7 @@ Features (v0.3.0)
  - Sobol' quasirandom number sequence generator is a wrapper around the 
    implementation by `Joe and Kuo (2008)`_. Two binaries are made available 
    for linux64 and windows64
+ - Randomization of the Sobol' quasi-random number using random shift procedure
  - Optimization of the latin hypercube design is done via evolutionary 
    stochastic algorithm (ESE)
 
