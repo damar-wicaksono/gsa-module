@@ -2,13 +2,13 @@
 """hammersley.py: python module to generate Hammersley sequence. The
 implementation below is taken verbatim from (1) based on algorithm in (2)
 
-It is not recommended to generate a Hammersley sequency more than 10 dimension
+It is not recommended to generate a Hammersley sequence more than 10 dimension
 
  **References**
 
  (1) https://github.com/PhaethonPrime/hammersley
  (2) T-T. Wong, W-S. Luk, and P-A. Heng, "Sampling with Hammersley and Halton
-     Points,"
+     Points," Journal of Graphics Tools, vol. 2, no. 2, 1997, pp. 9 - 24.
 """
 import numpy as np
 from six import moves, iteritems
@@ -43,6 +43,7 @@ def generate_hammersley(n_points=100, n_dims=2,  primes=None):
         points = [k/n_points] + \
                  [get_phi(primes[d], k) for d in moves.range(n_dims-1)]
         yield points
+
 
 def create(n_points=100, n_dims=2):
     """Wrapper function to generate Hammersley sequence
