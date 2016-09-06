@@ -8,7 +8,7 @@ __author__ = "Damar Wicaksono"
 
 def main():
     # Get the command line arguments
-    inputs = samples.cmdln_args.get()
+    inputs = samples.cmdln_args.get_create_sample()
 
     # Generate the design matrix file
     if inputs["method"] == "srs":

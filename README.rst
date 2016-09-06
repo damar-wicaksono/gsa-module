@@ -18,7 +18,7 @@ be seen in the figure below.
 
 .. image:: ./docs/figures/flowchart.png
 
-Features (v0.4.0)
+Features (v0.5.0)
 -----------------
 
  - Capability to generate design of computer experiments using 4 different 
@@ -30,6 +30,7 @@ Features (v0.4.0)
  - Randomization of the Sobol' quasi-random number using random shift procedure
  - Optimization of the latin hypercube design is done via evolutionary 
    stochastic algorithm (ESE)
+ - Generation of separate test points based on Hammersley quasi-random sequence
 
 .. _Joe and Kuo (2008): http://web.maths.unsw.edu.au/~fkuo/sobol/
 
