@@ -94,7 +94,7 @@ def random_shift(dm: np.ndarray) -> np.ndarray:
     :returns: Randomized Sobol' design matrix
     """
     # Generate random shift matrix from uniform distribution
-    shift = np.random.rand(dm.shape[0], dm.shape[1])
+    shift = np.repeat(np.random.rand(1, dm.shape[1]), dm.shape[0], axis=0)
 
     # Return the shifted Sobol' design
     return (dm + shift) % 1
