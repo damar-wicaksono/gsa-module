@@ -2,7 +2,7 @@ from setuptools import setup
 
 
 setup(name="gsa-module",
-      version="0.5.1",
+      version="0.5.2",
       description="Package to conduct global sensitivity analysis of computer simulation",
       url="https://bitbucket.org/damar-wicaksono/gsa-module",
       author="Damar Wicaksono",
