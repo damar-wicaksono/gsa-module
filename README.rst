@@ -67,6 +67,7 @@ This will make the following available in the path:
 
  - The python module ``gsa_module``
  - The executable ``create_sample``
+ - The executable ``create_validset``
 
 Documentation
 -------------
