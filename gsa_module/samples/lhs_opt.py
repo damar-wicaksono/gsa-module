@@ -38,6 +38,10 @@ def create_ese(n: int, d: int, seed: int, max_outer: int,
     """
     from .opt_alg.stochastic_evolutionary import optimize
 
+    # If dimension is less than 2, abort optimization
+    if d < 2:
+        raise ValueError("Dimension less than 2, optimization irrelevant!")
+
     if seed is not None:
         np.random.seed(seed)
 

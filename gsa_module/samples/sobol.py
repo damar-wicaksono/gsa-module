@@ -8,8 +8,9 @@ import os.path
 __author__ = "Damar Wicaksono"
 
 
-def create(n: int, d: int, generator: str, dirnumfile: str, incl_nom: bool) \
-        -> np.ndarray:
+def create(n: int, d: int,
+           generator: str, dirnumfile: str, incl_nom: bool,
+           randomize: bool) -> np.ndarray:
     r"""Generate `d`-dimensional Sobol' sequence of length `n`
 
     This function only serves as a wrapper to call a generator from the shell,
@@ -32,6 +33,8 @@ def create(n: int, d: int, generator: str, dirnumfile: str, incl_nom: bool) \
     :param d: (int) the number of dimension
     :param generator: (str) the executable fullname for the generator
     :param dirnumfile: (str) the directional numbers fullname
+    :param incl_nom: (bool) the flag to include the nominal point at [0.5]^d
+    :param randomize: (bool) the flag to randomize the Sobol' design
     :returns: (np.ndarray) a numpy array of `n`-by-`d` filled with Sobol'
         quasirandom sequence
     """
@@ -71,5 +74,27 @@ def create(n: int, d: int, generator: str, dirnumfile: str, incl_nom: bool) \
     # Convert to numpy array
     sobol_seq = np.array(sobol_seq)
 
+    # Randomize the design if requested
+    if randomize:
+        return random_shift(sobol_seq)
+    else:
+        return sobol_seq
 
-    return sobol_seq
+
+def random_shift(dm: np.ndarray) -> np.ndarray:
+    """Randomize a given Sobol' design by random shifting
+
+    **Reference:**
+
+    (1) C. Lemieux, "Monte Carlo and Quasi-Monte Carlo Sampling," Springer
+        Series in Statistics 692, Springer Science+Business Media, New York,
+        2009
+
+    :param dm: Original Sobol' design matrix, n-by-d
+    :returns: Randomized Sobol' design matrix
+    """
+    # Generate random shift matrix from uniform distribution
+    shift = np.repeat(np.random.rand(1, dm.shape[1]), dm.shape[0], axis=0)
+
+    # Return the shifted Sobol' design
+    return (dm + shift) % 1
