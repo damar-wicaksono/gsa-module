@@ -1,12 +1,12 @@
 """Module to parse command line arguments in creating sample or validation data
 """
+import argparse
 
 __author__ = "Damar Wicaksono"
 
 
 def get_create_sample():
-    """Get the passed command line arguments for creating sample"""
-    import argparse
+    """Get the passed command line arguments"""
 
     parser = argparse.ArgumentParser(
         description="gsa-module create_sample - Generate Design Matrix File"
@@ -38,7 +38,15 @@ def get_create_sample():
         help="The statistical method to generate sample (default: %(default)s)"
     )
 
-    # The design matrix filename
+    # The random seed number
+    parser.add_argument(
+        "-s", "--seed_number",
+        type=int,
+        required=False,
+        help="The random seed number (irrelevant for Sobol' sequence)"
+    )
+
+    # the design matrix filename
     parser.add_argument(
         "-o", "--output_file",
         type=str,
@@ -56,56 +64,44 @@ def get_create_sample():
         help="the delimiter for the file (default: %(default)s)"
     )
 
-    # The random seed number
-    parser.add_argument(
-        "-s", "--seed_number",
-        type=int,
-        required=False,
-        help="The random seed number"
-    )
-
+    # Only for Sobol'
+    group_sobol = parser.add_argument_group("Sobol'", 
+                                            "Options for Sobol' quasi-random")
     # The path to sobol generator
-    parser.add_argument(
+    group_sobol.add_argument(
         "-sobol", "--sobol_generator",
         type=str,
         required=False,
         help="The path to Sobol' sequence generator executable"
-             "(only for Sobol' method)"
     )
 
     # The path to sobol generator
-    parser.add_argument(
+    group_sobol.add_argument(
         "-dirnum", "--direction_numbers",
         type=str,
         required=False,
         help="The path to Sobol' sequence generator direction numbers file"
-             " (only for Sobol' method)"
     )
 
     # Flag to include the nominal point in the design
-    parser.add_argument(
+    group_sobol.add_argument(
         "-nom", "--include_nominal",
         action="store_true",
         required=False,
-        help="Include the nominal point in the design (only for Sobol')"
+        help="Include the nominal point in the design"
     )
 
-    # Flag to randomized the design (only for Sobol')
-    parser.add_argument(
-        "-rand", "--randomize_sobol",
-        action="store_true",
-        required=False,
-        help="Randomized Sobol' design by random shifting (only for Sobol')"
-    )
+    # Only for optimized lhs
+    group_lhs_opt = parser.add_argument_group("Optimized LHS",
+                                              "Options for optimized lhs")
 
     # The number of iteration for optimization algorithm
-    parser.add_argument(
+    group_lhs_opt.add_argument(
         "-nopt", "--num_iterations",
         type=int,
         required=False,
         default=100,
         help="The maximum number of iterations for optimization of LHS"
-             " (only for LHS)"
     )
 
     # Get the command line arguments
