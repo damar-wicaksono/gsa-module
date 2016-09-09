@@ -5,7 +5,7 @@ import argparse
 __author__ = "Damar Wicaksono"
 
 
-def get():
+def get_create_sample():
     """Get the passed command line arguments"""
 
     parser = argparse.ArgumentParser(
@@ -63,8 +63,6 @@ def get():
         default="csv",
         help="the delimiter for the file (default: %(default)s)"
     )
-
-
 
     # Only for Sobol'
     group_sobol = parser.add_argument_group("Sobol'", 
