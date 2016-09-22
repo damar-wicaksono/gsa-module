@@ -1,4 +1,5 @@
 .. gsa_module_sobol_indices:
 
-Sobol' Indices
---------------
+Sobol' Sensitivity Indices
+---------------------------
+
