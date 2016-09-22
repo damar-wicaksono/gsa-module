@@ -5,6 +5,8 @@ Makefile
 docs/build/
 docs/source/
 docs/_build/
+# PyCharm
+.idea/workspace.xml
 .ipynb_checkpoints
 # Word Document
 *.docx
