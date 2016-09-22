@@ -77,8 +77,10 @@ Documentation for ``gsa-module`` is currently under construction.
 Contribute
 ----------
 
-``gsa-module`` is hosted on a private repository on `BitBucket`_ under the `Global Sensitivity Analysis`_ project.
-Only those who is a team member of `lrs-uq`_ has access and is allowed to read and/or write. 
+``gsa-module`` is hosted on a private repository on `BitBucket`_ under the
+`Global Sensitivity Analysis`_ project.
+Only those who is a team member of `lrs-uq`_ has access and is allowed to read
+and/or write.
 
 - Issue Tracker: https://bitbucket.org/lrs-uq/gsa-module/issues
 - Source Code: https://bitbucket.org/lrs-uq/gsa-module
