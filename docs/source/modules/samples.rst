@@ -41,5 +41,11 @@ random sampling (``srs``), latin hypercube (``lhs``), optimized latin hypercube
 -------------------------------
 
 .. automodule:: gsa_module.samples.sobol
+    :exclude-members: random_shift
     :members:
     :undoc-members:
+
+Randomization of the quasi-MC samples can be achieved in the easiest manner by
+random shift (or the Cranley-Patterson rotation).
+
+.. autofunction:: gsa_module.samples.sobol.random_shift
