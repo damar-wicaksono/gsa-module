@@ -2,8 +2,8 @@
 *.csv
 make.bat
 Makefile
+# Sphinx-doc
 docs/build/
-docs/source/
 docs/_build/
 # PyCharm
 .idea/workspace.xml
