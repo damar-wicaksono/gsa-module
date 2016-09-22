@@ -1,7 +1,5 @@
 *.pyc
 *.csv
-make.bat
-Makefile
 # Sphinx-doc
 docs/build/
 docs/_build/
