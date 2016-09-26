@@ -43,6 +43,7 @@ be seen in the figure below.
    :maxdepth: 1
 
    modules/samples
+   modules/morris
 
 Indices and tables
 ==================
