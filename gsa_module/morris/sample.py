@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
     gsa_module.morris.sample
-    ~~~~~~~~~~~~~~~~~~~~~~~~
+    ************************
 
     Module implementing method to generate design of experiments specifically
     for Morris screening method

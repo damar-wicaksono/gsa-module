@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Routines to conduct Morris screening analysis for global sensitivity analysis
+    gsa_module.morris
+    ~~~~~~~~~~~~~~~~~
+
+    Set of routines to conduct Morris screening analysis for qualitatively rank
+    input parameter importance in global sensitivity analysis setting
 """
+
