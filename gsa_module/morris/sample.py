@@ -57,7 +57,7 @@ def trajectory(r: int, k: int, p: int, numseed: int) -> np.ndarray:
         x_star = np.empty([k+1, k])
         # Fill in the starting point dimension-by-dimension
         for j in range(k):
-            x_star[:, j] = np.random.choice(np.arange(p/2) / (p - 1))
+            x_star[:, j] = np.random.choice(np.arange(p / 2) / (p - 1))
 
         # Generate random permutation matrix, p_star
         # See [1] for the properties of the p_star matrix
@@ -74,9 +74,8 @@ def trajectory(r: int, k: int, p: int, numseed: int) -> np.ndarray:
         index_list = np.arange(k+1) + i * (k+1)
 
         # Compute the b_star for each trajectories
-        b_star[index_list, :] = x_star + np.dot(delta_diag/2,
-                                                np.dot((np.dot((2*b - j_k),
-                                                               d_star) + j_k),
-                                                       p_star))
+        b_star[index_list, :] = np.dot(x_star + np.dot(delta_diag/2,
+                                                (np.dot((2*b - j_k), d_star) +
+                                                 j_k)), p_star)
 
     return b_star
