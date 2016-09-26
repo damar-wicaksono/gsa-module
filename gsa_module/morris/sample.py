@@ -1,17 +1,21 @@
 # -*- coding: utf-8 -*-
-"""Module implementing generation methods of DOE for Morris screening
+"""
+    gsa_module.morris.sample
+    ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Two flavors for generating design of experiment for Morris screening
-analysis are implemented:
+    Module implementing method to generate design of experiments specifically
+    for Morris screening method
 
- 1. The trajectory design: the one proposed originally by Morris, also known
-    as the winding stair design proposed by Jansen (although comes in a bit
-    modified form)
- 2. The radial design: the one proposed by Saltelli et al. that uses Sobol' low
-    discrepancy sequence to build an OAT design. It is promoted because removing
-    the number of levels from the specification, thus reducing additional
-    user-specified parameter
+    Two flavors for generating design of experiment for Morris screening
+    analysis are implemented:
 
+    1. The trajectory design: the one proposed originally by Morris, also known
+       as the winding stair design proposed by Jansen (although comes in a bit
+       modified form)
+    2. The radial design: the one proposed by Saltelli et al. that uses Sobol'
+       low discrepancy sequence to build an OAT design. It is promoted because
+       it remove the number of levels from the specification, thus reducing
+       additional user-specified parameter
 """
 import numpy as np
 
