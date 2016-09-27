@@ -17,32 +17,32 @@ def get_create_sample():
 
     :return:  a dictionary of command line arguments
 
-    +-----------------+------------------------------------------------------+
-    | Key             | Value                                                |
-    +=================+======================================================+
-    | num_blocks      | (int, positive) The number of blocks/trajectories    |
-    |                 |  replications to compute the statistics of the       |
-    |                 |  elementary effects                                  |
-    +-----------------+------------------------------------------------------+
-    | num_dimensions  | (int, positive) The number of dimensions/parameters  |
-    +-----------------+------------------------------------------------------+
-    | sampling_scheme | ("trajectory", "radial") Sampling scheme to generate |
-    |                 | One-at-a-time design. Trajectory is the original     |
-    |                 | randomized Morris' formulation, while radial uses    |
-    |                 | Saltelli et al. formulation based on Sobol' sequence |
-    +-----------------+------------------------------------------------------+
-    | num_levels      | (None or int, >0) The number of levels, partitioning |
-    |                 | the parameter space in the trajectory sampling scheme|
-    +-----------------+------------------------------------------------------+
-    | seed_number     | (None or int, >= 0) Seed number for random number    |
-    |                 | generation in the trajectory sampling scheme         |
-    +-----------------+------------------------------------------------------+
-    | sobol_generator | (None or str) The fullpath of executable to external |
-    |                 | Sobol' sequence generator                            |
-    +-----------------+------------------------------------------------------+
-    | direction_number| (None or str) the full path to the file containing   |
-    |                 | direction number for Sobol' sequence generator       |
-    +-----------------+------------------------------------------------------+
+    +------------------+------------------------------------------------------+
+    | Key              | Value                                                |
+    +==================+======================================================+
+    | num_blocks       | (int, positive) The number of blocks/trajectories    |
+    |                  |  replications to compute the statistics of the       |
+    |                  |  elementary effects                                  |
+    +------------------+------------------------------------------------------+
+    | num_dimensions   | (int, positive) The number of dimensions/parameters  |
+    +------------------+------------------------------------------------------+
+    | sampling_scheme  | ("trajectory", "radial") Sampling scheme to generate |
+    |                  | One-at-a-time design. Trajectory is the original     |
+    |                  | randomized Morris' formulation, while radial uses    |
+    |                  | Saltelli et al. formulation based on Sobol' sequence |
+    +------------------+------------------------------------------------------+
+    | num_levels       | (None or int, >0) The number of levels, partitioning |
+    |                  | the parameter space in the trajectory sampling scheme|
+    +------------------+------------------------------------------------------+
+    | seed_number      | (None or int, >= 0) Seed number for random number    |
+    |                  | generation in the trajectory sampling scheme         |
+    +------------------+------------------------------------------------------+
+    | sobol_generator  | (None or str) The fullpath of executable to external |
+    |                  | Sobol' sequence generator                            |
+    +------------------+------------------------------------------------------+
+    | direction_numbers| (None or str) the full path to the file containing   |
+    |                  | direction number for Sobol' sequence generator       |
+    +------------------+------------------------------------------------------+
     """
 
     parser = argparse.ArgumentParser(
