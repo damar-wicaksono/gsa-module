@@ -84,3 +84,38 @@ def trajectory(r: int, k: int, p: int, seed: int) -> np.ndarray:
                                                  j_k)), p_star)
 
     return b_star
+
+
+def radial(r: int, k: int, sobol_generator: str, direction_numbers: str,
+           shift_exclude: int = 4) -> np.ndarray:
+    """Generate DOE for Morris using radial sampling scheme
+
+    :param r: the number of blocks/replications/trajectories
+    :param k: the number of dimensions/parameters
+    :param sobol_generator: the fullpath to Sobol' generator executable
+    :param direction_number: the fullpath to Sobol' generator direction number
+    :param shift_exclude: the lower shift for the half of the design with which
+        the first half is subtracted
+    :return: the radial design matrix of dimension r*(k+1)-by-k
+    """
+    from .. import samples
+
+    # Generate Sobol quasi-random sequence, twice the size of dimensions
+    sobol_seq = samples.sobol.create(r+shift_exclude, 2*k,
+                                     generator=sobol_generator,
+                                     dirnumfile=direction_numbers,
+                                     incl_nom=True,
+                                     randomize=False)
+
+    # Generate the radial design
+    dm = np.zeros((r*(k+1), k))
+    for i in range(r):
+        # Set indices that signify a given block in the matrix
+        index_list = np.arange(k+1) + i * (k+1)
+        dm[index_list[0],:] = sobol_seq[i, :k]  # Base points
+        for j in range(k):
+            dm[index_list[j]+1, :] = sobol_seq[i, :k]   # The base point
+            # Change the k-th dimension from the auxiliary point
+            dm[index_list[j]+1, j] = sobol_seq[i+shift_exclude, k+j]
+
+    return dm
