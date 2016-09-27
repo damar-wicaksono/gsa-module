@@ -20,17 +20,20 @@
 import numpy as np
 
 
-def trajectory(r: int, k: int, p: int, numseed: int) -> np.ndarray:
+def trajectory(r: int, k: int, p: int, seed: int) -> np.ndarray:
     r"""Create Morris One-at-a-time design matrix, or the trajectory design
 
     :param r: the number of trajectories or replications
     :param k: the number of parameters
     :param p: the number of levels, have to be an even number
-    :param numseed: the seed number for random number generation
+    :param seed: the seed number for random number generation
     :return: the trajectory design matrix of dimension r*(k+1)-by-k
     """
     # set the seed number
-    np.random.seed(numseed)
+    if seed is None:
+        np.random.seed()
+    else:
+        np.random.seed(seed)
 
     # Generate B matrix, a strictly lower triangular matrix of 1
     # See [1] for the properties of B matrix
