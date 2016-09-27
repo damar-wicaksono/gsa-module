@@ -23,6 +23,8 @@ import numpy as np
 def trajectory(r: int, k: int, p: int, seed: int) -> np.ndarray:
     r"""Create Morris One-at-a-time design matrix, or the trajectory design
 
+    See theory section in the documentation for the references
+
     :param r: the number of trajectories or replications
     :param k: the number of parameters
     :param p: the number of levels, have to be an even number
