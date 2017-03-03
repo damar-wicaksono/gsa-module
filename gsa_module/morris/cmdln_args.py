@@ -94,7 +94,7 @@ def get_create_sample():
     )
 
     # Only for trajectory sampling scheme
-    group_trajectory = parser.add_argument_group("Radial Sampling Scheme Only")
+    group_trajectory = parser.add_argument_group("Trajectory Sampling Scheme Only")
 
     # The number of levels, only for trajectory scheme
     group_trajectory.add_argument(

@@ -9,13 +9,27 @@
     Two flavors for generating design of experiment for Morris screening
     analysis are implemented:
 
-    1. The trajectory design: the one proposed originally by Morris, also known
-       as the winding stair design proposed by Jansen (although comes in a bit
-       modified form)
-    2. The radial design: the one proposed by Saltelli et al. that uses Sobol'
-       low discrepancy sequence to build an OAT design. It is promoted because
-       it remove the number of levels from the specification, thus reducing
-       additional user-specified parameter
+    1. The trajectory design: the one proposed originally by Morris [1], also
+       known as the winding stair design proposed by Jansen [2] (although
+       comes in a bit modified form)
+    2. The radial design: the one proposed by Saltelli et al. [3] that uses
+       Sobol' low discrepancy sequence to build an OAT design. It is promoted
+       because it remove the number of levels from the specification,
+       thus reducing additional user-specified parameter. Additionally, the
+       size of grid jump will also vary from one nominal point to another
+
+    **References**
+
+    (1) Max D. Morris, "Factorial Sampling Plans for Preliminary Computational
+       Experiments", Technometrics, Vol. 33, No. 2, pp. 161-174, 1991.
+    (2) Michiel J.W. Jansen, Walter A.H. Rossing, and Richard A. Daamen, "Monte
+       Carlo Estimation of Uncertainty Contributions from Several Independent
+       Multivariate Sources," in Predictability and Nonlinear Modelling in
+       Natural Sciences and Economics, Dordrecht, Germany, Kluwer Publishing,
+       1994, pp. 334 - 343.
+    (3) F. Campolongo, A. Saltelli, and J. Cariboni, "From Screening to
+       Quantitative Sensitivity Analysis. A Unified Approach," Computer Physics
+       Communications, Vol. 192, pp. 978 - 988, 2011.
 """
 import numpy as np
 
@@ -93,7 +107,7 @@ def radial(r: int, k: int, sobol_generator: str, direction_numbers: str,
     :param r: the number of blocks/replications/trajectories
     :param k: the number of dimensions/parameters
     :param sobol_generator: the fullpath to Sobol' generator executable
-    :param direction_number: the fullpath to Sobol' generator direction number
+    :param direction_numbers: the fullpath to Sobol' generator direction number
     :param shift_exclude: the lower shift for the half of the design with which
         the first half is subtracted
     :return: the radial design matrix of dimension r*(k+1)-by-k
@@ -105,7 +119,8 @@ def radial(r: int, k: int, sobol_generator: str, direction_numbers: str,
                                      generator=sobol_generator,
                                      dirnumfile=direction_numbers,
                                      incl_nom=True,
-                                     randomize=False)
+                                     randomize=False,
+                                     seed=None)
 
     # Generate the radial design
     dm = np.zeros((r*(k+1), k))
