@@ -10,11 +10,12 @@ setup(
     author_email="damar.wicaksono@gmail.com",
     license="MIT",
     packages=["gsa_module"],
-    scripts=["bin/create_sample", "bin/create_validset"],
+    scripts=["bin/create_validset"],
 
     # Provide the following executable scripts on the path
     entry_points={
         "console_scripts": [
+            "gsa_create_sample=gsa_module.cmdln_interface:create_sample",
             "gsa_morris_generate=gsa_module.cmdln_interface:morris_generate"
         ]
     },
