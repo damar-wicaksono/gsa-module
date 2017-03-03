@@ -14,3 +14,5 @@ docs/_build/
 *.egg-info/
 #iPython Notebook
 *.ipynb
+#Sandboxing Folder
+sandboxing/
