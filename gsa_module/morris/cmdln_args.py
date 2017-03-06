@@ -54,7 +54,7 @@ def get_create_sample():
         "-r", "--num_blocks",
         type=int,
         required=True,
-        help="The number of blocks (or trajectories)"
+        help="The number of blocks (or replications)"
     )
 
     # The number of dimensions
@@ -313,8 +313,9 @@ def get_analyze():
 
     # Create filename of analysis output file
     if args.output_file is None:
-        output_file = "{}-morris.csv" \
-            .format(args.normalized_inputs.split("/")[-1].split(".")[0])
+        output_file = "{}-{}.csv" \
+            .format(args.normalized_inputs.split("/")[-1].split(".")[0],
+                    args.outputs.split("/")[-1].split(".")[0])
     else:
         output_file = args.output_file
 
