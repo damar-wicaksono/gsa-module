@@ -73,7 +73,7 @@ Documentation
 
 Documentation for ``gsa-module`` is an on-going process.
 The current version can be found in the ``/docs`` folder and can be built
-given that ``sphinx`` has been installed with the ``make`` command::
+(given that ``sphinx`` has been installed) with the ``make`` command::
 
     make html
 
