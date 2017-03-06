@@ -7,11 +7,14 @@
     :members:
     :undoc-members:
 
-
 .. automodule:: gsa_module.morris.cmdln_args
     :members:
     :undoc-members:
 
 .. automodule:: gsa_module.morris.sample
+    :members:
+    :undoc-members:
+	
+.. automodule:: gsa_module.morris.analyze
     :members:
     :undoc-members:

@@ -7,6 +7,12 @@ Morris Screening Method
 Elementary Effects
 ------------------
 
+The elementary effect of parameter `i` is defined [1]_ as follow,
+
+:math:`EE_i = \frac{Y(x_1, x_2, \ldots, x_i + \Delta, \ldots, x_k)
+- Y(x_1, x_2, \ldots, x_k)}{\Delta}`
+
+Where :math:`\Delta` is the grid jump.
 
 Statistics of Elementary Effects and Sensitivity Measure
 --------------------------------------------------------
