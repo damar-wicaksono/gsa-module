@@ -20,10 +20,11 @@ def sniff_morris(dm: np.ndarray):
     delta = np.array([])
     for i in range(num_dim):
         delta = np.append(delta, np.unique(np.abs(dm[:num_dim,i] - dm[1:(num_dim+1),i])))
-    delta = np.unique(delta)
+
+    delta = np.unique(delta.round(decimals=4))
 
     if len(delta) > 2:
-        return "radial", None
+        return "radial", None, None
     else:
-        num_lev = round(2 * delta[1] / (2 * delta[1] - 1))
-        return "trajectory", num_lev
+        num_lev = int(round(2 * delta[1] / (2 * delta[1] - 1)))
+        return "trajectory", num_lev, delta[1]

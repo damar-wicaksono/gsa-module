@@ -108,14 +108,16 @@ def morris_analyze():
         num_runs = dm_norm.shape[0]
         num_dims = dm_norm.shape[1]
         num_reps = int(num_runs / (num_dims + 1))
-        morris_type, num_lev = morris.misc.sniff_morris(dm_norm)
+        morris_type, num_lev, delta = morris.misc.sniff_morris(dm_norm)
 
         print("Number of Input Dimensions    = {}" .format(num_dims))
         print("Number of Blocks/Replications = {}" .format(num_reps))
         print("Total Number of Runs          = {}" .format(num_runs))
         print("Type of Design                = {}" .format(morris_type))
-        print("Number of levels (trajectory) = {}" .format(num_lev))
-        print("Rescaled Inputs               = {}" .format(inputs["rescaled_inputs"]))
+        print("Number of levels (trajectory) = {} (Delta = {})"
+              .format(num_lev, delta))
+        print("Rescaled Inputs               = {}"
+              .format(inputs["rescaled_inputs"]))
 
     # Analyze the input/output
     if morris_type == "trajectory":
