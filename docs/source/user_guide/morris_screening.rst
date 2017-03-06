@@ -170,3 +170,5 @@ The results of the analysis is saved inside the file
 Each column corresponds to the appropriate sensitivity measure as indicated
 above. Note that the standardized version of the elementary effects are
 taken to be zero as the rescaled input file was not specified.
+The parameter is ordered according to the design matrix file
+(the first column is the first parameter, etc.)
