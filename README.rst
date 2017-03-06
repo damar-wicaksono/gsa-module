@@ -18,19 +18,16 @@ be seen in the figure below.
 
 .. image:: ./docs/figures/flowchart.png
 
-Features (v0.5.0)
+Features (v0.6.0)
 -----------------
 
- - Capability to generate design of computer experiments using 4 different 
-   methods: simple random sampling, latin hypercube sampling, sobol' sequence,
-   and optimized latin hypercube using command line interface
- - Sobol' quasi-random number sequence generator is a wrapper around the 
-   implementation by `Joe and Kuo (2008)`_. Two binaries are made available 
-   for linux64 and windows64
- - Randomization of the Sobol' quasi-random number using random shift procedure
- - Optimization of the latin hypercube design is done via evolutionary 
-   stochastic algorithm (ESE)
- - Generation of separate test points based on Hammersley quasi-random sequence
+ - Capability to generate design of computer experiments for screening analysis
+   (One-at-a-time design), based on the trajectory design (original Morris)
+   and radial design (Saltelli et al.)
+ - Capability to compute the statistics of elementary effects, standardized or
+   otherwise both for trajectory and radial designs. The statistics (mean,
+   mean of absolute, and standard deviation) are used as the basis of
+   parameter importance ranking.
 
 .. _Joe and Kuo (2008): http://web.maths.unsw.edu.au/~fkuo/sobol/
 
@@ -66,8 +63,10 @@ the installation can be done easily from the local source directory::
 This will make the following available in the path:
 
  - The python module ``gsa_module``
- - The executable ``create_sample``
+ - The executable ``gsa_create_sample``
  - The executable ``create_validset``
+ - The executable ``gsa_morris_generate``
+ - The executable ``gsa_morris_analyze``
 
 Documentation
 -------------
