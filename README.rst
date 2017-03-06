@@ -71,7 +71,16 @@ This will make the following available in the path:
 Documentation
 -------------
 
-Documentation for ``gsa-module`` is currently under construction.
+Documentation for ``gsa-module`` is an on-going process.
+The current version can be found in the ``/docs`` folder and can be built
+given that ``sphinx`` has been installed with the ``make`` command::
+
+    make html
+
+to build the html version of the documentation. The index file can then be
+found in::
+
+    ./docs/build/html/index.html
 
 Contribute
 ----------
