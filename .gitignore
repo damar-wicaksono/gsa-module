@@ -1,9 +1,7 @@
 *.pyc
 *.csv
-make.bat
-Makefile
+# Sphinx-doc
 docs/build/
-docs/source/
 docs/_build/
 # PyCharm
 .idea/workspace.xml
@@ -16,3 +14,5 @@ docs/_build/
 *.egg-info/
 #iPython Notebook
 *.ipynb
+#Sandboxing Folder
+sandboxing/
