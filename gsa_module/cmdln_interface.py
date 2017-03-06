@@ -70,3 +70,60 @@ def morris_generate():
     # Save the sample
     np.savetxt(inputs["output_file"], dm,
                fmt="%1.6e", delimiter=inputs["delimiter"])
+
+
+def morris_analyze():
+    """gsa-module, analyze Morris experimental runs command line interface"""
+    from gsa_module import morris
+    from .util import sniff_delimiter
+
+    # Read command line arguments
+    inputs = morris.cmdln_args.get_analyze()
+
+    # Read the inputs/outputs file
+    dm_norm = np.loadtxt(inputs["normalized_inputs"],
+                         delimiter=sniff_delimiter(inputs["normalized_inputs"]))
+
+    if inputs["rescaled_inputs"] is not None:
+        dm_resc = np.loadtxt(
+            inputs["rescaled_inputs"],
+            delimiter=sniff_delimiter(inputs["rescaled_inputs"]))
+        if dm_norm.shape[0] != dm_resc.shape[0]:
+            raise ValueError(
+                "Lengths of normalized input ({}) and normalized ({}) are not the same!" .format(
+                    dm_norm.shape[0], dm_resc.shape[0]))
+    else:
+        dm_resc = None
+
+    outp = np.loadtxt(inputs["outputs"])
+
+    # Check the length of inputs and outputs
+    if dm_norm.shape[0] != outp.shape[0]:
+        raise ValueError(
+            "Lengths of input ({}) and output ({}) are not the same!" .format(
+                dm_norm.shape[0], outp.shape[0]))
+
+    # Check the model specifications
+    if inputs["model_checking"]:
+        num_runs = dm_norm.shape[0]
+        num_dims = dm_norm.shape[1]
+        num_reps = int(num_runs / (num_dims + 1))
+        morris_type, num_lev = morris.misc.sniff_morris(dm_norm)
+
+        print("Number of Input Dimensions    = {}" .format(num_dims))
+        print("Number of Blocks/Replications = {}" .format(num_reps))
+        print("Total Number of Runs          = {}" .format(num_runs))
+        print("Type of Design                = {}" .format(morris_type))
+        print("Number of levels (trajectory) = {}" .format(num_lev))
+        print("Rescaled Inputs               = {}" .format(inputs["rescaled_inputs"]))
+
+    # Analyze the input/output
+    if morris_type == "trajectory":
+        param_rank = morris.analyze.trajectory(dm_norm, dm_resc, outp)
+    elif morris_type == "radial":
+        param_rank = morris.analyze.radial(dm_norm, dm_resc, outp)
+
+    # Save the result of the analysis
+    np.savetxt(inputs["output_file"], param_rank,
+               fmt="%1.6e", delimiter=",",
+               header="mu, mu_star, std_dev, std_mu, std_mu_star, std_std_dev")

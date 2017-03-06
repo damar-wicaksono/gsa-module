@@ -8,3 +8,5 @@
 """
 from . import cmdln_args
 from . import sample
+from . import analyze
+from . import misc

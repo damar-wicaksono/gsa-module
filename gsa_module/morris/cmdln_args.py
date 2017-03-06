@@ -210,3 +210,120 @@ def get_create_sample():
     }
 
     return inputs
+
+
+def get_analyze():
+    """Get the command line arguments to create parameter ranking using Morris
+
+    :return:  a dictionary of command line arguments
+
+    +------------------+------------------------------------------------------+
+    | Key              | Value                                                |
+    +==================+======================================================+
+    | normalized_inputs| (str) The fullname (path + filename) of the          |
+    |                  | normalized inputs file (i.e., value in [0,1]         |
+    |                  | generated using Morris Design of Experiment,         |
+    |                  | either radial or trajectory                          |
+    +------------------+------------------------------------------------------+
+    | rescaled_inputs  | (str) The fullname (path + filename) of the rescaled |
+    |                  | inputs file (i.e., according to the actual model     |
+    |                  | specification)                                       |
+    +------------------+------------------------------------------------------+
+    | outputs          | (str) The fullname (path + filename) of the output   |
+    |                  | from conducting the experimental runs based on the   |
+    |                  | Morris design                                        |
+    +------------------+------------------------------------------------------+
+    | output_file      | (str) The filename for the output of the analysist   |
+    |                  | by default it is "<morris_design_name>-morris.csv"   |
+    +------------------+------------------------------------------------------+
+    | model_checking   | (bool) Flag to verbosely check the model             |
+    +------------------+------------------------------------------------------+
+    """
+    import os
+
+    parser = argparse.ArgumentParser(
+        description="%(prog)s - gsa-module, Analyze Morris Experimental Runs"
+    )
+
+    # Normalized inputs file
+    parser.add_argument(
+        "-in", "--normalized_inputs",
+        type=str,
+        required=True,
+        help="The normalized inputs file"
+    )
+
+    # Rescaled inputs file
+    parser.add_argument(
+        "-ir", "--rescaled_inputs",
+        type=str,
+        required=False,
+        help="The rescaled inputs file"
+    )
+
+    # Output file
+    parser.add_argument(
+        "-o", "--outputs",
+        type=str,
+        required=True,
+        help="The model/function outputs file"
+    )
+
+    # Result of the analysis output file
+    parser.add_argument(
+        "-output", "--output_file",
+        type=str,
+        required=False,
+        help="The results of the analysis output file"
+    )
+
+    # Verbose Error Checking flag
+    parser.add_argument(
+        "-mc", "--model_checking",
+        action="store_true",
+        required=False,
+        help="Verbose model error checking"
+    )
+
+    # Print Version
+    parser.add_argument(
+        "-V", "--version",
+        action="version",
+        version="%(prog)s (gsa-module version {})" .format(__version__)
+    )
+
+    # Get the command line arguments
+    args = parser.parse_args()
+
+    # Check the existence of inputs file
+    if not os.path.exists(args.normalized_inputs):
+        raise ValueError("{} inputs file does not exist!"
+                         .format(args.normalized_inputs))
+
+    # Check the existence of rescaled inputs file
+    if args.rescaled_inputs is not None:
+        if not os.path.exists(args.rescaled_inputs):
+            raise ValueError("{} rescaled inputs file does not exist!"
+                             .format(args.rescaled_inputs))
+
+    # Check the existence of model outputs file
+    if not os.path.exists(args.outputs):
+        raise ValueError("{} output file does not exist!"
+                         .format(args.outputs))
+
+    # Create filename of analysis output file
+    if args.output_file is None:
+        output_file = "{}-morris.csv" \
+            .format(args.normalized_inputs.split("/")[-1].split(".")[0])
+    else:
+        output_file = args.output_file
+
+    # Return the parsed command line arguments as a dictionary
+    inputs = {"normalized_inputs": args.normalized_inputs,
+              "rescaled_inputs": args.rescaled_inputs,
+              "outputs": args.outputs,
+              "output_file": output_file,
+              "model_checking": args.model_checking
+              }
+
+    return inputs
