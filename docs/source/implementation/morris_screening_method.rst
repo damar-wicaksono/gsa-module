@@ -17,6 +17,8 @@ Where :math:`\Delta` is the grid jump.
 Statistics of Elementary Effects and Sensitivity Measure
 --------------------------------------------------------
 
+The statistics of the elementary effects defined above can be used as
+a measure of output sensitivity to the model input
 
 Design of Experiment for Screening Analysis
 -------------------------------------------
@@ -137,11 +139,11 @@ dimension and from replicate to replicate.
 Miscellaneous Topics
 --------------------
 
-Optimized Trajectory Design
-```````````````````````````
-
 Standardized Elementary Effect
 ``````````````````````````````
+
+Optimized Trajectory Design
+```````````````````````````
 
 References
 ----------
