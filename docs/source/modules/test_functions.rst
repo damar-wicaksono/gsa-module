@@ -10,3 +10,7 @@
 .. automodule:: gsa_module.test_functions.ishigami
     :members:
     :undoc-members:
+
+.. automodule:: gsa_module.test_functions.morris_modified
+    :members:
+    :undoc-members:

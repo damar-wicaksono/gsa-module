@@ -7,3 +7,4 @@
     verifying the global sensitivity analysis method
 """
 from . import ishigami
+from . import morris_modified

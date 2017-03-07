@@ -4,7 +4,7 @@
     *****************************************
 
     Module implementing the 4-dimensional modified Morris function, originally
-    appeared as 20-dimensional scalar function appeared in [1]_.
+    appeared as 20-dimensional scalar function appeared in [1].
 
     **References**
 
@@ -34,7 +34,7 @@ def evaluate(xx: np.ndarray,
     if (xx.shape[1] != 4):
         raise ValueError("The dimension of inputs <> 4!")
     elif (xx < 1e-4).any():
-        raise ValueError("Input is smaller than 0!")
+        raise ValueError("Input is smaller than 0 or too small!")
     elif (xx - 1 > 1e-4).any():
         raise ValueError("Input is larger than 1!")
     else:
