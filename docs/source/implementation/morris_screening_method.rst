@@ -240,6 +240,31 @@ dimension and from replicate to replicate.
 Miscellaneous Topics
 --------------------
 
+Computation of the Elementary Effect
+````````````````````````````````````
+
+In ``gsa-module``, computing the elementary effect for each replications is
+achieved by using matrix algebra, which is similar to the implementation in
+[6]_. There is slight difference between the computation of elementary effects
+for trajectory design and radial design.
+The following figure illustrate the computation of all the elementary effects
+of a single replicate for 3-parameter model using trajectory design with
+4 levels.
+
+.. image:: ../../figures/compute_ee_trajectory.png
+
+The following figure illustrate the same computation of a single replicate for
+3-parameter model using radial design (no number of levels specification
+needed).
+
+.. image:: ../../figures/compute_ee_radial.png
+
+The statistics of the elementary effects are eventually computed
+after the same procedure are repeated for many replications.
+
+Presenting the Results of the Analysis
+``````````````````````````````````````
+
 Standardized Elementary Effect
 ``````````````````````````````
 
@@ -253,7 +278,7 @@ a vast difference in the original scale of various parameters
 The normalized scale of [0,1] would then be biased to the parameter who has
 the largest scale of variation.
 To compare the elementary effect in a common ground taking into account the
-original scale of variation for each parameter, it is advised in [6]_ to scale
+original scale of variation for each parameter, it is advised in [7]_ to scale
 the elementary effect with the standard deviation of the input
 :math:`\sigma_{x_i}` and of the output :math:`\sigma_y`,
 
@@ -287,6 +312,7 @@ References
        Communications, Vol. 192, pp. 978 - 988, 2011.
 .. [5] A. Saltelli et al., "Global Sensitivity Analysis. The Primer," West
        Sussex, John Wiley & Sons, 2008, pp. 114
-.. [6] G. Sin and K. V. Gernaey, "Improving the Morris Method for Sensitivity
+.. [6] Jon D. Herman, SALib [Source Code], March 2014, https://github.com/jdherman/SALib
+.. [7] G. Sin and K. V. Gernaey, "Improving the Morris Method for Sensitivity
        Analysis by Scaling the Elementary Effects," in Proc. 19th European
        Symposium on Computer Aided Process Engineering, 2009
