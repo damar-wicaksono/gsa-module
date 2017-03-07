@@ -44,6 +44,7 @@ be seen in the figure below.
 
    modules/samples
    modules/morris
+   modules/test_functions
 
 Indices and tables
 ==================
