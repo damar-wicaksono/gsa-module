@@ -9,7 +9,7 @@
     publication)
 """
 import argparse
-from gsa_module import __version__
+from ..__init__ import __version__
 
 
 def get_create_sample():
