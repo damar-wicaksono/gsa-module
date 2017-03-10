@@ -43,7 +43,7 @@ def get_create_sample():
         "-s", "--seed_number",
         type=int,
         required=False,
-        help="The random seed number (irrelevant for Sobol' sequence)"
+        help="The random seed number (irrelevant for non-randomized Sobol' sequence)"
     )
 
     # the design matrix filename
@@ -89,6 +89,14 @@ def get_create_sample():
         action="store_true",
         required=False,
         help="Include the nominal point in the design"
+    )
+
+    # Flag to randomize the sequence by random-shifting
+    group_sobol.add_argument(
+        "-rand", "--randomize_sobol",
+        action="store_true",
+        required=False,
+        help="Random shift the Sobol' sequence"
     )
 
     # Only for optimized lhs
