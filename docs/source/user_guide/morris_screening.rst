@@ -89,9 +89,11 @@ Executing Model
 Following the design philosophy of ``gsa-module`` the model executions are
 implemented outside the module itself. The most important thing to remember is that
 the OAT design generated using ``gsa_morris_generate`` is normalized (between [0,1]).
-If the actual model has a different scale of parameters or different probability distribution,
-the proper transformation of the design point is to be carried out first
-before the model is evaluated.
+If the actual model has a different scale of parameters or different
+probability distribution, the proper transformation of the design point is to
+be carried out prior to the model evaluated.
+Note also that the results of the execution should be saved inside a text file
+with rows corresponding to the results of each model execution.
 
 In general, the number of model evaluations, both for trajectory and
 radial scheme, are related to the number of replications (`r`) and
@@ -147,7 +149,7 @@ The output of the model was saved inside a file ``4paramsFunction.csv``.
 To compute the statistics of the elementary effects of this I/O pair,
 invoke the following command::
 
-     > gsa_morris_analyze -in ./trajectory_10_4_10.csv -o ./morris_50.csv -mc
+     > gsa_morris_analyze -in ./trajectory_10_4_10.csv -o ./4paramsFunction.csv -mc
 
 The flag ``-mc`` will result in verbose reporting of the model specification::
 
@@ -159,7 +161,7 @@ The flag ``-mc`` will result in verbose reporting of the model specification::
     Rescaled Inputs               = None
 
 The results of the analysis is saved inside the file
-``trajectory_10_4_10-morris_50.csv`` with the following contents::
+``trajectory_10_4_10-4paramsFunction.csv`` with the following contents::
 
     # mu, mu_star, std_dev, std_mu, std_mu_star, std_std_dev
     9.738333e+01,9.738333e+01,3.452392e+01,0.000000e+00,0.000000e+00,0.000000e+00
