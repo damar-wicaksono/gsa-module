@@ -29,9 +29,8 @@ def create_sample():
         # Create Sobol' quasirandom sequence design
         dm = samples.sobol.create(inputs["num_samples"],
                                   inputs["num_dimensions"],
-                                  generator=inputs["sobol_generator"],
-                                  dirnumfile=inputs["direction_numbers"],
-                                  incl_nom=inputs["include_nominal"],
+                                  dirnum=inputs["direction_numbers"],
+                                  excl_nom=inputs["exclude_nominal"],
                                   randomize=inputs["randomize_sobol"],
                                   seed=inputs["seed_number"])
     elif inputs["method"] == "lhs-opt":

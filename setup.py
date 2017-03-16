@@ -20,5 +20,5 @@ setup(
             "gsa_morris_analyze=gsa_module.cmdln_interface:morris_analyze"
         ]
     },
-      zip_safe=False
+      zip_safe=False, install_requires=['numpy']
 )
