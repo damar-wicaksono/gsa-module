@@ -10,7 +10,8 @@ __author__ = "Damar Wicaksono"
 
 def create(n: int, d: int,
            generator: str, dirnumfile: str, incl_nom: bool,
-           randomize: bool) -> np.ndarray:
+           randomize: bool,
+           seed: int) -> np.ndarray:
     r"""Generate `d`-dimensional Sobol' sequence of length `n`
 
     This function only serves as a wrapper to call a generator from the shell,
@@ -35,6 +36,7 @@ def create(n: int, d: int,
     :param dirnumfile: (str) the directional numbers fullname
     :param incl_nom: (bool) the flag to include the nominal point at [0.5]^d
     :param randomize: (bool) the flag to randomize the Sobol' design
+    :param seed: seed for randomization in random-shift procedure
     :returns: (np.ndarray) a numpy array of `n`-by-`d` filled with Sobol'
         quasirandom sequence
     """
@@ -76,12 +78,12 @@ def create(n: int, d: int,
 
     # Randomize the design if requested
     if randomize:
-        return random_shift(sobol_seq)
+        return random_shift(sobol_seq, seed)
     else:
         return sobol_seq
 
 
-def random_shift(dm: np.ndarray) -> np.ndarray:
+def random_shift(dm: np.ndarray, seed: int) -> np.ndarray:
     """Randomize a given Sobol' design by random shifting
 
     **Reference:**
@@ -91,10 +93,14 @@ def random_shift(dm: np.ndarray) -> np.ndarray:
         2009
 
     :param dm: Original Sobol' design matrix, n-by-d
+    :param seed: seed number for randomization
     :returns: Randomized Sobol' design matrix
     """
+    if seed is not None:
+        np.random.seed(seed)
+
     # Generate random shift matrix from uniform distribution
-    shift = np.random.rand(dm.shape[0], dm.shape[1])
+    shift = np.repeat(np.random.rand(1, dm.shape[1]), dm.shape[0], axis=0)
 
     # Return the shifted Sobol' design
     return (dm + shift) % 1
