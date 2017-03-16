@@ -1,12 +1,14 @@
 """Module to parse command line arguments in creating sample or validation data
 """
 import argparse
+import os
 
 __author__ = "Damar Wicaksono"
 
 
 def get_create_sample():
     """Get the passed command line arguments"""
+    from .sobol import read_dirnumfile
 
     parser = argparse.ArgumentParser(
         description="gsa-module create_sample - Generate Design Matrix File"
@@ -67,28 +69,21 @@ def get_create_sample():
     # Only for Sobol'
     group_sobol = parser.add_argument_group("Sobol'", 
                                             "Options for Sobol' quasi-random")
-    # The path to sobol generator
-    group_sobol.add_argument(
-        "-sobol", "--sobol_generator",
-        type=str,
-        required=False,
-        help="The path to Sobol' sequence generator executable"
-    )
 
-    # The path to sobol generator
+    # The path to Sobol' direction number file
     group_sobol.add_argument(
-        "-dirnum", "--direction_numbers",
+        "-dirnumfile", "--direction_numbers",
         type=str,
         required=False,
-        help="The path to Sobol' sequence generator direction numbers file"
+        help="The path to Sobol' sequence generator direction numbers file (default: new-joe-kuo-6.21201)"
     )
 
     # Flag to include the nominal point in the design
     group_sobol.add_argument(
-        "-nom", "--include_nominal",
+        "-excl_nom", "--exclude_nominal",
         action="store_true",
         required=False,
-        help="Include the nominal point in the design"
+        help="Exclude the nominal point in the design"
     )
 
     # Flag to randomize the sequence by random-shifting
@@ -117,18 +112,25 @@ def get_create_sample():
 
     # Check the validity of number of samples
     if args.num_samples <= 0:
-        raise ValueError
+        raise ValueError("Zero or negative number of samples")
 
     # Check the validity of the number of dimensions
     if args.num_dimensions <= 0:
-        raise ValueError
+        raise ValueError("Zero or negative number of dimensions")
 
     # Check the validity of inputs if Sobol' sequence is used
     if args.method == "sobol":
-        if args.sobol_generator is None:
-            raise ValueError("Sobol' method requires generator executable")
-        elif args.direction_numbers is None:
-            raise ValueError("Sobol' method requires direction numbers file")
+        if args.direction_numbers is None:
+            default_dirnumfile = os.path.join(os.path.dirname(__file__),
+                                              "./dirnumfiles/new-joe-kuo-6.21201")
+            direction_numbers = read_dirnumfile(default_dirnumfile,
+                                                args.num_dimensions)
+        else:
+            if os.path.exists(args.direction_numbers):
+                direction_numbers = read_dirnumfile(args.direction_numbers,
+                                                    args.num_dimensions)
+            else:
+                raise ValueError("Sobol' generator direction number file does not exist!")
 
     # Check the delimiter
     if args.delimiter == "csv":
@@ -160,9 +162,8 @@ def get_create_sample():
               "filename": output_file,
               "delimiter": delimiter,
               "seed_number": seed_number,
-              "sobol_generator": args.sobol_generator,
-              "direction_numbers": args.direction_numbers,
-              "include_nominal": args.include_nominal,
+              "direction_numbers": direction_numbers,
+              "exclude_nominal": args.exclude_nominal,
               "randomize_sobol": args.randomize_sobol,
               "num_iterations": args.num_iterations
               }
