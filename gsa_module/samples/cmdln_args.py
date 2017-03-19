@@ -45,7 +45,7 @@ def get_create_sample():
         "-s", "--seed_number",
         type=int,
         required=False,
-        help="The random seed number (irrelevant for non-randomized Sobol' sequence)"
+        help="The random seed number (irrelevant for non-randomized Sobol' seq)"
     )
 
     # the design matrix filename
@@ -120,17 +120,15 @@ def get_create_sample():
 
     # Check the validity of inputs if Sobol' sequence is used
     if args.method == "sobol":
-        if args.direction_numbers is None:
-            default_dirnumfile = os.path.join(os.path.dirname(__file__),
-                                              "./dirnumfiles/new-joe-kuo-6.21201")
-            direction_numbers = read_dirnumfile(default_dirnumfile,
-                                                args.num_dimensions)
-        else:
+        if args.direction_numbers is not None:
             if os.path.exists(args.direction_numbers):
                 direction_numbers = read_dirnumfile(args.direction_numbers,
                                                     args.num_dimensions)
             else:
-                raise ValueError("Sobol' generator direction number file does not exist!")
+                raise ValueError(
+                    "Sobol' generator direction number file does not exist!")
+        else:
+            direction_numbers = None
 
     # Check the delimiter
     if args.delimiter == "csv":
