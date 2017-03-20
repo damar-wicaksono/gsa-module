@@ -91,25 +91,34 @@ def read_dirnumfile(dirnumfile: str, d: int) -> np.ndarray:
     :param d: the requested dimension number, >= 2
     :return: structured array with columns correspond to params s, a, and m_i
     """
-    # Open and read the file
-    with open(dirnumfile, "rt") as f:
-        lines = f.read().splitlines()
-    lines.pop(0)    # Remove first line
-
     # Prepare the output (d, s, a, m_i)
-    max_s = list(map(int, lines[d-1].strip().split()))[1]
-    dirnum = np.zeros(d,
+    dirnum = np.zeros(d-1,
                       dtype=[("s", "uint32"),
                              ("a", "uint32"),
-                             ("m", "({},)uint32" .format(max_s))])
+                             ("m", "(1,)uint32")])
 
-    # Read and parse line by line
-    for i in range(d):
-        line = list(map(int, lines[i].strip().split()))
-        for j in range(2):
-            dirnum[i][j] = line[j+1]
-        for j in range(line[1]):
-            dirnum[i][2][j] = line[j+3]
+    # Open and read the file
+    i = 0
+    j = 0
+    with open(dirnumfile, "rt") as f:
+        lines = f.readlines()
+        while j < d-1:
+            if lines[i].startswith(("#", "d")):
+                # Ignore copyright lines and header
+                i += 1
+            else:
+                line = list(map(int, lines[i].strip().split()))
+                for k in range(2):
+                    dirnum[j][k] = line[k + 1]
+                # recast the structured array to add more m_i values
+                dirnum = dirnum.astype(
+                    [("s", "uint32"),
+                     ("a", "uint32"),
+                     ("m", "({},)uint32" .format(line[1]))])
+                for k in range(line[1]):
+                    dirnum[j][2][k] = line[k + 3]
+                i += 1
+                j += 1
 
     return dirnum
 
