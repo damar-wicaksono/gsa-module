@@ -100,8 +100,9 @@ def trajectory(r: int, k: int, p: int, seed: int) -> np.ndarray:
     return b_star
 
 
-           shift_exclude: int = 4) -> np.ndarray:
+
 def radial(r: int, k: int, dirnum: np.ndarray = None,
+           shift_exclude: int = 4) -> np.ndarray:
     """Generate DOE for Morris using radial sampling scheme
 
     :param r: the number of blocks/replications/trajectories
