@@ -100,7 +100,6 @@ def trajectory(r: int, k: int, p: int, seed: int) -> np.ndarray:
     return b_star
 
 
-
 def radial(r: int, k: int, dirnum: np.ndarray = None,
            shift_exclude: int = 4) -> np.ndarray:
     """Generate DOE for Morris using radial sampling scheme
@@ -131,7 +130,7 @@ def radial(r: int, k: int, dirnum: np.ndarray = None,
             dm[index_list[j]+1, j] = sobol_seq[i+shift_exclude, k+j]
             if math.isclose(dm[index_list[0], j], dm[index_list[j] + 1, j]):
                 # Perturbation zero, shift downward the auxiliary points, use
-                # that point, and add additional point to the Sobol`sequence
+                # that point, and add additional point to the auxiliary points
                 j = 0
                 shift_exclude += 1
                 sobol_seq = samples.sobol.create(r + shift_exclude, 2 * k,
