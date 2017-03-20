@@ -1,86 +1,237 @@
 # -*- coding: utf-8 -*-
 """sobol.py: Module to generate design matrix by Sobol' sequences
+
+It is based on almost verbatim python conversion of cpp code by Kuo (copyright
+below), implementing algorithm by Joe and Kuo [1].
+
+Below is the original copyright notice which includes the copyright for the
+included direction number files in "./dirnumfiles/new-joe-kuo-6.21201"::
+
+    Frances Y. Kuo
+    Email: <f.kuo@unsw.edu.au>
+    School of Mathematics and Statistics
+    University of New South Wales
+    Sydney NSW 2052, Australia
+    Last updated: 21 October 2008
+    You may incorporate this source code into your own program provided 
+    that you:
+    1) acknowledge the copyright owner in your program and publication
+    2) notify the copyright owner by email
+    3) offer feedback regarding your experience with different direction numbers
+
+    -----------------------------------------------------------------------------
+    Licence pertaining to sobol.cc and the accompanying sets of direction numbers
+    -----------------------------------------------------------------------------
+    Copyright (c) 2008, Frances Y. Kuo and Stephen Joe
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met
+
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the names of the copyright holders nor the names of the
+      University of New South Wales and the University of Waikato
+      and its contributors may be used to endorse or promote products derived
+      from this software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS`` AND ANY
+    EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS BE LIABLE FOR ANY
+    DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+    SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
+    LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY 
+    OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+    DAMAGE.
+    ---------------------------------------------------------------------------
+
+*References*:
+
+[1] S. Joe and F. Y. Kuo, "Constructing Sobol sequences with better two-
+    dimensional projections," SIAM Journal of Scientific Computing,
+    vol. 30, pp. 2635-2654 (2008).
 """
-import subprocess
 import numpy as np
-import os.path
 
 __author__ = "Damar Wicaksono"
 
 
-def create(n: int, d: int,
-           generator: str, dirnumfile: str, incl_nom: bool,
-           randomize: bool,
-           seed: int) -> np.ndarray:
-    r"""Generate `d`-dimensional Sobol' sequence of length `n`
+def read_dirnumfile(dirnumfile: str, d: int) -> np.ndarray:
+    r"""Parser to read direction number file provided by Joe & Kuo
 
-    This function only serves as a wrapper to call a generator from the shell,
-    make and execute it with a file containing the directional numbers.
-    The one used here is the generator provided by Joe and Kuo [1] of which the
-    technical detail can be found in [2] and [3].
+    The parser read direction number file to get parameters "s", "a", and
+    "m_i". It only output as many as the requested dimension
 
-    **Reference:**
+    The structure of the file is the following:
 
-    (1) Frances Y. Kuo, Sobol Sequence Generator [C++ Source Code], Feb. 2015,
-        http://web.maths.unsw.edu.au/~fkuo/sobol
-    (2) S. Joe and F. Y. Kuo, "Remark on Algorithm 659: Implementing Sobol's
-        quasirandom sequence generator," ACM Trans. Math. Soft. 29, pp. 49-57,
-        2003.
-    (3) S. Joe and F. Y. Kuo, "Constructing Sobol sequences with better
-        two-dimensional projections," SIAM J. Sci. Comput. 30, pp. 2635-2654,
-        2008.
+        d       s       a       m_i
+        2       1       0       1
+        3       2       1       1 3
+        4       3       1       1 3 1
+        5       3       2       1 1 1
+        6       4       1       1 1 3 3
+        ...
 
-    :param n: (int) the number of samples
-    :param d: (int) the number of dimension
-    :param generator: (str) the executable fullname for the generator
-    :param dirnumfile: (str) the directional numbers fullname
-    :param incl_nom: (bool) the flag to include the nominal point at [0.5]^d
-    :param randomize: (bool) the flag to randomize the Sobol' design
-    :param seed: seed for randomization in random-shift procedure
-    :returns: (np.ndarray) a numpy array of `n`-by-`d` filled with Sobol'
-        quasirandom sequence
+    note that the header is included in the file and the parameters started
+    with dimension 2. Dimension 1 is irrelevant as it can be generated without
+    direction number. The first column is just the dimension number
+
+    :param dirnumfile: the fullname of the text file containing dir. number
+    :param d: the requested dimension number, >= 2
+    :return: structured array with columns correspond to params s, a, and m_i
     """
-    # input parameters checks
-    if (not isinstance(generator, str)) or (not os.path.exists(generator)):
-        raise TypeError
-    elif (not isinstance(dirnumfile, str)) or (not os.path.exists(dirnumfile)):
-        raise TypeError
+    # Prepare the output (d, s, a, m_i)
+    dirnum = np.zeros(d-1,
+                      dtype=[("s", "uint32"),
+                             ("a", "uint32"),
+                             ("m", "(1,)uint32")])
 
-    if not incl_nom:
-        # Add one more point as nominal values will be removed
+    # Open and read the file
+    i = 0
+    j = 0
+    with open(dirnumfile, "rt") as f:
+        lines = f.readlines()
+        while j < d-1:
+            if lines[i].startswith(("#", "d")):
+                # Ignore copyright lines and header
+                i += 1
+            else:
+                line = list(map(int, lines[i].strip().split()))
+                for k in range(2):
+                    dirnum[j][k] = line[k + 1]
+                # recast the structured array to add more m_i values
+                dirnum = dirnum.astype(
+                    [("s", "uint32"),
+                     ("a", "uint32"),
+                     ("m", "({},)uint32" .format(line[1]))])
+                for k in range(line[1]):
+                    dirnum[j][2][k] = line[k + 3]
+                i += 1
+                j += 1
+
+    return dirnum
+
+
+def create(n: int, d: int,
+           dirnum: np.ndarray = None,
+           excl_nom: bool = False,
+           randomize: bool = False,
+           seed: int = None) -> np.ndarray:
+    r"""Sobol points generator based on graycode order
+
+    This implementation is a verbatim copy of a C++ source code by Joe and Kuo.
+    See the module header for complete copyright and references.
+
+    :param n: Number of samples (cannot be greater than 2**32)
+    :param d: Number of dimensions
+    :param dirnum: the parameters from direction numbers file ("s", "a", "m")
+    :param excl_nom: flag to exclude nominal value
+    :param randomize: Randomize Sobol' sequence by random shifting
+    :param seed: seed number for random shifting randomization
+    :return: 2-dimensional design matrix of quasi-random Sobol' sequence
+    """
+    import math
+    import os
+
+    # Use default value for direction number file
+    if dirnum is None:
+        dirnum = read_dirnumfile(os.path.join(os.path.dirname(__file__),
+                                 "./dirnumfiles/new-joe-kuo-6.21201"), d)
+
+    if excl_nom:
+        # Add additional point if {0.5} is to be excluded
         n += 1
 
-    cmd = [generator, str(n), str(d), dirnumfile]
+    # Check if requested number of samples is too large
+    if n > 2**32:
+        raise ValueError("Number of samples too large (>2**32)!")
 
-    p = subprocess.Popen(cmd,
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE)
-    out, err = p.communicate()
+    # Check if dirnum is in accordance with the requested dimension
+    if d > dirnum.shape[0] + 1:
+        raise ValueError("More dimension is asked than the available data!")
 
-    # stdout in subprocess is in byte codes
-    # convert to string and split into array with newline as separator
-    sobol_seq = out.decode("utf-8").split("\n")
+    # Copy dirnum structured array to local variable
+    s = dirnum["s"]
+    a = dirnum["a"]
+    m = dirnum["m"]
 
-    # Remove the last two lines
-    sobol_seq.pop(-1)
-    sobol_seq.pop(-1)
+    # L = Maximum number of bits needed
+    L = math.ceil(math.log(float(n))/math.log(2.0))
 
-    if not incl_nom:
-        # Remove the second as it was only the "nominal" set of parameters
-        sobol_seq.pop(1)
+    # C[i] = index from the right of the first zero bit of i (samples)
+    C = np.empty(n, dtype=np.uint32)
+    C[0] = 1
+    for i in range(1, n):
+        C[i] = 1
+        value = i
+        while value & 1:
+            value >>= 1  # (bitwise) right-shift value by 1
+            C[i] += 1
 
-    # Convert the string into float
-    for i in range(len(sobol_seq)):
-        sobol_seq[i] = [float(_) for _ in sobol_seq[i].split()]
+    # POINTS[i][j] = the jth component of the ith point with the i indexed from
+    #                zero to n-1 and j indexed from 0 to d-1
+    # Initialize
+    POINTS = np.empty([n,d], dtype=np.float64)
+    # First sample is zero
+    POINTS[0,:] = 0
 
-    # Convert to numpy array
-    sobol_seq = np.array(sobol_seq)
+    if n > 1:
 
-    # Randomize the design if requested
-    if randomize:
-        return random_shift(sobol_seq, seed)
-    else:
-        return sobol_seq
+        # ----- Compute the first dimension -----
+
+        # Compute direction numbers V[1] to V[L], scaled by 2**32
+        V = np.empty(L+1, dtype=np.uint32)
+        for i in range(1, L+1):
+            V[i] = 1 << (32 - i)    # (bitwise) left-shift value by 31
+
+        # Evaluate X[0] to X[n-1], scaled by 2**32, the values of
+        # first dimension from i = 1 to i = n-1
+        X = np.empty(n, dtype=np.uint32)
+        X[0] = 0
+        for i in range(1, n):
+            X[i] = X[i-1] ^ V[C[i-1]]
+            POINTS[i,0] = np.float64(X[i]/2.0**32)
+
+        # ----- Compute the remaining dimension -----
+        for j in range(1, d):
+            # Outer: loop over dimensions
+
+            # Compute direction numbers V[1] to V[L], scaled by 2**32
+            V = np.empty(L+1, dtype=np.uint32)
+            if L <= s[j-1]:
+                for i in range(1, L+1):
+                    V[i] = m[j-1,i-1] << (32 - i)
+            else:
+                for i in range(1, s[j-1]+1):
+                    V[i] = m[j-1,i-1] << (32 - i)
+                for i in range(s[j-1]+1, L+1):
+                    V[i] = V[i - s[j-1]] ^ (V[i - s[j-1]] >> s[j-1])
+                    for k in range(1, s[j-1]):
+                        V[i] ^= (((a[j-1] >> s[j-1] - 1 - k) & 1) * V[i-k])
+
+            # Evaluate X[0] to X[N-1], scaled by 2**32
+            X = np.empty(n, dtype=np.uint32)
+            X[0] = 0
+            for i in range(1, n):
+                # Inner: loop over samples
+                X[i] = X[i - 1] ^ V[C[i - 1]]
+                POINTS[i,j] = np.float64(X[i]/2.0**32)
+
+        if excl_nom:
+            # Remove the second as it was only the "nominal" set of parameters
+            POINTS = np.delete(POINTS, 1, 0)
+
+        # Randomize the design if requested
+        if randomize:
+            return random_shift(POINTS, seed)
+
+    return POINTS
 
 
 def random_shift(dm: np.ndarray, seed: int) -> np.ndarray:

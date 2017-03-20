@@ -29,9 +29,8 @@ def create_sample():
         # Create Sobol' quasirandom sequence design
         dm = samples.sobol.create(inputs["num_samples"],
                                   inputs["num_dimensions"],
-                                  generator=inputs["sobol_generator"],
-                                  dirnumfile=inputs["direction_numbers"],
-                                  incl_nom=inputs["include_nominal"],
+                                  dirnum=inputs["direction_numbers"],
+                                  excl_nom=inputs["exclude_nominal"],
                                   randomize=inputs["randomize_sobol"],
                                   seed=inputs["seed_number"])
     elif inputs["method"] == "lhs-opt":
@@ -64,7 +63,6 @@ def morris_generate():
         # Create radial sampling scheme for the DOE
         dm = morris.sample.radial(inputs["num_blocks"],
                                   inputs["num_dimensions"],
-                                  inputs["sobol_generator"],
                                   inputs["direction_numbers"])
 
     # Save the sample
@@ -90,8 +88,9 @@ def morris_analyze():
             delimiter=sniff_delimiter(inputs["rescaled_inputs"]))
         if dm_norm.shape[0] != dm_resc.shape[0]:
             raise ValueError(
-                "Lengths of normalized input ({}) and normalized ({}) are not the same!" .format(
-                    dm_norm.shape[0], dm_resc.shape[0]))
+                "Lengths of normalized input ({}) and"
+                " normalized ({}) are not the same!" .format(dm_norm.shape[0],
+                                                             dm_resc.shape[0]))
     else:
         dm_resc = None
 

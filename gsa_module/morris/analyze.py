@@ -42,7 +42,8 @@ def trajectory(x_normalized: np.ndarray, x_rescaled: np.ndarray, y: np.ndarray):
 
         :param x_normalized: normalized inputs array
         :param x_rescaled: rescaled inputs array
-        :param y: output array
+        :param y: k*6 output array, rows correspond to parameters and columns to
+            (mu_ee, mu*_ee, sd_ee, mu_see, mu*_see, sd_see)
         """
         # Setup parameters
         num_dims = x_normalized.shape[1]
@@ -109,7 +110,8 @@ def radial(x_normalized: np.ndarray, x_rescaled: np.ndarray, y: np.ndarray):
 
     :param x_normalized: normalized inputs array
     :param x_rescaled: rescaled inputs array
-    :param y: output array
+    :param y: k*6 output array, rows correspond to parameters and columns to
+            (mu_ee, mu*_ee, sd_ee, mu_see, mu*_see, sd_see)
     """
     # Setup parameters
     num_dims = x_normalized.shape[1]

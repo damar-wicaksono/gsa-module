@@ -9,7 +9,9 @@
     publication)
 """
 import argparse
-from ..__init__ import __version__
+import os
+from ..util import ext_to_delimiter
+from .._version import __version__
 
 
 def get_create_sample():
@@ -31,19 +33,27 @@ def get_create_sample():
     |                  | randomized Morris' formulation, while radial uses    |
     |                  | Saltelli et al. formulation based on Sobol' sequence |
     +------------------+------------------------------------------------------+
+    | filename         | (None or str) The output filename.                   |
+    |                  | By default: "{}_{}_{}_{}.{}" .format(method,         |
+    |                  | num_blocks, num_dimensions, num_levels               |
+    |                  | (if trajectory), delimiter)                          |
+    +------------------+------------------------------------------------------+
+    | delimiter        | ("csv", "tsv", "txt") the delimiter of the design    |
+    |                  | matrix file. By default: "csv" or parse directly if  |
+    |                  | filename with extension is specified.                |
+    +------------------+------------------------------------------------------+
     | num_levels       | (None or int, >0) The number of levels, partitioning |
     |                  | the parameter space in the trajectory sampling scheme|
     +------------------+------------------------------------------------------+
     | seed_number      | (None or int, >= 0) Seed number for random number    |
     |                  | generation in the trajectory sampling scheme         |
     +------------------+------------------------------------------------------+
-    | sobol_generator  | (None or str) The fullpath of executable to external |
-    |                  | Sobol' sequence generator                            |
-    +------------------+------------------------------------------------------+
     | direction_numbers| (None or str) the full path to the file containing   |
     |                  | direction number for Sobol' sequence generator       |
+    |                  | (default: built-in new-joe-kuo-6.21201)              |
     +------------------+------------------------------------------------------+
     """
+    from ..samples import sobol
 
     parser = argparse.ArgumentParser(
         description="%(prog)s - gsa-module, Generate DOE for Morris"
@@ -94,7 +104,8 @@ def get_create_sample():
     )
 
     # Only for trajectory sampling scheme
-    group_trajectory = parser.add_argument_group("Trajectory Sampling Scheme Only")
+    group_trajectory = parser.add_argument_group(
+        "Trajectory Sampling Scheme Only")
 
     # The number of levels, only for trajectory scheme
     group_trajectory.add_argument(
@@ -116,14 +127,6 @@ def get_create_sample():
 
     # Only for radial sampling scheme
     group_radial = parser.add_argument_group("Radial Sampling Scheme Only")
-
-    # The path to sobol generator executable, only for radial scheme
-    group_radial.add_argument(
-        "-sobol", "--sobol_generator",
-        type=str,
-        required=False,
-        help="The path to Sobol' sequence generator executable"
-    )
 
     # The path to sobol generator directional number, only for radial scheme
     group_radial.add_argument(
@@ -152,12 +155,7 @@ def get_create_sample():
         raise ValueError("Number of dimensions must be > 0")
 
     # Assign the delimiter
-    if args.delimiter == "csv":
-        delimiter = ","
-    elif args.delimiter == "tsv":
-        delimiter = "\t"
-    else:
-        delimiter = " "
+    delimiter = ext_to_delimiter(args.delimiter)
 
     # Create default filename if not passed
     if args.output_file is None and args.sampling_scheme == "trajectory":
@@ -170,6 +168,12 @@ def get_create_sample():
                                                 args.num_dimensions,
                                                 args.delimiter)
     else:
+        extension = args.output_file.split("/")[-1].split(".")[-1]
+        # Override the delimiter if it is assigned directly as an extension
+        if extension in ["csv", "tsv", "txt"]:
+            delimiter = ext_to_delimiter(extension)
+        else:
+            delimiter = ext_to_delimiter(args.delimiter)
         output_file = args.output_file
 
     # Check the validity of number of levels
@@ -191,10 +195,17 @@ def get_create_sample():
 
     # Check the validity of sobol' sequence generator and direction numbers
     if args.sampling_scheme == "radial":
-        if args.sobol_generator is None:
-            raise ValueError("Radial scheme requires Sobol' requires generator")
-        elif args.direction_numbers is None:
-            raise ValueError("Radial scheme requires Sobol' direction numbers")
+        if args.direction_numbers is not None:
+            if os.path.exists(args.direction_numbers):
+                direction_numbers = sobol.read_dirnumfile(
+                    args.direction_numbers, args.num_dimensions)
+            else:
+                raise ValueError(
+                    "Specified direction numbers file does not exist!")
+        else:
+            direction_numbers = None
+    else:
+        direction_numbers = None
 
     # Return the parsed command line arguments as a dictionary
     inputs = {
@@ -205,8 +216,7 @@ def get_create_sample():
         "delimiter": delimiter,
         "num_levels": num_levels,
         "seed_number": seed_number,
-        "sobol_generator": args.sobol_generator,
-        "direction_numbers": args.direction_numbers
+        "direction_numbers": direction_numbers
     }
 
     return inputs

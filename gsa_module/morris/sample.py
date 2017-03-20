@@ -11,7 +11,7 @@
 
     1. The trajectory design: the one proposed originally by Morris [1], also
        known as the winding stair design proposed by Jansen [2] (although
-       comes in a bit modified form)
+       this one comes in a bit modified form)
     2. The radial design: the one proposed by Saltelli et al. [3] that uses
        Sobol' low discrepancy sequence to build an OAT design. It is promoted
        because it remove the number of levels from the specification,
@@ -28,8 +28,8 @@
         Natural Sciences and Economics, Dordrecht, Germany, Kluwer Publishing,
         1994, pp. 334 - 343.
     (3) F. Campolongo, A. Saltelli, and J. Cariboni, "From Screening to
-        Quantitative Sensitivity Analysis. A Unified Approach," Computer Physics
-        Communications, Vol. 192, pp. 978 - 988, 2011.
+        Quantitative Sensitivity Analysis. A Unified Approach,"
+        Computer Physics Communications, Vol. 192, pp. 978 - 988, 2011.
 """
 import numpy as np
 
@@ -100,37 +100,45 @@ def trajectory(r: int, k: int, p: int, seed: int) -> np.ndarray:
     return b_star
 
 
-def radial(r: int, k: int, sobol_generator: str, direction_numbers: str,
+def radial(r: int, k: int, dirnum: np.ndarray = None,
            shift_exclude: int = 4) -> np.ndarray:
     """Generate DOE for Morris using radial sampling scheme
 
     :param r: the number of blocks/replications/trajectories
     :param k: the number of dimensions/parameters
-    :param sobol_generator: the fullpath to Sobol' generator executable
-    :param direction_numbers: the fullpath to Sobol' generator direction number
+    :param dirnum: the numpy array with direction number parameters
     :param shift_exclude: the lower shift for the half of the design with which
         the first half is subtracted
     :return: the radial design matrix of dimension r*(k+1)-by-k
     """
+    import math
     from .. import samples
 
     # Generate Sobol quasi-random sequence, twice the size of dimensions
-    sobol_seq = samples.sobol.create(r+shift_exclude, 2*k,
-                                     generator=sobol_generator,
-                                     dirnumfile=direction_numbers,
-                                     incl_nom=True,
-                                     randomize=False,
-                                     seed=None)
+    sobol_seq = samples.sobol.create(r+shift_exclude, 2*k, dirnum)
 
     # Generate the radial design
     dm = np.zeros((r*(k+1), k))
     for i in range(r):
         # Set indices that signify a given block in the matrix
         index_list = np.arange(k+1) + i * (k+1)
-        dm[index_list[0],:] = sobol_seq[i, :k]  # Base points
-        for j in range(k):
+        dm[index_list[0], :] = sobol_seq[i, :k]  # Base points
+        j = 0
+        while j < k:
             dm[index_list[j]+1, :] = sobol_seq[i, :k]   # The base point
             # Change the k-th dimension from the auxiliary point
             dm[index_list[j]+1, j] = sobol_seq[i+shift_exclude, k+j]
+            if math.isclose(dm[index_list[0], j], dm[index_list[j] + 1, j]):
+                # Perturbation zero, shift downward the auxiliary points, use
+                # that point, and add additional point to the auxiliary points
+                j = 0
+                shift_exclude += 1
+                sobol_seq = samples.sobol.create(r + shift_exclude, 2 * k,
+                                                 dirnum=dirnum,
+                                                 excl_nom=False,
+                                                 randomize=False,
+                                                 seed=None)
+            else:
+                j += 1
 
     return dm
