@@ -45,7 +45,8 @@ def get_create_sample():
         "-s", "--seed_number",
         type=int,
         required=False,
-        help="The random seed number (irrelevant for non-randomized Sobol' seq)"
+        help="The random seed number (irrelevant for non-randomized Sobol'"
+             " sequence)"
     )
 
     # the design matrix filename
@@ -75,7 +76,8 @@ def get_create_sample():
         "-dirnumfile", "--direction_numbers",
         type=str,
         required=False,
-        help="The path to Sobol' sequence generator direction numbers file (default: new-joe-kuo-6.21201)"
+        help="The path to Sobol' sequence generator direction numbers file"
+             " (default: built-in new-joe-kuo-6.21201)"
     )
 
     # Flag to include the nominal point in the design
@@ -149,7 +151,8 @@ def get_create_sample():
     # Create default filename if not passed
     if args.output_file is None:
         output_file = "{}_{}_{}.{}" .format(args.method, args.num_samples,
-                                            args.num_dimensions, args.delimiter)
+                                            args.num_dimensions,
+                                            args.delimiter)
     else:
         output_file = args.output_file
 
