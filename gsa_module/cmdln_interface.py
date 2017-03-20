@@ -88,8 +88,9 @@ def morris_analyze():
             delimiter=sniff_delimiter(inputs["rescaled_inputs"]))
         if dm_norm.shape[0] != dm_resc.shape[0]:
             raise ValueError(
-                "Lengths of normalized input ({}) and normalized ({}) are not the same!" .format(
-                    dm_norm.shape[0], dm_resc.shape[0]))
+                "Lengths of normalized input ({}) and"
+                " normalized ({}) are not the same!" .format(dm_norm.shape[0],
+                                                             dm_resc.shape[0]))
     else:
         dm_resc = None
 
