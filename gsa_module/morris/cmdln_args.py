@@ -53,7 +53,7 @@ def get_create_sample():
     +------------------+------------------------------------------------------+
     | direction_numbers| (None or str) the full path to the file containing   |
     |                  | direction number for Sobol' sequence generator       |
-    |                  | (default: built-in new-joe-kuo-6.21201)
+    |                  | (default: built-in new-joe-kuo-6.21201)              |
     +------------------+------------------------------------------------------+
     """
     from ..samples import sobol
@@ -107,7 +107,8 @@ def get_create_sample():
     )
 
     # Only for trajectory sampling scheme
-    group_trajectory = parser.add_argument_group("Trajectory Sampling Scheme Only")
+    group_trajectory = parser.add_argument_group(
+        "Trajectory Sampling Scheme Only")
 
     # The number of levels, only for trajectory scheme
     group_trajectory.add_argument(
