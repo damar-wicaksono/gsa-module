@@ -9,6 +9,7 @@
     publication)
 """
 import argparse
+import os
 from ..__init__ import __version__
 
 
@@ -37,13 +38,12 @@ def get_create_sample():
     | seed_number      | (None or int, >= 0) Seed number for random number    |
     |                  | generation in the trajectory sampling scheme         |
     +------------------+------------------------------------------------------+
-    | sobol_generator  | (None or str) The fullpath of executable to external |
-    |                  | Sobol' sequence generator                            |
-    +------------------+------------------------------------------------------+
     | direction_numbers| (None or str) the full path to the file containing   |
     |                  | direction number for Sobol' sequence generator       |
+    |                  | (default: built-in new-joe-kuo-6.21201)
     +------------------+------------------------------------------------------+
     """
+    from ..samples import sobol
 
     parser = argparse.ArgumentParser(
         description="%(prog)s - gsa-module, Generate DOE for Morris"
@@ -117,14 +117,6 @@ def get_create_sample():
     # Only for radial sampling scheme
     group_radial = parser.add_argument_group("Radial Sampling Scheme Only")
 
-    # The path to sobol generator executable, only for radial scheme
-    group_radial.add_argument(
-        "-sobol", "--sobol_generator",
-        type=str,
-        required=False,
-        help="The path to Sobol' sequence generator executable"
-    )
-
     # The path to sobol generator directional number, only for radial scheme
     group_radial.add_argument(
         "-dirnum", "--direction_numbers",
@@ -191,10 +183,17 @@ def get_create_sample():
 
     # Check the validity of sobol' sequence generator and direction numbers
     if args.sampling_scheme == "radial":
-        if args.sobol_generator is None:
-            raise ValueError("Radial scheme requires Sobol' requires generator")
-        elif args.direction_numbers is None:
-            raise ValueError("Radial scheme requires Sobol' direction numbers")
+        if args.direction_numbers is not None:
+            if os.path.exists(args.direction_numbers):
+                direction_numbers = sobol.read_dirnumfile(
+                    args.direction_numbers, args.num_dimensions)
+            else:
+                raise ValueError(
+                    "Specified direction numbers file does not exist!")
+        else:
+            direction_numbers = None
+    else:
+        direction_numbers = None
 
     # Return the parsed command line arguments as a dictionary
     inputs = {
@@ -205,8 +204,7 @@ def get_create_sample():
         "delimiter": delimiter,
         "num_levels": num_levels,
         "seed_number": seed_number,
-        "sobol_generator": args.sobol_generator,
-        "direction_numbers": args.direction_numbers
+        "direction_numbers": direction_numbers
     }
 
     return inputs

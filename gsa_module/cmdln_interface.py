@@ -63,7 +63,6 @@ def morris_generate():
         # Create radial sampling scheme for the DOE
         dm = morris.sample.radial(inputs["num_blocks"],
                                   inputs["num_dimensions"],
-                                  inputs["sobol_generator"],
                                   inputs["direction_numbers"])
 
     # Save the sample
