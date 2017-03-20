@@ -24,7 +24,7 @@ def evaluate(xx: np.ndarray, a: float=7, b: float=0.1) -> np.ndarray:
     (1) A. Saltelli et al., "Sensitivity Analysis in Practice,"
         John Wiley & Sons: West Sussex, 2004, pp. 196
 
-    :param xx: an n-by-2 array
+    :param xx: an n-by-3 array
     :param a: first-order coefficient
     :param b: second-order coefficient
     :return: an array of length n

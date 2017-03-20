@@ -20,10 +20,10 @@ by Morris [2]_.
 Elementary Effects
 ------------------
 
-Consider a model with :math:`K`, where :math:`\vec{x} = (x_1, x_2, . . ., x_K)`
-is a vector of parameter value mapped onto the unit hypercube and
-:math:`y(\vec{x})` is the model output evaluated at point :math:`\vec{x}`.
-The elementary effect of parameter `k` is defined as follow [2]_ ,
+Consider a model with :math:`K` parameters, where :math:`\vec{x} = (x_1, x_2, .
+. ., x_K)` is a vector of parameter value mapped onto the unit hypercube and
+:math:`y(\vec{x})` is the model output evaluated at point :math:`\vec{x}`.  The
+elementary effect of parameter `k` is defined as follow [2]_ ,
 
 :math:`EE_k = \frac{Y(x_1, x_2, \ldots, x_k + \Delta, \ldots, x_K)
 - Y(x_1, x_2, \ldots, x_K)}{\Delta}`
@@ -154,7 +154,7 @@ A randomized trajectory design matrix is given by :math:`b^*` ([2]_, [5]_),
 - :math:`b`: a strictly lower triangular matrix of 1s, with dimension of
   `(k + 1)-by-k`
 - :math:`x^*`: Random starting point in the parameter space, with dimension of
-  `(k + 1)-by-k`
+  `(k + 1)-by-k` - each row is the same.
 - :math:`d^*`: a k-dimensional diagonal matrix which each element is either +1
   or -1 with equal probability. This matrix determines whether a parameter
   value will decrease or increase.
@@ -181,7 +181,7 @@ Radial Design
 Radial design is a design for screening analysis proposed in [4]_.
 Similar to trajectory design it is based on an extension of one-at-a-time
 design. In the implementation of [4]_, Sobol' quasi-random sequence is
-used as the basis. Its main advantage over the trajectory design is
+used as the basis. Its main advantage over the trajectory design is that
 the specification of input discretization level by user is no longer required.
 Furthermore, the grid jump will also be varying from one input dimension
 to another, and from replicate to replicate incorporating additional
@@ -190,7 +190,7 @@ possible sources of variation in the method.
 The procedure to generate radial design of `r` replicates is as follow:
  1. Generate Sobol' sequence with dimension `(r+R, 2*k)`. `R` is the shift
     to avoid repetition in the sequence (`R = 4` following [4]_).
- 2. The first half of the matrix up to the `r`-th row will serve as the
+ 2. The first `k` columns of the matrix, from the first to the `r`-th row will serve as the
     base points: :math:`a_i = (x_{i,1}, x_{i,2}, \ldots x_{i,k}) \; ; i = 1,\ldots r`.
     The second half of the matrix, starting from the `R+1`-th
     row will serve as the auxiliary points, from which the perturbed states
@@ -199,11 +199,11 @@ The procedure to generate radial design of `r` replicates is as follow:
     substituting the value at each dimension by the value from the
     auxiliary points at the same dimension, one at a time.
     For each base point, there will be additional `k` perturbed points.
-    For instance the 1st perturbed point of the `i`-th base point is,
+    For instance the 1st perturbed point of the `i`-th base point `a_i` is
     :math:`a^{*,1}_i = (x_{R+i,k+1}, x_{i,2}, \ldots x_{i,k})`, while
     the second is :math:`a^{*,2}_i = (x_{i,1}, x_{R+i,k+2}, \ldots x_{i,k})`.
-    In general the `j`-th perturbed point of the `i`-th base point is,
-    :math:`a^{*,j}_i = (x_{i,1}, \ldots x_{R+i,k+j}, \ldots x_{i,k})`
+    In general the `j`-th perturbed point of the `i`-th base point is
+    :math:`a^{*,j}_i = (x_{i,1}, \ldots x_{R+i,k+j}, \ldots x_{i,k})`.
  4. A single elementary effect for each input dimension can be computed
     on the basis of function evaluations at `k+1` points:
     1 base point and `k` perturbed points.
@@ -211,7 +211,7 @@ The procedure to generate radial design of `r` replicates is as follow:
     constructed.
 
 As such the radial design has the same economy as the trajectory design,
-that is `r * (k+1)` computations for `k`-dimensional model with
+that is `r * (k+1)` computations for a `k`-dimensional model with
 `r` replications. The computation of the elementary effect :math:`EE_i`,
 however, is slightly different due to the fact that now the grid jump
 differs for each input dimension at each replication.
