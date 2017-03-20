@@ -2,6 +2,7 @@
 """
 import argparse
 import os
+from ..util import ext_to_delimiter
 from .._version import __version__
 
 __author__ = "Damar Wicaksono"
@@ -185,12 +186,7 @@ def get_create_sample():
         direction_numbers = None
 
     # Check the delimiter
-    if args.delimiter == "csv":
-        delimiter = ","
-    elif args.delimiter == "tsv":
-        delimiter = "\t"
-    else:
-        delimiter = " "
+    delimiter = ext_to_delimiter(args.delimiter)
 
     # Check the random seed number
     if args.seed_number is None:
@@ -206,6 +202,12 @@ def get_create_sample():
                                             args.num_dimensions,
                                             args.delimiter)
     else:
+        extension = args.output_file.split("/")[-1].split(".")[-1]
+        # Override the delimiter if it is assigned directly as an extension
+        if delimiter in ["csv", "tsv", "txt"]:
+            delimiter = ext_to_delimiter(extension)
+        else:
+            delimiter = args.delimiter
         output_file = args.output_file
 
     # Set default value for the number of iterations if opt-lhs is selected

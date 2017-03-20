@@ -10,6 +10,7 @@
 """
 import argparse
 import os
+from ..util import ext_to_delimiter
 from .._version import __version__
 
 
@@ -31,6 +32,18 @@ def get_create_sample():
     |                  | One-at-a-time design. Trajectory is the original     |
     |                  | randomized Morris' formulation, while radial uses    |
     |                  | Saltelli et al. formulation based on Sobol' sequence |
+    +------------------+------------------------------------------------------+
+    | filename         | (None or str) The output filename.                   |
+    |                  | By default: "{}_{}_{}_{}.{}" .format(method,         |
+    |                  |                                   num_blocks,        |
+    |                  |                                   num_dimensions,    |
+    |                  |                                   num_levels         |
+    |                  |                                   (if trajectory),   |
+    |                  |                                   delimiter)         |
+    +------------------+------------------------------------------------------+
+    | delimiter        | ("csv", "tsv", "txt") the delimiter of the design    |
+    |                  | matrix file. By default: "csv" or parse directly if  |
+    |                  | filename with extension is specified.                |
     +------------------+------------------------------------------------------+
     | num_levels       | (None or int, >0) The number of levels, partitioning |
     |                  | the parameter space in the trajectory sampling scheme|
@@ -144,12 +157,7 @@ def get_create_sample():
         raise ValueError("Number of dimensions must be > 0")
 
     # Assign the delimiter
-    if args.delimiter == "csv":
-        delimiter = ","
-    elif args.delimiter == "tsv":
-        delimiter = "\t"
-    else:
-        delimiter = " "
+    delimiter = ext_to_delimiter(args.delimiter)
 
     # Create default filename if not passed
     if args.output_file is None and args.sampling_scheme == "trajectory":
@@ -162,6 +170,12 @@ def get_create_sample():
                                                 args.num_dimensions,
                                                 args.delimiter)
     else:
+        extension = args.output_file.split("/")[-1].split(".")[-1]
+        # Override the delimiter if it is assigned directly as an extension
+        if extension in ["csv", "tsv", "txt"]:
+            delimiter = ext_to_delimiter(extension)
+        else:
+            delimiter = ext_to_delimiter(args.delimiter)
         output_file = args.output_file
 
     # Check the validity of number of levels
