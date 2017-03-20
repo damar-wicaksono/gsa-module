@@ -6,4 +6,4 @@ from . import sobol
 from . import test_functions
 
 __author__ = 'Damar Wicaksono'
-__version__ = "0.6.0"
+__version__ = "0.7.0"

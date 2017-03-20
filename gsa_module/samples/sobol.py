@@ -16,11 +16,11 @@ included direction number files in "./dirnumfiles/new-joe-kuo-6.21201"
 /
 / Last updated: 21 October 2008
 /
-/   You may incorporate this source code into your own program
-/   provided that you
-/   1) acknowledge the copyright owner in your program and publication
-/   2) notify the copyright owner by email
-/   3) offer feedback regarding your experience with different direction numbers
+/  You may incorporate this source code into your own program
+/  provided that you
+/  1) acknowledge the copyright owner in your program and publication
+/  2) notify the copyright owner by email
+/  3) offer feedback regarding your experience with different direction numbers
 /
 /
 / -----------------------------------------------------------------------------
