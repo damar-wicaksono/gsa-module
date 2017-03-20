@@ -1,9 +1,9 @@
 from setuptools import setup
 
-
+exec(open('gsa_module/_version.py').read())
 setup(
     name="gsa-module",
-    version="0.6.0",
+    version=__version__,
     description="Package to conduct global sensitivity analysis of computer simulation",
     url="https://bitbucket.org/damar-wicaksono/gsa-module",
     author="Damar Wicaksono",

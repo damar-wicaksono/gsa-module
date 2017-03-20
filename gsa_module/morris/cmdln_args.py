@@ -10,7 +10,7 @@
 """
 import argparse
 import os
-from ..__init__ import __version__
+from .._version import __version__
 
 
 def get_create_sample():

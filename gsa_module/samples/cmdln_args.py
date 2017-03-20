@@ -2,6 +2,7 @@
 """
 import argparse
 import os
+from .._version import __version__
 
 __author__ = "Damar Wicaksono"
 
@@ -106,6 +107,13 @@ def get_create_sample():
         required=False,
         default="csv",
         help="the delimiter for the file (default: %(default)s)"
+    )
+
+    # Print the version
+    parser.add_argument(
+        "-V", "--version",
+        action="version",
+        version="%(prog)s (gsa-module version {})" .format(__version__)
     )
 
     # Only for Sobol'
