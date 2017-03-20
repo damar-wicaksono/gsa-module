@@ -5,8 +5,6 @@
 
     Module with collection of utilities
 """
-import numpy as np
-
 
 def sniff_delimiter(input_file: str):
     """Detect the delimiter in a file"""
@@ -23,3 +21,20 @@ def sniff_delimiter(input_file: str):
         return dialect.delimiter
 
 
+def ext_to_delimiter(extension: str) -> str:
+    """Convert file extension to delimiter
+
+    :param extension: file extension ("txt", "csv", "tsv")
+    :return: the delimiter (",", " ", "\t")
+    """
+    if extension == "csv":
+        delimiter = ","
+    elif extension == "tsv":
+        delimiter = "\t"
+    elif extension == "txt":
+        delimiter = " "
+    else:
+        raise ValueError("File extension not recognized!"
+                         " (Use txt, tsv, or csv)")
+
+    return delimiter

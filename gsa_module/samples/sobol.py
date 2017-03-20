@@ -16,11 +16,11 @@ included direction number files in "./dirnumfiles/new-joe-kuo-6.21201"
 /
 / Last updated: 21 October 2008
 /
-/   You may incorporate this source code into your own program
-/   provided that you
-/   1) acknowledge the copyright owner in your program and publication
-/   2) notify the copyright owner by email
-/   3) offer feedback regarding your experience with different direction numbers
+/  You may incorporate this source code into your own program
+/  provided that you
+/  1) acknowledge the copyright owner in your program and publication
+/  2) notify the copyright owner by email
+/  3) offer feedback regarding your experience with different direction numbers
 /
 /
 / -----------------------------------------------------------------------------
@@ -67,9 +67,65 @@ import numpy as np
 __author__ = "Damar Wicaksono"
 
 
+def read_dirnumfile(dirnumfile: str, d: int) -> np.ndarray:
+    r"""Parser to read direction number file provided by Joe & Kuo
+
+    The parser read direction number file to get parameters "s", "a", and
+    "m_i". It only output as many as the requested dimension
+
+    The structure of the file is the following:
+
+        d       s       a       m_i
+        2       1       0       1
+        3       2       1       1 3
+        4       3       1       1 3 1
+        5       3       2       1 1 1
+        6       4       1       1 1 3 3
+        ...
+
+    note that the header is included in the file and the parameters started
+    with dimension 2. Dimension 1 is irrelevant as it can be generated without
+    direction number. The first column is just the dimension number
+
+    :param dirnumfile: the fullname of the text file containing dir. number
+    :param d: the requested dimension number, >= 2
+    :return: structured array with columns correspond to params s, a, and m_i
+    """
+    # Prepare the output (d, s, a, m_i)
+    dirnum = np.zeros(d-1,
+                      dtype=[("s", "uint32"),
+                             ("a", "uint32"),
+                             ("m", "(1,)uint32")])
+
+    # Open and read the file
+    i = 0
+    j = 0
+    with open(dirnumfile, "rt") as f:
+        lines = f.readlines()
+        while j < d-1:
+            if lines[i].startswith(("#", "d")):
+                # Ignore copyright lines and header
+                i += 1
+            else:
+                line = list(map(int, lines[i].strip().split()))
+                for k in range(2):
+                    dirnum[j][k] = line[k + 1]
+                # recast the structured array to add more m_i values
+                dirnum = dirnum.astype(
+                    [("s", "uint32"),
+                     ("a", "uint32"),
+                     ("m", "({},)uint32" .format(line[1]))])
+                for k in range(line[1]):
+                    dirnum[j][2][k] = line[k + 3]
+                i += 1
+                j += 1
+
+    return dirnum
+
+
 def create(n: int, d: int,
-           dirnum: np.ndarray,
-           excl_nom: bool = True,
+           dirnum: np.ndarray = None,
+           excl_nom: bool = False,
            randomize: bool = False,
            seed: int = None) -> np.ndarray:
     r"""Sobol points generator based on graycode order
@@ -86,6 +142,12 @@ def create(n: int, d: int,
     :return: 2-dimensional design matrix of quasi-random Sobol' sequence
     """
     import math
+    import os
+
+    # Use default value for direction number file
+    if dirnum is None:
+        dirnum = read_dirnumfile(os.path.join(os.path.dirname(__file__),
+                                 "./dirnumfiles/new-joe-kuo-6.21201"), d)
 
     if excl_nom:
         # Add additional point if {0.5} is to be excluded
@@ -175,59 +237,6 @@ def create(n: int, d: int,
             return random_shift(POINTS, seed)
 
     return POINTS
-
-
-def read_dirnumfile(dirnumfile: str, d: int) -> np.ndarray:
-    r"""Parser to read direction number file provided by Joe & Kuo
-
-    The parser read direction number file to get parameters "s", "a", and
-    "m_i". It only output as many as the requested dimension
-
-    The structure of the file is the following:
-
-        d       s       a       m_i
-        2       1       0       1
-        3       2       1       1 3
-        4       3       1       1 3 1
-        5       3       2       1 1 1
-        6       4       1       1 1 3 3
-        ...
-
-    note that the header is included in the file and the parameters started
-    with dimension 2. Dimension 1 is irrelevant as it can be generated without
-    direction number. The first column is just the dimension number
-
-    :param dirnumfile: the fullname of the text file containing dir. number
-    :param d: the requested dimension number, >= 2
-    :return: structured array with columns correspond to params s, a, and m_i
-    """
-    # Makes sense only if more than one dimension is requested
-#    if d <= 1:
-#        raise ValueError("Number of dimension is greater than or equal to 2!")
-#    else:
-#        d -= 1
-
-    # Open and read the file
-    with open(dirnumfile, "rt") as f:
-        lines = f.read().splitlines()
-    lines.pop(0)    # Remove first line
-
-    # Prepare the output (d, s, a, m_i)
-    max_s = list(map(int, lines[d-1].strip().split()))[1]
-    dirnum = np.zeros(d,
-                      dtype=[("s", "uint32"),
-                             ("a", "uint32"),
-                             ("m", "({},)uint32" .format(max_s))])
-
-    # Read and parse line by line
-    for i in range(d):
-        line = list(map(int, lines[i].strip().split()))
-        for j in range(2):
-            dirnum[i][j] = line[j+1]
-        for j in range(line[1]):
-            dirnum[i][2][j] = line[j+3]
-
-    return dirnum
 
 
 def random_shift(dm: np.ndarray, seed: int) -> np.ndarray:

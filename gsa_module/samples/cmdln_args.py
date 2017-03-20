@@ -2,12 +2,55 @@
 """
 import argparse
 import os
+from ..util import ext_to_delimiter
+from .._version import __version__
 
 __author__ = "Damar Wicaksono"
 
 
 def get_create_sample():
-    """Get the passed command line arguments"""
+    """Get the passed command line arguments
+
+    :return:  a dictionary of command line arguments
+
+    +------------------+------------------------------------------------------+
+    | Key              | Value                                                |
+    +==================+======================================================+
+    | num_samples      | (int, positive) The number of blocks/trajectories    |
+    |                  |  replications to compute the statistics of the       |
+    |                  |  elementary effects                                  |
+    +------------------+------------------------------------------------------+
+    | num_dimensions   | (int, positive) The number of dimensions/parameters  |
+    +------------------+------------------------------------------------------+
+    | method           | ("srs", "lhs", "sobol", "lhs-opt") Sampling scheme to|
+    |                  | the design of experiments. By default "srs" is chosen|
+    +------------------+------------------------------------------------------+
+    | filename         | (None or str) The output filename.                   |
+    |                  | By default: "{}_{}_{}.{}" .format(method,            |
+    |                  |                                   num_samples,       |
+    |                  |                                   num_dimensions,    |
+    |                  |                                   delimiter)         |
+    +------------------+------------------------------------------------------+
+    | delimiter        | ("csv", "tsv", "txt") the delimiter of the design    |
+    |                  | matrix file. By default: "csv"                       |
+    +------------------+------------------------------------------------------+
+    | seed_number      | (None or int, >0) The random seed number (irrelevant |
+    |                  | for non-randomized Sobol' sequence)                  |
+    +------------------+------------------------------------------------------+
+    | direction_numbers| (str) the fullname (file+path) to the directions     |
+    |                  | numbers file for Joe & Kuo Sobol' generator algorithm|
+    |                  | By default: "./dirnumfiles/new-joe-kuo-6.21201"      |
+    +------------------+------------------------------------------------------+
+    | exclude_nominal  | (bool) Flag whether to include or exclude the {0.5}  |
+    |                  | parameter values from the design. By default: False  |
+    +------------------+------------------------------------------------------+
+    | randomize_sobol  | (bool) Flag whether to random shift the Sobol'       |
+    |                  | sequence. By default: False                          |
+    +------------------+------------------------------------------------------+
+    | num_iterations   | (100 or int, >0) the maximum number of outer         |
+    |                  | iterations for optimizing the latin hypercube design |
+    +------------------+------------------------------------------------------+
+    """
     from .sobol import read_dirnumfile
 
     parser = argparse.ArgumentParser(
@@ -45,7 +88,8 @@ def get_create_sample():
         "-s", "--seed_number",
         type=int,
         required=False,
-        help="The random seed number (irrelevant for non-randomized Sobol' sequence)"
+        help="The random seed number (irrelevant for non-randomized Sobol'"
+             " sequence)"
     )
 
     # the design matrix filename
@@ -66,6 +110,13 @@ def get_create_sample():
         help="the delimiter for the file (default: %(default)s)"
     )
 
+    # Print the version
+    parser.add_argument(
+        "-V", "--version",
+        action="version",
+        version="%(prog)s (gsa-module version {})" .format(__version__)
+    )
+
     # Only for Sobol'
     group_sobol = parser.add_argument_group("Sobol'", 
                                             "Options for Sobol' quasi-random")
@@ -75,7 +126,8 @@ def get_create_sample():
         "-dirnumfile", "--direction_numbers",
         type=str,
         required=False,
-        help="The path to Sobol' sequence generator direction numbers file (default: new-joe-kuo-6.21201)"
+        help="The path to Sobol' sequence generator direction numbers file"
+             " (default: built-in new-joe-kuo-6.21201)"
     )
 
     # Flag to include the nominal point in the design
@@ -105,6 +157,7 @@ def get_create_sample():
         required=False,
         default=100,
         help="The maximum number of iterations for optimization of LHS"
+             " (default: 100 iterations)"
     )
 
     # Get the command line arguments
@@ -120,25 +173,20 @@ def get_create_sample():
 
     # Check the validity of inputs if Sobol' sequence is used
     if args.method == "sobol":
-        if args.direction_numbers is None:
-            default_dirnumfile = os.path.join(os.path.dirname(__file__),
-                                              "./dirnumfiles/new-joe-kuo-6.21201")
-            direction_numbers = read_dirnumfile(default_dirnumfile,
-                                                args.num_dimensions)
-        else:
+        if args.direction_numbers is not None:
             if os.path.exists(args.direction_numbers):
                 direction_numbers = read_dirnumfile(args.direction_numbers,
                                                     args.num_dimensions)
             else:
-                raise ValueError("Sobol' generator direction number file does not exist!")
+                raise ValueError(
+                    "Sobol' generator direction number file does not exist!")
+        else:
+            direction_numbers = None
+    else:
+        direction_numbers = None
 
     # Check the delimiter
-    if args.delimiter == "csv":
-        delimiter = ","
-    elif args.delimiter == "tsv":
-        delimiter = "\t"
-    else:
-        delimiter = " "
+    delimiter = ext_to_delimiter(args.delimiter)
 
     # Check the random seed number
     if args.seed_number is None:
@@ -151,9 +199,21 @@ def get_create_sample():
     # Create default filename if not passed
     if args.output_file is None:
         output_file = "{}_{}_{}.{}" .format(args.method, args.num_samples,
-                                            args.num_dimensions, args.delimiter)
+                                            args.num_dimensions,
+                                            args.delimiter)
     else:
+        extension = args.output_file.split("/")[-1].split(".")[-1]
+        # Override the delimiter if it is assigned directly as an extension
+        if delimiter in ["csv", "tsv", "txt"]:
+            delimiter = ext_to_delimiter(extension)
+        else:
+            delimiter = args.delimiter
         output_file = args.output_file
+
+    # Set default value for the number of iterations if opt-lhs is selected
+    if args.num_iterations is not None:
+        if args.num_iterations < 0:
+            raise ValueError("Number of iterations must be greater than zero!")
 
     # Return the parsed command line arguments as a dictionary
     inputs = {"num_samples": args.num_samples,
