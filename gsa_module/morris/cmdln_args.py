@@ -35,11 +35,8 @@ def get_create_sample():
     +------------------+------------------------------------------------------+
     | filename         | (None or str) The output filename.                   |
     |                  | By default: "{}_{}_{}_{}.{}" .format(method,         |
-    |                  |                                   num_blocks,        |
-    |                  |                                   num_dimensions,    |
-    |                  |                                   num_levels         |
-    |                  |                                   (if trajectory),   |
-    |                  |                                   delimiter)         |
+    |                  | num_blocks, num_dimensions, num_levels               |
+    |                  | (if trajectory), delimiter)                          |
     +------------------+------------------------------------------------------+
     | delimiter        | ("csv", "tsv", "txt") the delimiter of the design    |
     |                  | matrix file. By default: "csv" or parse directly if  |
