@@ -108,24 +108,25 @@ from visual inspection of the elementary effect statistics on the
 
 .. image:: ../../figures/illustrate-morris-result.png
 
-The notions of influential and noninfluential are based on the relative
-locations of those statistics in the plane.
-Typically, the noninfluential ones are clustered closer to the origin
+The notions of influential and non-influential parameters are based on the
+relative locations of those statistics in the plane.
+Typically, the non-influential ones are clustered closer to the origin
 (relative to the more influential ones) with a pronounced boundary such as
 depicted in the figure.
 Admittedly, if these statistics are spread uniformly across the plane,
-the distinction would be more ambiguous (in this case, a more advanced classification
-such as the ones based on clustering techniques might be
+the distinction would be more ambiguous (in this case, a more advanced
+classification such as the ones based on clustering techniques might be
 helpful).
 Furthermore, for a parameter with large :math:`\mu_k` and :math:`\sigma_k`,
-the method cannot distinguish between nonlinearity effects from parameter
+the method cannot distinguish between non-linearity effects from parameter
 interactions on the output.
 
 Design of Experiment for Screening Analysis
 -------------------------------------------
 
 There are two available experimental designs for to carry out the Morris
-screening method in ``gsa-module``: the trajectory design and radial OAT design.
+screening method in ``gsa-module``: the trajectory design and radial OAT
+design.
 
 Trajectory Design (*Winding Stairs*)
 ````````````````````````````````````
@@ -189,8 +190,10 @@ possible sources of variation in the method.
 
 The procedure to generate radial design of `r` replicates is as follow:
  1. Generate Sobol' sequence with dimension `(r+R, 2*k)`. `R` is the shift
-    to avoid repetition in the sequence (`R = 4` following [4]_).
- 2. The first `k` columns of the matrix, from the first to the `r`-th row will serve as the
+    to avoid repetition in the sequence. The value of `R` is recommended to be
+    fixed at `4` following [4]_, but see `Choosing Shifting Value`_ below for
+    additional comments.
+ 2. The first half of the matrix up to the `r`-th row will serve as the
     base points: :math:`a_i = (x_{i,1}, x_{i,2}, \ldots x_{i,k}) \; ; i = 1,\ldots r`.
     The second half of the matrix, starting from the `R+1`-th
     row will serve as the auxiliary points, from which the perturbed states
@@ -209,6 +212,12 @@ The procedure to generate radial design of `r` replicates is as follow:
     1 base point and `k` perturbed points.
  5. Repeat the process until the requested `r` replications have been
     constructed.
+
+An illustration of radial OAT design generation based on Sobol' sequence can
+be seen in the figure below.
+
+.. image:: ../../figures/radial_oat.png
+
 
 As such the radial design has the same economy as the trajectory design,
 that is `r * (k+1)` computations for a `k`-dimensional model with
@@ -236,6 +245,36 @@ The size of the perturbation differs from input dimension to input
 dimension and from replicate to replicate.
 
 .. image:: ../../figures/radial.png
+
+Choosing Shifting Value
+~~~~~~~~~~~~~~~~~~~~~~~
+
+As mentioned the recommendation given by [4]_ for the value of `R` is `4`.
+This value reflects the fact that the a sample of Sobol' sequence across
+dimension tends to repeat values, especially in the first several rows.
+For example, the first two Sobol' samples used here have the values of `0.0`
+and `0.5` in all of the dimensions.
+If such repetition in value happened one or more rows in the :math:`\Delta`
+matrix will be zero (so is the :math:`\Delta Y` vector), and cause the system
+of linear equation to be under-determined.
+
+But except for the obvious repetitions of values in different dimensions in the
+first several samples any other repetitions cannot be excluded to reoccur down
+the line of samples.
+As such the value of `R` has to be picked carefully and
+from our experience this value is highly dependent on the number of samples
+and/or dimension.
+Yet, the of the main points of using radial design in the first place was
+to avoid specifying the number of levels `p`.
+Choosing `R` for different number of samples and/or dimensions
+definitely defeat the purpose of using radial design.
+
+A pragmatic solution for this problem, which is adopted here, is to check
+whether a given auxiliary point has the same value with the base point in one
+or more dimension, every time a block of one-at-a-time design is generated.
+If it has then use the next auxiliary point instead.
+Finally, to replace the missing auxiliary point, an additional point is
+generated using the Sobol' sequence.
 
 Miscellaneous Topics
 --------------------
@@ -312,7 +351,8 @@ References
        Communications, Vol. 192, pp. 978 - 988, 2011.
 .. [5] A. Saltelli et al., "Global Sensitivity Analysis. The Primer," West
        Sussex, John Wiley & Sons, 2008, pp. 114
-.. [6] Jon D. Herman, SALib [Source Code], March 2014, https://github.com/jdherman/SALib
+.. [6] Jon D. Herman, SALib [Source Code], March 2014,
+       https://github.com/jdherman/SALib
 .. [7] G. Sin and K. V. Gernaey, "Improving the Morris Method for Sensitivity
        Analysis by Scaling the Elementary Effects," in Proc. 19th European
        Symposium on Computer Aided Process Engineering, 2009
