@@ -125,6 +125,10 @@ def radial(x_normalized: np.ndarray, x_rescaled: np.ndarray, y: np.ndarray):
     # Loop over blocks/replications to calculate all the elementary effects
     # for each parameter
     # There is one elementary effect per parameter, per trajectory.
+    if x_rescaled is not None:
+        scale_x = np.std(x_rescaled, axis=0)
+        scale_y = np.std(y)
+
     for i in range(num_reps):
 
         # Set up indices for this trajectory
@@ -148,17 +152,17 @@ def radial(x_normalized: np.ndarray, x_rescaled: np.ndarray, y: np.ndarray):
         if x_rescaled is not None:
             x_base = np.repeat([x_rescaled[idx1, :]], num_dims, axis=0)
             y_base = np.repeat([y[idx1]], num_dims, axis=0)
-            delta_x = x_rescaled[idx2, :] - x_base
-            delta_y = y[idx2] - y_base
+            delta_x = (x_rescaled[idx2, :] - x_base) / scale_x
+            delta_y = (y[idx2] - y_base) / scale_y
 
             see[i, :] = np.linalg.solve(delta_x, delta_y)
 
     # Scale the elementary effects,
     # row-wise Hadamard product with the scale factor for each
     # parameters
-    if x_rescaled is not None:
-        scale = np.std(x_rescaled, axis=0) / np.std(y)
-        see[i,:] *= scale
+    #if x_rescaled is not None:
+    #    scale = np.std(x_rescaled, axis=0) / np.std(y)
+    #    see[i,:] *= scale
 
     # Calculate the statistical summary of the elementary effects
     results = np.empty([num_dims, 6])
