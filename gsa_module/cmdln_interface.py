@@ -119,12 +119,18 @@ def morris_analyze():
               .format(inputs["rescaled_inputs"]))
 
     # Analyze the input/output
-    if morris_type == "trajectory":
-        param_rank = morris.analyze.trajectory(dm_norm, dm_resc, outp)
-    elif morris_type == "radial":
-        param_rank = morris.analyze.radial(dm_norm, dm_resc, outp)
+    param_rank, bootstrap = morris.analyze.ee(dm_norm,
+                                              outp,
+                                              bootstrap=10000,
+                                              xx_rescaled=dm_resc)
 
     # Save the result of the analysis
     np.savetxt(inputs["output_file"], param_rank,
                fmt="%1.6e", delimiter=",",
                header="mu, mu_star, std_dev, std_mu, std_mu_star, std_std_dev")
+    with open(inputs["bootstrap_output_file"], "wt") as outfile:
+        for i in bootstrap:
+            np.savetxt(outfile, i,
+                       fmt="%1.6e", delimiter=",",
+                       header="mu, mu_star, std_dev, std_mu, "
+                              "std_mu_star, std_std_dev")
