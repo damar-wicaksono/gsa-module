@@ -24,8 +24,8 @@
         Natural Sciences and Economics, Dordrecht, Germany, Kluwer Publishing,
         1994, pp. 334 - 343.
     (3) F. Campolongo, A. Saltelli, and J. Cariboni, "From Screening to
-        Quantitative Sensitivity Analysis. A Unified Approach," Computer Physics
-        Communications, Vol. 192, pp. 978 - 988, 2011.
+        Quantitative Sensitivity Analysis. A Unified Approach," Computer 
+        Physics Communications, Vol. 192, pp. 978 - 988, 2011.
     (4) G. Sin and K. V. Gernaey, "Improving the Morris Method for Sensitivity
         Analysis by Scaling the Elementary Effects," in Proc. 19th European
         Symposium on Computer Aided Process Engineering, 2009
