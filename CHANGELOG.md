@@ -6,9 +6,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## Unreleased
 
+### Added
+- Add function to compute position factor, a simple and useful measure of 
+  change in rank
+
+### Changed
+- the API for analyzing Morris results has been changed. There's only one 
+  single main function for both trajectory and radial design.
+  The function will detect by itself the kind of design.
+
 ### Fixed
 - Fixed the issue with stability of linear solution when standardization 
   is used
+- Fixed the same issue for trajectory design
 
 ## [0.7.1] - 2017-03-20
 
