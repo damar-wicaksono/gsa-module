@@ -33,7 +33,7 @@ def evaluate(xx: np.ndarray,
     # Error checking, if the input is within domain
     if (xx.shape[1] != 4):
         raise ValueError("The dimension of inputs <> 4!")
-    elif (xx < 1e-4).any():
+    elif (xx < 0).any():
         raise ValueError("Input is smaller than 0 or too small!")
     elif (xx - 1 > 1e-4).any():
         raise ValueError("Input is larger than 1!")
