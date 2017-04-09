@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-    gsa_module.misc
-    ***************
+    gsa_module.morris.misc
+    **********************
 
     Module with collection of utilities related to Morris screening method
     implementation
