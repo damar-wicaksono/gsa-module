@@ -108,7 +108,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   simple random sampling (SRS) and latin hypercube sampling (LHS) using command
   line interace
 
-[Unreleased]: https://bitbucket.org/lrs-uq/gsa-module/branches/compare/develop%0Dv0.7.0
+[Unreleased]: https://bitbucket.org/lrs-uq/gsa-module/branches/compare/develop%0Dv0.8.0
 [0.7.1]: https://bitbucket.org/lrs-uq/gsa-module/branches/compare/v0.7.1%0Dv0.8.0
 [0.7.1]: https://bitbucket.org/lrs-uq/gsa-module/branches/compare/v0.7.1%0Dv0.7.0
 [0.7.0]: https://bitbucket.org/lrs-uq/gsa-module/branches/compare/v0.7.0%0Dv0.6.0
