@@ -10,7 +10,7 @@ import numpy as np
 __author__ = "Damar Wicaksono"
 
 
-def evaluate(y_dict: dict, estimator: str="jansen",
+def estimate(y_dict: dict, estimator: str="jansen",
              num_bootstrap: int=10000) -> tuple:
     """Calculate the total-order Sobol' sensitivity indices
     

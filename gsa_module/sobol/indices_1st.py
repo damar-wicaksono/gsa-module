@@ -10,7 +10,7 @@ import numpy as np
 __author__ = "Damar Wicaksono"
 
 
-def evaluate(y_dict: dict,
+def estimate(y_dict: dict,
              str_estimator: str="sobol-saltelli",
              num_bootstrap: int=10000) -> tuple:
     """Calculate the 1st-order Sobol' sensitivity indices and create a dict
