@@ -10,57 +10,62 @@ import numpy as np
 __author__ = "Damar Wicaksono"
 
 
-def evaluate(y_dict: dict, estimator: str="sobol-saltelli") -> np.ndarray:
+def evaluate(y_dict: dict,
+             str_estimator: str="sobol-saltelli",
+             num_bootstrap: int=10000) -> tuple:
     """Calculate the 1st-order Sobol' sensitivity indices and create a dict
 
-    This is a driver function to call several choices of 1st-order index
-    estimators. The input is a dictionary of output vectors.
-
-    :param y_dict: a dictionary of numpy array of model outputs
-    :param estimator: which estimator to use
-    :return: a numpy array of all the first-order indices
-    """
-    # Get some common parameters
-    num_dimensions = len(y_dict) - 2
-
-    # Compute the 1st-order sensitivity indices
-    si = np.empty(num_dimensions)
-    if estimator == "sobol-saltelli":
-        for i in range(num_dimensions):
-            key = "ab_{}" .format(i+1)
-            si[i] = sobol_saltelli(y_dict["a"], y_dict["b"], y_dict[key])
-    elif estimator == "janon":
-        for i in range(num_dimensions):
-            key = "ab_{}" .format(i+1)
-            si[i] = janon(y_dict["b"], y_dict[key])
-
-    return si
-
-
-def bootstrap(y_dict: dict, estimator="sobol-saltelli",
-              n_samples=10000, seed=20151418) -> dict:
-    """Generate bootstrap samples and calculate the confidence intervals
-
-    Two kind of confidence intervals are provided, both are 95% confidence
-    intervals:
-        1. Standard error (normality assumption, +/-1.96*SE gives the coverage)
-        2. Percentile confidence intervals, by using order statistics
+    This is a driver function to call several choices of 1st-order sensitivity
+    indices estimators. 
+    The input is a dictionary of output vectors with conventional keys: 'a', 
+    'b', 'ab_1', etc.
 
     **References:**
 
     (1) G.E.B Archer, A. Saltelli, and I.M. Sobol', "Sensitivity measures,
         ANOVA-like techniques and the use of bootstrap," Journal of Statistical
         Computation and Simulation," vol. 58, pp. 99-120, 1997
-
+        
     :param y_dict: a dictionary of numpy array of model outputs
-    :param estimator: (str)
-    :param n_samples:
-    :param seed:
+    :param str_estimator: which estimator to use
+    :param num_bootstrap: the size of bootstrap sample
+    :return: a tuple of two elements, the first is a numpy array of all the 
+        first-order indices (length num_dims) and the second is the bootstrap
+        samples of the estimates (num_bootstrap * num_dims)
     """
-    pass
+    # Get some common parameters
+    num_dims = len(y_dict) - 2
+    num_smpl = y_dict["a"].shape[0]
+
+    # Select the estimator
+    if str_estimator == "sobol-saltelli":
+        estimator = sobol_saltelli
+    elif str_estimator == "janon":
+        estimator = janon
+
+    # Compute the 1st-order sensitivity indices
+    si_estimates = np.empty(num_dims)
+    for i in range(num_dims):
+        key = "ab_{}".format(i + 1)
+        si_estimates[i] = estimator(y_dict["b"], y_dict[key], y_dict["a"])
+
+    # Conduct the bootstrapping
+    if num_bootstrap > 0:
+        si_bootstrap = np.empty([num_bootstrap, num_dims])
+        for i in range(num_bootstrap):
+            idx = np.random.choice(num_smpl, num_smpl, replace=True)
+            for j in range(num_dims):
+                key = "ab_{}".format(j + 1)
+                si_bootstrap[i, j] = estimator(y_dict["b"][idx],
+                                               y_dict[key][idx],
+                                               y_dict["a"][idx])
+    else:
+        si_bootstrap = None
+
+    return si_estimates, si_bootstrap
 
 
-def janon(fb: np.ndarray, fab_i: np.ndarray) -> float:
+def janon(fb: np.ndarray, fab_i: np.ndarray, fa: np.ndarray=None) -> float:
     """Calculate the 1st-order Sobol' indices using the Janon estimator
 
     This function is an implementation of Janon's second estimator given by
@@ -74,6 +79,7 @@ def janon(fb: np.ndarray, fab_i: np.ndarray) -> float:
 
     :param fb: numpy array of model output with matrix B
     :param fab_i: numpy array of model output with matrix AB_i
+    :param fa: numpy array of model output evaluated w input matrix A (not used)
     :return: (float) the 1st-order index for parameter-i
     """
     # Compute the squared mean according to Janon et al. formulation
@@ -87,7 +93,7 @@ def janon(fb: np.ndarray, fab_i: np.ndarray) -> float:
     return si
 
 
-def sobol_saltelli(fa: np.ndarray, fb: np.ndarray, fab_i: np.ndarray) -> float:
+def sobol_saltelli(fb: np.ndarray, fab_i: np.ndarray, fa: np.ndarray) -> float:
     """Calculate the 1st-order index for parameter-i using Sobol'-Saltelli
 
     The implementation below is based on the Sobol'-Saltelli Design given in
@@ -103,9 +109,9 @@ def sobol_saltelli(fa: np.ndarray, fb: np.ndarray, fab_i: np.ndarray) -> float:
         sensitivity indices," Computer Physics Communications, 145, 
         pp. 280-297, 2002
 
-    :param fa: numpy array of model output evaluated with input matrix A
     :param fb: numpy array of model output evaluated with input matrix B
     :param fab_i: numpy array of model output with matrix AB_i
+    :param fa: numpy array of model output evaluated with input matrix A
     :return: the first order sensitivity of parameter i
     """
     # Compute the Squared Mean (f(a) * f(b))
