@@ -40,9 +40,10 @@ Main Features (v0.7.1)
   mean of absolute, and standard deviation) are used as the basis of
   parameter importance ranking.
 
-Complete CHANGELOG can be found in the `CHANGELOG.md` file.
+Complete log of changes can be found in `CHANGELOG`_.
 
 .. _Joe and Kuo (2008): http://web.maths.unsw.edu.au/~fkuo/sobol/
+.. _CHANGELOG: ./CHANGELOG.md
 
 Requirements
 ------------

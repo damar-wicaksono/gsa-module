@@ -91,7 +91,7 @@ implemented outside the module itself. The most important thing to remember is t
 the OAT design generated using ``gsa_morris_generate`` is normalized (between [0,1]).
 If the actual model has a different scale of parameters or different
 probability distribution, the proper transformation of the design point is to
-be carried out prior to the model evaluated.
+be carried out prior to the model evaluation.
 Note also that the results of the execution should be saved inside a text file
 with rows corresponding to the results of each model execution.
 
@@ -105,7 +105,7 @@ Analyzing the I/O of Morris Experimental Runs
 `````````````````````````````````````````````
 
 The last step in conducting the Morris screening analysis is to compute the
-statistics of the elementary effects for each inputs.
+statistics of the elementary effects for each input.
 The minimum requirements for this computation are the design file
 and its corresponding model output.
 If necessary, the rescaled design file can also be specified to compute
@@ -127,7 +127,7 @@ By default, the naming convention of the results of the analysis output file is:
 
     <normalized inputs filename>-<model outputs file>.csv
 
-The ``-mc`` file is to verbosely give report on the model specification
+The ``-mc`` flag is to verbosely give report on the model specification
 consistency. This includes:
 
  1. Number of input dimensions in the design file

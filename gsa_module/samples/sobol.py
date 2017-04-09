@@ -5,62 +5,57 @@ It is based on almost verbatim python conversion of cpp code by Kuo (copyright
 below), implementing algorithm by Joe and Kuo [1].
 
 Below is the original copyright notice which includes the copyright for the
-included direction number files in "./dirnumfiles/new-joe-kuo-6.21201"
+included direction number files in "./dirnumfiles/new-joe-kuo-6.21201"::
 
-/ Frances Y. Kuo
-/
-/ Email: <f.kuo@unsw.edu.au>
-/ School of Mathematics and Statistics
-/ University of New South Wales
-/ Sydney NSW 2052, Australia
-/
-/ Last updated: 21 October 2008
-/
-/  You may incorporate this source code into your own program
-/  provided that you
-/  1) acknowledge the copyright owner in your program and publication
-/  2) notify the copyright owner by email
-/  3) offer feedback regarding your experience with different direction numbers
-/
-/
-/ -----------------------------------------------------------------------------
-/ Licence pertaining to sobol.cc and the accompanying sets of direction numbers
-/ -----------------------------------------------------------------------------
-/ Copyright (c) 2008, Frances Y. Kuo and Stephen Joe
-/ All rights reserved.
-/
-/ Redistribution and use in source and binary forms, with or without
-/ modification, are permitted provided that the following conditions are met:
-/
-/     * Redistributions of source code must retain the above copyright
-/       notice, this list of conditions and the following disclaimer.
-/
-/     * Redistributions in binary form must reproduce the above copyright
-/       notice, this list of conditions and the following disclaimer in the
-/       documentation and/or other materials provided with the distribution.
-/
-/     * Neither the names of the copyright holders nor the names of the
-/       University of New South Wales and the University of Waikato
-/       and its contributors may be used to endorse or promote products derived
-/       from this software without specific prior written permission.
-/
-/ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY
-/ EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-/ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-/ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS BE LIABLE FOR ANY
-/ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-/ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-/ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-/ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-/ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-/ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-/ -----------------------------------------------------------------------------
+    Frances Y. Kuo
+    Email: <f.kuo@unsw.edu.au>
+    School of Mathematics and Statistics
+    University of New South Wales
+    Sydney NSW 2052, Australia
+    Last updated: 21 October 2008
+    You may incorporate this source code into your own program provided 
+    that you:
+    1) acknowledge the copyright owner in your program and publication
+    2) notify the copyright owner by email
+    3) offer feedback regarding your experience with different direction numbers
 
-    *References*:
+    -----------------------------------------------------------------------------
+    Licence pertaining to sobol.cc and the accompanying sets of direction numbers
+    -----------------------------------------------------------------------------
+    Copyright (c) 2008, Frances Y. Kuo and Stephen Joe
+    All rights reserved.
 
-    [1] S. Joe and F. Y. Kuo, "Constructing Sobol sequences with better two-
-        dimensional projections," SIAM Journal of Scientific Computing,
-        vol. 30, pp. 2635-2654 (2008).
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met
+
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the names of the copyright holders nor the names of the
+      University of New South Wales and the University of Waikato
+      and its contributors may be used to endorse or promote products derived
+      from this software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS`` AND ANY
+    EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS BE LIABLE FOR ANY
+    DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+    SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
+    LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY 
+    OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+    DAMAGE.
+    ---------------------------------------------------------------------------
+
+*References*:
+
+[1] S. Joe and F. Y. Kuo, "Constructing Sobol sequences with better two-
+    dimensional projections," SIAM Journal of Scientific Computing,
+    vol. 30, pp. 2635-2654 (2008).
 """
 import numpy as np
 

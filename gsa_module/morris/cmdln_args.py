@@ -35,11 +35,8 @@ def get_create_sample():
     +------------------+------------------------------------------------------+
     | filename         | (None or str) The output filename.                   |
     |                  | By default: "{}_{}_{}_{}.{}" .format(method,         |
-    |                  |                                   num_blocks,        |
-    |                  |                                   num_dimensions,    |
-    |                  |                                   num_levels         |
-    |                  |                                   (if trajectory),   |
-    |                  |                                   delimiter)         |
+    |                  | num_blocks, num_dimensions, num_levels               |
+    |                  | (if trajectory), delimiter)                          |
     +------------------+------------------------------------------------------+
     | delimiter        | ("csv", "tsv", "txt") the delimiter of the design    |
     |                  | matrix file. By default: "csv" or parse directly if  |
@@ -246,8 +243,12 @@ def get_analyze():
     |                  | from conducting the experimental runs based on the   |
     |                  | Morris design                                        |
     +------------------+------------------------------------------------------+
-    | output_file      | (str) The filename for the output of the analysist   |
+    | output_file      | (str) The filename for the output of the analysis    |
     |                  | by default it is "<morris_design_name>-morris.csv"   |
+    +------------------+------------------------------------------------------+
+    | bootstrap_       | (str) The filename for the bootstrap output of the   |
+    | output_file      | analysis. By default it is                           |
+    |                  | "<morris_design_name>-morris-bootstrap.csv"          |
     +------------------+------------------------------------------------------+
     | model_checking   | (bool) Flag to verbosely check the model             |
     +------------------+------------------------------------------------------+
@@ -326,17 +327,22 @@ def get_analyze():
 
     # Create filename of analysis output file
     if args.output_file is None:
-        output_file = "{}-{}.csv" \
+        output_file = "{}-{}" \
             .format(args.normalized_inputs.split("/")[-1].split(".")[0],
                     args.outputs.split("/")[-1].split(".")[0])
+        bootstrap_output_file = "{}-bootstrap.csv" .format(output_file)
+        output_file = "{}.csv" .format(output_file)
     else:
         output_file = args.output_file
+        bootstrap_output_file = "{}-bootstrap.csv" \
+            .format(output_file.split(".")[0])
 
     # Return the parsed command line arguments as a dictionary
     inputs = {"normalized_inputs": args.normalized_inputs,
               "rescaled_inputs": args.rescaled_inputs,
               "outputs": args.outputs,
               "output_file": output_file,
+              "bootstrap_output_file": bootstrap_output_file,
               "model_checking": args.model_checking
               }
 
