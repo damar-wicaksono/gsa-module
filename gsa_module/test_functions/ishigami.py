@@ -30,7 +30,7 @@ def evaluate(xx: np.ndarray, a: float=7, b: float=0.1) -> np.ndarray:
     :return: an array of length n
     """
     # Error checking, if the input is within domain
-    if (xx.shape[1] != 3):
+    if xx.shape[1] != 3:
         raise ValueError("The dimension of inputs <> 3!")
     elif (xx + np.pi < 1e-4).any():
         raise ValueError("Input is smaller than -pi!")
