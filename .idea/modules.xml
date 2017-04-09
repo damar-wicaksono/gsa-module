@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/gsa-sobol.iml" filepath="$PROJECT_DIR$/.idea/gsa-sobol.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/gsa-module.iml" filepath="$PROJECT_DIR$/.idea/gsa-module.iml" />
     </modules>
   </component>
 </project>
