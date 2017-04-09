@@ -35,9 +35,9 @@ def calc_pf(mu_star_1: np.ndarray, mu_star_2: np.ndarray) -> float:
     
     *Reference*:
     (1) M. V. Ruano, et al., "An improved sampling strategy based on trajectory
-       design for application of the Morris method to systems with many input
-       factors," Journal of Environmental Modelling & Software, vol. 37,
-       pp. 103-109, 2012.
+        design for application of the Morris method to systems with many input
+        factors," Journal of Environmental Modelling & Software, vol. 37,
+        pp. 103-109, 2012.
  
     :param mu_star_1: array of mu_star obtained with a block size
     :param mu_star_2: array of mu_star obtained with another block size
