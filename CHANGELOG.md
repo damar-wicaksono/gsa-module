@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## Unreleased
 
+## [0.8.0] - 2017-04-09
+
 ### Added
 - Add function to compute position factor, a simple and useful measure of 
   change in rank
@@ -14,6 +16,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - the API for analyzing Morris results has been changed. There's only one 
   single main function for both trajectory and radial design.
   The function will detect by itself the kind of design.
+- The function to compute the elementary effects will return the best-estimate
+  of their statistics (mu, mu_star, and standard deviation) as well as the 
+  bootstrap samples of the estimate. The bootstrap samples can be used to 
+  compute confidence interval either percentile or moment (sigma)
 
 ### Fixed
 - Fixed the issue with stability of linear solution when standardization 
@@ -103,6 +109,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   line interace
 
 [Unreleased]: https://bitbucket.org/lrs-uq/gsa-module/branches/compare/develop%0Dv0.7.0
+[0.7.1]: https://bitbucket.org/lrs-uq/gsa-module/branches/compare/v0.7.1%0Dv0.8.0
 [0.7.1]: https://bitbucket.org/lrs-uq/gsa-module/branches/compare/v0.7.1%0Dv0.7.0
 [0.7.0]: https://bitbucket.org/lrs-uq/gsa-module/branches/compare/v0.7.0%0Dv0.6.0
 [0.6.0]: https://bitbucket.org/lrs-uq/gsa-module/branches/compare/v0.6.0%0Dv0.5.3
