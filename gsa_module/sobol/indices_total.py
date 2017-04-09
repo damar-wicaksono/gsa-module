@@ -10,24 +10,40 @@ import numpy as np
 __author__ = "Damar Wicaksono"
 
 
-def evaluate(y_dict: dict, estimator: str="jansen") -> dict:
+def evaluate(y_dict: dict, estimator: str="jansen",
+             num_bootstrap: int=10000) -> tuple:
     """Calculate the total-order Sobol' sensitivity indices
     
     :param y_dict: a dictionary of numpy array of model outputs
     :param estimator: which estimator to use
-    :return: a numpy array of all the total-order indices
+    :param num_bootstrap: the number of bootstrap samples
+    :return: a tuple of two elements, first is a numpy array of all the 
+        total-order indices (length num_dims) and the second is the numpy array
+        of the bootstrap samples (num_bootstrap * num_dims)
     """
     # Get some common parameters
-    num_dimensions = len(y_dict) - 2
+    num_dims = len(y_dict) - 2
+    num_smpl = y_dict["a"].shape[0]
 
     # Compute the 1st-order sensitivity indices
-    sti = np.empty(num_dimensions)
+    sti = np.empty(num_dims)
     if estimator == "jansen":
-        for i in range(num_dimensions):
+        for i in range(num_dims):
             key = "ab_{}" .format(i+1)
             sti[i] = jansen(y_dict["a"], y_dict[key])
 
-    return sti
+    # Conduct the bootstrapping
+    if num_bootstrap > 0:
+        sti_bootstrap = np.empty([num_bootstrap, num_dims])
+        for i in range(num_bootstrap):
+            idx = np.random.choice(num_smpl, num_smpl, replace=True)
+            for j in range(num_dims):
+                key = "ab_{}".format(j + 1)
+                sti_bootstrap[i, j] = jansen(y_dict["a"][idx], y_dict[key][idx])
+    else:
+        sti_bootstrap = None
+
+    return sti, sti_bootstrap
 
 
 def jansen(fa: np.ndarray, fab_i: np.ndarray) -> float:
