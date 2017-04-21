@@ -21,10 +21,11 @@ def create(num_samples: int, num_dimensions: int,
            interaction: bool=False):
     r"""Generate Sobol'-Saltelli design matrices
 
-    Sobol'-Saltelli design matrices are used to calculate the Sobol' sensitivity
-    indices using Monte Carlo simulation by sampling-resampling scheme as
-    proposed in [1]. The design requires :math:`n \times (k+2)` function
-    evaluations for the 1st-order and the total-order sensitivity indices and
+    Sobol'-Saltelli design matrices are used to calculate the Sobol' 
+    sensitivity indices using Monte Carlo simulation by sampling-resampling 
+    scheme as proposed in [1]. 
+    The design requires :math:`n \times (k+2)` function evaluations for 
+    the 1st-order and the total-effect sensitivity indices and
     :math:`n \times (2k+2)` function evaluations for additional 2nd-order
     sensitivity indices. Where `n` is the number of samples and `k` is the
     number of parameters.
