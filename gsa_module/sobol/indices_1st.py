@@ -42,6 +42,8 @@ def estimate(y_dict: dict,
         estimator = sobol_saltelli
     elif str_estimator == "janon":
         estimator = janon
+    else:
+        raise ValueError("Estimator not supported!")
 
     # Compute the 1st-order sensitivity indices
     si_estimates = np.empty(num_dims)

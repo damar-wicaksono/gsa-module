@@ -16,7 +16,7 @@ def estimate(y_dict: dict,
     """Calculate the total-effect Sobol' sensitivity indices
     
     :param y_dict: a dictionary of numpy array of model outputs
-    :param estimator: which estimator to use
+    :param str_estimator: which estimator to use
     :param num_bootstrap: the number of bootstrap samples
     :return: a tuple of two elements, first is a numpy array of all the 
         total-effect indices (length num_dims) and the second is the numpy 
@@ -31,6 +31,8 @@ def estimate(y_dict: dict,
         estimator = jansen
     elif str_estimator == "sobol":
         estimator = sobol
+    else:
+        raise ValueError("Estimator not supported!")
 
     # Compute the total-effect sensitivity indices
     sti = np.empty(num_dims)
