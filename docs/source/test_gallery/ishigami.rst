@@ -3,20 +3,46 @@
 Ishigami Function
 -----------------
 
-Ishigami function is a 3-dimensional function introduce by Ishigami and Homma
+Ishigami function is a 3-dimensional function introduced by Ishigami and Homma
 [1]_,
 
 .. math::
 
-    f(\underline x) = \sin x_1 + a \sin^2 x_2 + b x^4_3 \sin x_1
+    f(\mathbf{x}) = \sin x_1 + a \sin^2 x_2 + b x^4_3 \sin x_1
 
 .. math::
-    x_i \sim U[-\pi, \pi]; i = 1, 2, 3
+    x_d \sim U[-\pi, \pi]; d = 1, 2, 3
 
 
-the parameters `a` and `b` can be adjusted but have default values of 7 and
-0.1, respectively.
+the parameters `a` and `b` can be adjusted but have default values of 7 and 0.1, respectively.
 
+Analytical Solution
+-------------------
+
+The analytical formulas for the variance terms of the Ishigami function
+for :math:`\mathbf{X}_d \sim \mathcal{U}[-\pi,\pi]; \, d = 1, 2, 3`
+and the given parameter :math:`a` and :math:`b` are the following
+
+**Marginal Variance**
+
+.. math::
+    \mathbb{V}[Y] =
+
+**Top Marginal Variance**
+
+.. math::
+    V_1 & = \mathbb{V}_{1} [\mathbb{E}_{2,3} [Y | X_1]] & = \frac{1}{2} \left(1 + \frac{b \pi^4}{5}\right)^2 \\
+    V_2 & = \mathbb{V}_{2} [\mathbb{E}_{1,3} [Y | X_2]] & = \frac{a^2}{8} \\
+    V_3 & = \mathbb{V}_{3} [\mathbb{E}_{1,2} [Y | X_3]] & = 0
+
+**Bottom Marginal Variance**
+
+.. math::
+    VT_1 = \mathbb{E}_{2,3} [\mathbb{V}_{1} [Y | \mathbf{X}_2,\mathbf{X}_3]] & = \frac{1}{2} \left(1 + \frac{b \pi^4}{5}\right)^2 + \frac{8 b^2 \pi^8}{225}\\
+    VT_2 = \mathbb{E}_{1,3} [\mathbb{V}_{2} [Y | \mathbf{X}_1,\mathbf{X}_3]] & = \frac{a^2}{8} \\
+    VT_3 = \mathbb{E}_{1,2} [\mathbb{V}_{3} [Y | \mathbf{X}_1,\mathbf{X}_2]] & = \frac{8 b^2 \pi^8}{225}
+
+The analytical main- and total-effect sensitivity indices can be computed using their respective definition in relation to the variance terms given above.
 
 Morris Screening Results
 ------------------------
