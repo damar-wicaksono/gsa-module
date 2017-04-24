@@ -1,6 +1,18 @@
 *.pyc
 *.csv
-make.bat
-Makefile
-docs-sphinx
+# Sphinx-doc
+docs/build/
+docs/_build/
+# PyCharm
+.idea/workspace.xml
 .ipynb_checkpoints
+# Word Document
+*.docx
+*.pdf
+*.pptx
+# egg package
+*.egg-info/
+#iPython Notebook
+*.ipynb
+#Sandboxing Folder
+sandboxing/

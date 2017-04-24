@@ -1,25 +1,34 @@
 # -*- coding: utf-8 -*-
-"""sobol_saltelli.py: Module to generate a set of Sobol'-Saltelli design matrix
-The design matrices will be used to evaluate model which outputs are used to
-calculate the Sobol' indices
 """
-import os
+    gsa_module.sobol.sobol_saltelli
+    *******************************
+    
+    Module to generate a set of Sobol'-Saltelli design matrices (or sampling-
+    resampling matrices)
+    The design matrices will be used to evaluate model which outputs are used 
+    to compute the Monte Carlo estimates of the Sobol' indices
+"""
 import numpy as np
-from .. import samples
-
+from ..samples import srs, lhs, sobol
 
 __author__ = "Damar Wicaksono"
 
 
-def create(n: int, k: int, scheme: str, params) -> dict:
-    r"""Generate Sobol'-Saltelli design matrix
+def create(num_samples: int, num_dimensions: int,
+           sampling_scheme: str="srs",
+           seed_number: int=None,
+           dirnum: np.ndarray=None,
+           interaction: bool=False):
+    r"""Generate Sobol'-Saltelli design matrices
 
-    Sobol'-Saltelli design matrix is used to calculate the Sobol' sensitivity
-    indices using Monte Carlo simulation by sampling-resampling scheme as
-    proposed in [1]. The design requires :math:`n \times (k+2)` function
-    evaluations for 1st- and total-order sensivitiy indices and
+    Sobol'-Saltelli design matrices are used to calculate the Sobol' 
+    sensitivity indices using Monte Carlo simulation by sampling-resampling 
+    scheme as proposed in [1]. 
+    The design requires :math:`n \times (k+2)` function evaluations for 
+    the 1st-order and the total-effect sensitivity indices and
     :math:`n \times (2k+2)` function evaluations for additional 2nd-order
-    sensitivity indices.
+    sensitivity indices. Where `n` is the number of samples and `k` is the
+    number of parameters.
 
     **References:**
 
@@ -27,56 +36,33 @@ def create(n: int, k: int, scheme: str, params) -> dict:
         output. Design and estimator for the total sensitivity index," Computer
         Physics Communications, 181, pp. 259-270, (2010)
 
-    :param n: (int) the number of samples
-    :param k: (int) the number of parameters
-    :param scheme: (str) the scheme to generate the design. e.g., "srs", "lhs",
-        "sobol"
-    :param params: (list of int) the seed numbers for "srs" and "lhs"
-        (list of str) for "sobol" scheme, the fullname of the executable for the
-        generator and the file containing direction numbers
-    :returns: (dict of ndArray) a dictionary containing pair of keys and numpy
+    :param num_samples: the number of Monte Carlo samples to do the estimation
+    :param num_dimensions: the number of dimensions (or parameters)
+    :param sampling_scheme: the sampling scheme to generate the design
+    :param seed_number: the random seed number if sampling_scheme == srs | lhs
+    :param dirnum: the direction numbers for Sobol' sequence
+    :param interaction: flag to generate matrices used for 2nd order 
+        interaction indices estimation
+    :return: (dict of ndarray) a dictionary containing pair of keys and numpy
         arrays of which each rows correspond to the normalized (0, 1) parameter
         values for model evaluation
     """
-    # Check the input arguments for n and k
-    if (not isinstance(n, int)) or n <= 0:
-        raise TypeError
-    elif (not isinstance(k, int)) or k <= 0:
-        raise TypeError
-    elif (not isinstance(params, list)) or len(params) != 2:
-        raise TypeError
+    # short names for local variables
+    n = num_samples
+    d = num_dimensions
 
-    # Check the scheme argument and, if valid, generate 2 sample sets
-    # of the same dimensions for "sample" (A) and "resample" (B)
-    if scheme == "srs":
-        if (not isinstance(params[0], int)) or params[0] <= 0:
-            raise TypeError
-        elif (not isinstance(params[0], int)) or params[1] <= 0:
-            raise TypeError
-        else:
-            a = samples.design_srs.create(n, k, params[0])
-            b = samples.design_srs.create(n, k, params[1])
-    elif scheme == "lhs":
-        if (not isinstance(params[0], int)) or params[0] <= 0:
-            raise TypeError
-        elif (not isinstance(params[0], int)) or params[1] <= 0:
-            raise TypeError
-        else:
-            a = samples.design_lhs.create(n, k, params[0])
-            b = samples.design_lhs.create(n, k, params[1])
-    elif scheme == "sobol":
-        if (not isinstance(params[0], str)) or (not os.path.exists(params[0])):
-            raise TypeError
-        elif (not isinstance(params[1], str)) or (not os.path.exists(params[1])):
-            raise TypeError
-        else:
-            ab = samples.design_sobol.create(n, 2*k, params[0], params[1])
-            a = ab[:, 0:k]
-            b = ab[:, k:2*k]
+    if sampling_scheme == "lhs":
+        ab = lhs.create(n, 2*d, seed_number)
+    elif sampling_scheme == "sobol":
+        # Exclude the first two rows because each has the same values
+        ab = sobol.create(n+2, 2*d, dirnum)
+        ab = ab[2:]
     else:
-        raise NameError
+        ab = srs.create(n, 2*d, seed_number)
 
-    # Matrix A and B in a python dict
+    a = ab[:,:d]
+    b = ab[:,d:]
+
     sobol_saltelli = dict()
     sobol_saltelli["a"] = a
     sobol_saltelli["b"] = b
@@ -84,32 +70,35 @@ def create(n: int, k: int, scheme: str, params) -> dict:
     # AB_i: replace the i-th column of A matrix by i-th column of B matrix
     # These sets of samples are used to calculate the first- and total-order
     # Sobol' indices (together with A and B)
-    for i in range(k):
+    for i in range(num_dimensions):
         key = "ab_{}" .format(str(i+1))
         temp = np.copy(a)
         temp[:, i] = b[:, i]
         sobol_saltelli[key] = temp
 
-    # BA_i: replace the i-th column of B matrix by i-th column of A matrix
-    # these sets of samples are used to calculate the second-order Sobol'
-    # indices
-    for i in range(k):
-        key = "ba_{}" .format(i+1)
-        temp = np.copy(b)
-        temp[:, i] = a[:, i]
-        sobol_saltelli[key] = temp
+    if interaction:
+        # BA_i: replace the i-th column of B matrix by i-th column of A matrix
+        # these sets of samples are used to calculate the second-order Sobol'
+        # indices
+        for i in range(num_dimensions):
+            key = "ba_{}" .format(i+1)
+            temp = np.copy(b)
+            temp[:, i] = a[:, i]
+            sobol_saltelli[key] = temp
 
     return sobol_saltelli
 
 
-def write(sobol_saltelli: dict, tag: str, fmt="%1.6e"):
-    r"""Write Sobol'-Saltelli design matrices into set of files according to key
+def write(sobol_saltelli: dict, output_header: str, fmt="%1.6e"):
+    """Write Sobol'-Saltelli design matrices into set of files according to key
 
-    :param sobol_saltelli: (dict of ndArray) the Sobol'-Saltelli matrices
-    :param tag: (str) the tag for matrices filenames (for identifier purpose)
-    :param format: (str) the print format of the number
+    The files will be written in csv format, each is a complete design matrix
+
+    :param sobol_saltelli: (dict of np.ndArray) the Sobol'-Saltelli matrices
+    :param output_header: the header for the  filenames, for identifier purpose
+    :param fmt: the print format of the number
     """
 
     for key in sobol_saltelli:
-        fname = "{}_{}.csv" .format(tag, key)
+        fname = "{}_{}.csv" .format(output_header, key)
         np.savetxt(fname, sobol_saltelli[key], fmt=fmt, delimiter=",")

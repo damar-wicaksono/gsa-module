@@ -1,7 +1,12 @@
-"""Module containing routines to generate samples using various design
+"""Package containing routines to generate design using various sampling schemes
 """
-from . import design_srs
-from . import design_lhs
-from . import design_sobol
+from . import cmdln_args
+from . import test_sample
+from . import hammersley
+from . import lhs
+from . import lhs_opt
+from . import sobol
+from . import srs
+
 
 __author__ = "Damar Wicaksono"

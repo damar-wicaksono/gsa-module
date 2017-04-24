@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+
+import numpy as np
+from gsa_module import samples
+
+__author__ = "Damar Wicaksono"
+
+
+def main():
+    # Get the command line arguments
+    inputs = samples.cmdln_args.get_create_validset()
+
+    # Open the original design matrix file
+    dm = np.loadtxt(inputs["dm_fullname"], delimiter=inputs["str_delimiter"])
+
+    # Generate the validation data set with the requested size
+    dm_valid = samples.test_sample.create_sequential(
+        dm, num_tests=inputs["num_tests"],
+        num_candidates=inputs["num_candidates"])
+
+    # Save the design into file
+    np.savetxt(inputs["filename"], dm_valid,
+               fmt="%1.6e", delimiter=inputs["str_delimiter"])
+
+
+if __name__ == "__main__":
+    main()
