@@ -11,7 +11,7 @@ __author__ = "Damar Wicaksono"
 
 
 def estimate(y_dict: dict,
-             str_estimator: str="sobol-saltelli",
+             str_estimator: str="saltelli",
              num_bootstrap: int=10000) -> tuple:
     """Calculate the 1st-order Sobol' sensitivity indices and create a dict
 
@@ -38,8 +38,8 @@ def estimate(y_dict: dict,
     num_smpl = y_dict["a"].shape[0]
 
     # Select the estimator
-    if str_estimator == "sobol-saltelli":
-        estimator = sobol_saltelli
+    if str_estimator == "saltelli":
+        estimator = saltelli
     elif str_estimator == "janon":
         estimator = janon
     else:
@@ -95,8 +95,8 @@ def janon(fb: np.ndarray, fab_i: np.ndarray, fa: np.ndarray=None) -> float:
     return si
 
 
-def sobol_saltelli(fb: np.ndarray, fab_i: np.ndarray, fa: np.ndarray) -> float:
-    """Calculate the 1st-order index for parameter-i using Sobol'-Saltelli
+def saltelli(fb: np.ndarray, fab_i: np.ndarray, fa: np.ndarray) -> float:
+    """Calculate the 1st-order index for parameter-i using Saltelli estimator
 
     The implementation below is based on the Sobol'-Saltelli Design given in
     Table 2 of [1] (equation (b)). This estimator is still the same as the one
