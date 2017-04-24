@@ -8,3 +8,4 @@
 """
 from . import ishigami
 from . import morris_modified
+from . import sobol_g_curved
