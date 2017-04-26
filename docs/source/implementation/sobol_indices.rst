@@ -102,105 +102,109 @@ is used to quantify the amount of all interactions involving that parameters in 
 The Sobol'-Saltelli Method
 --------------------------
 
-In principle, the estimation of the Sobol' indices defined by Eqs.~(\ref{eq:sa_main_effect_index}) and (\ref{eq:sa_total_effect_index}) can be directly carried out using \gls{mc} simulation.
-\marginpar{brute force \\ Monte Carlo}
+Monte Carlo Integration
+```````````````````````
+
+In principle,
+the estimation of the Sobol' indices defined by Eqs. :eq:`main_effect_index` and :eq:`total_effect_index` can be directly carried out using Monte Carlo (MC) simulation.
 The most straightforward, though rather naive,
-implementation of \gls{mc} simulation to conduct the estimation is using two nested loops for the computation of the conditional variance and expectation appeared in both equations.
+implementation of MC simulation to conduct the estimation is using two nested loops for the computation of the conditional variance and expectation appeared in both equations.
 
-In the estimation of the main-effect index of parameter $x_d$, for instance,
-the outer loop samples values of $X_d$ while the inner loop samples values of $\mathbf{X}_{\sim d}$ (anything else other than $x_d$).
+In the estimation of the main-effect index of parameter :math:`x_d`, for instance,
+the outer loop samples values of :math:`X_d` while the inner loop samples values of :math:`\mathbf{X}_{\sim d}`
+(anything else other than :math:`x_d`).
 These samples, in turn, are used to evaluate the model output.
-In the inner loop, the mean of the model output (for a given value of $X_d$ but over many values of $\mathbf{X}_{\sim d}$) is taken.
-Afterward, in the outer loop, the variance of the model output (over many values of $X_d$) is taken.
-This approach can easily become prohibitively expensive as the nested structure requires two $N^2$ model evaluations \emph{per input dimension} for either the main-effect and total-effect indices,
-while $N$ (the size of \gls{mc} samples) are typically in the range of $10^2 - 10^4$ for a reliable estimate.
+In the inner loop, the mean of the model output (for a given value of :math:`X_d` but over many values of :math:`\mathbf{X}_{\sim d}`) is taken.
+Afterward, in the outer loop, the variance of the model output (over many values of :math:`X_d`) is taken.
+This approach can easily become prohibitively expensive as the nested structure requires two :math:`N^2` model evaluations *per input dimension* for either the main-effect and total-effect indices,
+while :math:`N` (the size of MC samples) are typically in the range of :math:`10^2 - 10^4` for a reliable estimate.
 
-Sobol' \cite{Sobol2001} and Saltelli \cite{Saltelli2002} proposed an alternative approach that circumvent the nested structure of \gls{mc} simulation to estimate the indices.
-The formulation starts by expressing the the expectation and variance operators in their integral form.
-As the following formulation is defined on a unit hypercube of $D$-dimension parameter space where each parameter is a uniform and independent random variable,
+Sobol' [4]_ and Saltelli [7]_ proposed an alternative approach that circumvent the nested structure of MC simulation to estimate the indices.
+The formulation starts by expressing the expectation and variance operators in their integral form.
+As the following formulation is defined on a unit hypercube of :math:`D`-dimension parameter space where each parameter is a uniform and independent random variable,
 explicit writing of the distribution within the integration as well as the integration range are excluded for conciseness.
 
-First, the variance operator shown in the numerator of Eq.~(\ref{eq:sa_main_effect_index}) is written as
-\begin{equation}
-  \begin{split}
+First, the variance operator shown in the numerator of Eq. :eq:`main_effect_index` is written as
+
+.. math::
     \mathbb{V}_{d}[\mathbb{E}_{\sim d}[Y|X_d]] & = \mathbb{E}_{d}[\mathbb{E}_{\sim d}^{2}[Y|X_d]] - \left(\mathbb{E}_{d}[\mathbb{E}_{\sim d}[Y|X_d]]\right)^2 \\
                                                & = \int \mathbb{E}_{\sim d}^{2}[Y|X_d] dx_d - \left(\int \mathbb{E}_{\sim d}[Y|X_d] dx_d\right)^2
-  \end{split}
-\label{eq:ss_variance_integral}
-\end{equation}
-The notation $\mathbb{E}_{\sim \circ}[\circ | \circ]$ was already explained in Section~\ref{sub:sa_hdmr},
-while $\mathbb{E}_{\circ} [\circ]$ corresponds to the marginal expectation operator
+    :label: ss_variance_integral
+
+The notation :math:`\mathbb{E}_{\sim \circ}[\circ | \circ]` was already explained in the previous subsection,
+while :math:`\mathbb{E}_{\circ} [\circ]` corresponds to the marginal expectation operator
 where the integration is carried out over the range of parameters specified in the subscript.
 
-Next, consider the term conditional expectation shown in Eq.~(\ref{eq:ss_variance_integral}), which per definition reads
-\begin{equation}
-  \mathbb{E}_{\sim d} [Y|X_d] = \int f(\mathbf{x}_{\sim d}, x_d) d\mathbf{x}_{\sim d}
-\label{eq:ss_expectation_integral}
-\end{equation}
-Note that $\mathbf{x} = \{\mathbf{x}_{\sim d}, x_d\}$.
+Next, consider the term conditional expectation shown in Eq. :eq:`ss_variance_integral`, which per definition reads
 
-Following the first term of Eq.~(\ref{eq:ss_variance_integral}), by squaring Eq.~(\ref{eq:ss_expectation_integral})
-and by defining a dummy vector variable $\mathbf{x}^{\prime}_{\sim d}$,
+.. math::
+    \mathbb{E}_{\sim d} [Y|X_d] = \int f(\mathbf{x}_{\sim d}, x_d) d\mathbf{x}_{\sim d}
+    :label: ss_expectation_integral
+
+Note that :math:`\mathbf{x} = \{\mathbf{x}_{\sim d}, x_d\}`.
+
+Following the first term of Eq. :eq:`ss_variance_integral, by squaring Eq. :eq:`ss_expectation_integral
+and by defining a dummy vector variable :math:`\mathbf{x}^{\prime}_{\sim d}`,
 the product of the two integrals can be written in terms of a single multiple integrals
-\begin{equation}
-  \begin{split}
+
+.. math::
     \mathbb{E}_{\sim d}^{2} [Y|X_d] & = \int f(\mathbf{x}_{\sim d}, x_d) d\mathbf{x}_{\sim d} \cdot \int f(\mathbf{x}_{\sim d}, x_d) d\mathbf{x}_{\sim d} \\
                                     & = \int \int f(\mathbf{x}^{\prime}_{\sim d}, x_d) f(\mathbf{x}_{\sim d}, x_d) d\mathbf{x}^{\prime}_{\sim d} d\mathbf{x}_{\sim d}
-  \end{split}
-\label{eq:ss_multiple_integrals}
-\end{equation}
+    :label: ss_multiple_integrals
 
-Returning to the full definition of variance of conditional expectation in Eq.~(\ref{eq:ss_variance_integral}),
-\begin{equation}
-  \begin{split}
+
+Returning to the full definition of variance of conditional expectation in Eq. :eq:`ss_variance_integral`,
+
+.. math::
     \mathbb{V}_{d}[\mathbb{E}_{\sim d}[Y|X_d]] & = \int \int f(\mathbf{x}^{\prime}_{\sim d}, x_d) f(\mathbf{x}_{\sim d}, x_d) d\mathbf{x}^{\prime}_{\sim d} d\mathbf{x}_{\sim d} \\
                                                & \quad - \left(\int f(\mathbf{x}) d\mathbf{x}\right)^2
-  \end{split}
-\label{eq:ss_variance_integral_single}
-\end{equation}
+    :label: ss_variance_integral_single
 
 Finally, the main-effect sensitivity index can be written as an integral as follows:
-\begin{equation}
-  \begin{split}
+
+.. math::
     S_d & = \frac{\mathbb{V}_d [\mathbb{E}_{\sim d} [Y|X_d]]}{\mathbb{V}[Y]} \\
         & = \frac{\int \int f(\mathbf{x}^{\prime}_{\sim d}, x_d) f(\mathbf{x}_{\sim d}, x_d) d\mathbf{x}^{\prime}_{\sim d} d\mathbf{x} - \left(\int f(\mathbf{x}) d\mathbf{x}\right)^2}{\int f(\mathbf{x})^2 d\mathbf{x} - \left( \int f(\mathbf{x}) d\mathbf{x}\right)^2}
-  \end{split}
-\label{eq:ss_main_effect_integral}
-\end{equation}
+    :label: ss_main_effect_integral
+
 The integral form given above dispenses with the nested structure of multiple integrals in the original definition of main-effect index.
-The multidimensional integration is over $2 \times D - 1$ dimensions
-and it is the basis of estimating sensitivity index using \gls{mc} simulation in this thesis, hereinafter referred to as the Sobol'-Saltelli method.
+The multidimensional integration is over :math:`2 \times D - 1` dimensions
+and it is the basis of estimating sensitivity index using MC simulation in this implementation,
+hereinafter referred to as the Sobol'-Saltelli method.
 The same procedure applies to derive the total effect-index which yields,
-\begin{equation}
-  \begin{split}
+
+.. math::
     ST_d & = \frac{\mathbb{E}_{\sim d}[\mathbb{V}_{d}[Y|\mathbf{X}_{\sim d}]]}{\mathbb{V}[Y]} \\
-        & = \frac{\int f^2(\mathbf{x}) d\mathbf{x} - \int \int f(\mathbf{x}_{\sim d}, x^{\prime}_d) f(\mathbf{x}_{\sim d}, x_d) d\mathbf{x}^{\prime}_{d} d\mathbf{x}}{\int f(\mathbf{x})^2 d\mathbf{x} - \left( \int f(\mathbf{x}) d\mathbf{x}\right)^2}
-  \end{split}
-\label{eq:ss_total_effect_integral}
-\end{equation}
+         & = \frac{\int f^2(\mathbf{x}) d\mathbf{x} - \int \int f(\mathbf{x}_{\sim d}, x^{\prime}_d) f(\mathbf{x}_{\sim d}, x_d) d\mathbf{x}^{\prime}_{d} d\mathbf{x}}{\int f(\mathbf{x})^2 d\mathbf{x} - \left( \int f(\mathbf{x}) d\mathbf{x}\right)^2}
+    :label: ss_total_effect_integral
 
-As it was the case for the Morris method, an implementation of the Sobol'-Saltelli method is also part of \texttt{gsa-module} python3 package (see Appendix~\ref{app:gsa_module} for detail).
-For $N$ number of \gls{mc} samples and $D$ number of model parameters, the \gls{mc} simulation procedure to estimate the sensitivity indices follows the sampling and resampling approach adopted in~\cite{Sobol2001,Saltelli2002,Homma1996} described in the following.
+For :math:`N` number of MC samples and :math:`D` number of model parameters,
+MC simulation procedure to estimate the sensitivity indices follows the sampling and resampling approach adopted in [4]_, [5]_, [7]_ described in the following.
 
-\textsc{First}, generate two $N \times D$ independent random samples from a uniform independent distribution in $D$-dimension, $[0,1]^D$:
-\begin{equation}
-A =
-\begin{pmatrix}
-a_{11}  & \cdots  & a_{1D}\\
-\vdots	& \ddots & \vdots\\
-a_{N1}  & \cdots  & a_{ND}\\
-\end{pmatrix}
-;\quad B =
-\begin{pmatrix}
-b_{11}  & \cdots  & b_{1D}\\
-\vdots	& \ddots & \vdots\\
-b_{N1}  & \cdots  & b_{ND}\\
-\end{pmatrix}
-\label{eq:ss_two_samples}
-\end{equation}
+Procedures
+``````````
 
-\textsc{Second}, construct $D$ additional design of experiment matrices where each matrix is matrix $A$ with the $d$-th column substituted by the $d$-th column of matrix $B$:\begin{equation}
-  \begin{split}
+**First**, generate two :math:`N \times D` independent random samples from a uniform independent distribution in :math:`D`-dimension, :math:`[0,1]^D`:
+
+.. math::
+    A =
+    \begin{pmatrix}
+    a_{11}  & \cdots  & a_{1D}\\
+    \vdots	& \ddots & \vdots\\
+    a_{N1}  & \cdots  & a_{ND}\\
+    \end{pmatrix}
+    ;\quad B =
+    \begin{pmatrix}
+        b_{11}  & \cdots  & b_{1D}\\
+        \vdots	& \ddots & \vdots\\
+        b_{N1}  & \cdots  & b_{ND}\\
+    \end{pmatrix}
+    :label: ss_two_samples
+
+**Second**, construct :math:`D` additional design of experiment matrices
+where each matrix is matrix :math:`A` with the :math:`d`-th column substituted by the :math:`d`-th column of matrix :math:`B:
+
+.. math::
   & A_{B}^1 =
   \begin{pmatrix}
     b_{11}  & \cdots  & a_{1D}\\
@@ -219,50 +223,48 @@ b_{N1}  & \cdots  & b_{ND}\\
     \vdots	& \ddots & \vdots\\
     a_{N1}  & \cdots  & b_{ND}\\
   \end{pmatrix}
-  \end{split}
-\label{eq:ss_sampling_resampling}
-\end{equation}
+    :label: ss_sampling_resampling
 
-\textsc{Third}, rescale each element in the matrices of samples to the actual values of model parameters according to their actual range of variation through iso-probabilistic transformation.
+**Third**, rescale each element in the matrices of samples to the actual values of model parameters according to their actual range of variation through iso-probabilistic transformation.
 
-\textsc{Fourth}, evaluate the model multiple times using input vectors that correspond to each row of $A$, $B$, and all the $A_B^d$.
+**Fourth**, evaluate the model multiple times using input vectors that correspond to each row of :math:`A`, :math:`B`, and all the :math:`A_B^d`.
 
-\textsc{Fifth} and finally, extract the \gls{qoi}s from all the outputs and recast them as vectors.
+**Fifth** and finally, extract the quantities of interest (QoIs) from all the outputs and recast them as vectors.
 The main-effect and total-effect indices are then estimated using the estimators described below.
 
+Monte Carlo Estimators
+``````````````````````
+
 For the main-effect sensitivity index, two estimators are considered.
-One is proposed by Saltelli~\cite{Saltelli2002}, and the other, as an alternative, is proposed by Janon et al~\cite{Janon2014}.
-The latter proved to be more efficient, especially for a large variation around a parameter estimate~\cite{Iooss2015,Janon2014}.
+One is proposed by Saltelli [7]_, and the other, as an alternative, is proposed by Janon et al. [8]_.
+The latter proved to be more efficient, especially for a large variation around a parameter estimate [8]_.
 
-The first term in the numerator of Eq.~(\ref{eq:ss_main_effect_integral}) is the same for both estimators and is given by
-\begin{equation}
+
+The first term in the numerator of Eq. :eq:`ss_main_effect_integral` is the same for both estimators and is given by
+
+.. math::
   \int \int f(\mathbf{x}^{\prime}_{\sim d}, x_d) f(\mathbf{x}_{\sim d}, x_d) d\mathbf{x}^{\prime}_{\sim d} d\mathbf{x}_{\sim d} \approx \frac{1}{N}\sum_{n=1}^N f(B)_n \cdot f(A_B^d)_n
-\label{eq:ss_first_term}
-\end{equation}
-where the subscript $n$ corresponds to the row of the sampled model parameters
-such that $f(B)_n$ is the model output evaluated using inputs taken from the $n$-th row of matrix $B$
-and $f(A_B^d)_n$ is the model output evaluated using inputs taken from the $n$-th row of matrix $A_B^K$.
-The \gls{mc} estimator for the second term in the numerator and for the denominator differ for the two considered estimators given in Table~\ref{tab:ss_main_effect_estimator}.
+  :label: ss_first_term
 
-\begin{table}[h]
-	\myfloatalign
-	\caption[Monte Carlo estimators to estimate the main-effect indices]{Two \gls{mc} estimators for the terms in Eq.~(\ref{eq:ss_main_effect_integral}) to estimate the main-effect indices (the sum is taken implicitly over all samples $N$)}
-	\label{tab:ss_main_effect_estimator}
-	\begin{tabularx}{\textwidth}{Xll} \toprule
-		\tableheadline{Estimator}         & $\mathbb{E}^2[Y] = \left( \int f d\mathbf{x}\right)^2$          & $\mathbb{V}[Y] = \int f^2 d\mathbf{x} - \left( \int f d\mathbf{x}\right)^2$ \\ \midrule
-		Saltelli \cite{Saltelli2002}      & $\frac{1}{N} \sum f(A)_n \cdot f(B)_n$                          & $\frac{1}{N}\sum f(A)_n^2-\left(\frac{1}{N}\sum f(A)_n\right)^2$  \\[0.75cm]
-		Janon et~al.~\cite{Janon2014}     & $\left(\frac{1}{N} \sum \frac{f(B)_n + f(A_B^d)_n}{2}\right)^2$ & $\frac{1}{N} \sum \frac{f(B)_n^2 + f(A_B^d)_n^2}{2}$ \\
-                                      &                                                                 & $\quad -\left(\frac{1}{N} \sum \frac{f(B)_n^2 + f(A_B^d)_n^2}{2}\right)^2$ \\
-		\bottomrule
-	\end{tabularx}
-\end{table}
+where the subscript :math:`n` corresponds to the row of the sampled model parameters
+such that :math:`f(B)_n` is the model output evaluated using inputs taken from the :math:`n`-th row of matrix :math:`B`
+and :math:`f(A_B^d)_n` is the model output evaluated using inputs taken from the :math:`n`-th row of matrix :math:`A_B^K`.
+The MC estimator for the second term in the numerator and for the denominator differ for the two considered estimators given in Table below.
+
+================= ===================================================================== ===================================================================================================================================
+Estimator         :math:`\mathbb{E}^2[Y] = \left( \int f d\mathbf{x}\right)^2`          :math:`\mathbb{V}[Y] = \int f^2 d\mathbf{x} - \left( \int f d\mathbf{x}\right)^2`
+================= ===================================================================== ===================================================================================================================================
+Saltelli [7]_     :math:`\frac{1}{N} \sum f(A)_n \cdot f(B)_n`                          :math:`\frac{1}{N}\sum f(A)_n^2-\left(\frac{1}{N}\sum f(A)_n\right)^2`
+Janon et al. [8]_ :math:`\left(\frac{1}{N} \sum \frac{f(B)_n + f(A_B^d)_n}{2}\right)^2` :math:`\frac{1}{N} \sum \frac{f(B)_n^2 + f(A_B^d)_n^2}{2}\quad - \left(\frac{1}{N} \sum \frac{f(B)_n^2 + f(A_B^d)_n^2}{2}\right)^2`
+================= ===================================================================== ===================================================================================================================================
 
 The general formula of the main-effect sensitivity index estimator is
-\begin{equation}
+
+.. math::
   \widehat{S}_d = \frac{\frac{1}{N}\sum_{n=1}^N f(B)_n \cdot f(A_B^d)_n - \mathbb{E}^2[Y]}{\mathbb{V}[Y]}
-\label{eq:ss_main_effec_estimator}
-\end{equation}
-where and $\mathbb{E}^2[Y]$ and $\mathbb{V}[Y]$ are as prescribed in Table~\ref{tab:ss_main_effect_estimator}.
+  :label: `ss_main_effect_estimator`
+where and :math:`\mathbb{E}^2[Y]` and :math:`\mathbb{V}[Y]` are as prescribed in Table above.
+
 
 To estimate the total-effect sensitivity indices, the Jansen estimator~\cite{Jansen1999} is recommended in~\cite{Saltelli2010a}.
 The estimator reads
@@ -271,6 +273,13 @@ The estimator reads
 \label{eq:ss_jansen_estimator}
 \end{equation}
 where $\mathbb{V}[Y]$ is estimated by the Saltelli et al. estimator in Table~\ref{tab:ss_main_effect_estimator}.
+
+================= ===================================================================== ===================================================================================================================================
+Estimator         :math:`\mathbb{E}^2[Y] = \left( \int f d\mathbf{x}\right)^2`          :math:`\mathbb{V}[Y] = \int f^2 d\mathbf{x} - \left( \int f d\mathbf{x}\right)^2`
+================= ===================================================================== ===================================================================================================================================
+Sobol-Homma [7]_  :math:`\frac{1}{N} \sum f(A)_n \cdot f(B)_n`                          :math:`\frac{1}{N}\sum f(A)_n^2-\left(\frac{1}{N}\sum f(A)_n\right)^2`
+Jansen [8]_       :math:`\left(\frac{1}{N} \sum \frac{f(B)_n + f(A_B^d)_n}{2}\right)^2` :math:`\frac{1}{N} \sum \frac{f(B)_n^2 + f(A_B^d)_n^2}{2}\quad - \left(\frac{1}{N} \sum \frac{f(B)_n^2 + f(A_B^d)_n^2}{2}\right)^2`
+================= ===================================================================== ===================================================================================================================================
 
 The computational cost associated with the estimation of all the main-effect and total-effect indices is $N \times (D + 2)$ code runs,
 \marginpar{computational cost: \\ brute force Monte Carlo vs. Sobol'-Saltelli}
@@ -285,6 +294,9 @@ determines the precision of the estimates.
 A larger number of samples (and replications) increases the precision.
 Note, however, that in practice the typical number of Morris replications is between $10^1 - 10^2$~\cite{Saltelli2010},
 while the number of \gls{mc} samples for the Sobol' indices estimation amounts to $10^2 - 10^4$~\cite{Sobol2001}.
+
+References
+----------
 
 .. [1] Dan G. Cacuci and Mihaela Ionescu-Bujor,
        "A Comparative Review of Sensitivity and Uncertainty Analysis of Large-Scale Systems - II: Statistical Methods,"
@@ -303,3 +315,9 @@ while the number of \gls{mc} samples for the Sobol' indices estimation amounts t
 .. [6] A. Saltelli et al.,
        "Sensitivity Analysis in Practice: a Guide to Assessing Scientific Models,"
        West Sussex, John Wiley & Sons, 2004.
+.. [7] A. Saltelli,
+       "Making best use of model evaluations to compute sensitivity indices,"
+       Computer Physics Communications, vol. 145, no. 2, pp. 280-297, 2002.
+.. [8] A. Janon et al.,
+       "Asymptotic normality and efficiency of two Sobol' index estimators,"
+       ESAIM: Probability and Statistics, vol. 18, pp. 342-364, 2014.
