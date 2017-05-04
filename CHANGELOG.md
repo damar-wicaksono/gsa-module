@@ -6,19 +6,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [Unreleased]
 
+## [0.9.0] - 2017-05-04
 ### Added
-- Add functionality to generate a set of Sobol'-Saltelli design matrices used to 
-  compute the Monte Carlo estimates of first- and total- order sensitivity
+- Add functionality to generate a set of Sobol'-Saltelli design matrices used 
+  to compute the Monte Carlo estimates of first- and total- order sensitivity
 - The generation of the design matrices are equipped with a command line 
   interface: `gsa_sobol_generate` executable
 - Add functionality to estimate the first order sensitivity indices using two
   different estimator: Sobol'-Saltelli and Janon et al.
 - Add functionality to estimate the total order sensitivity using the Jansen 
-  estimator
+  estimator and Sobol-Homma Estimator
 - The estimation also includes the bootstrap samples of each indices
 - The computation of confidence interval (either moment based or percentile) 
   can be separately carried out using gsa_module.sobol.misc.bootstrap_ci() 
   function
+- Fully tested on Ishigami and Sobol-G* functions, the results is documented
 
 ## [0.8.0] - 2017-04-09
 

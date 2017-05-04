@@ -18,7 +18,7 @@ be seen in the figure below.
 
 .. image:: ./docs/figures/flowchart.png
 
-Main Features (v0.7.1)
+Main Features (v0.9.0)
 ----------------------
 
 - Capability to generate design of computer experiments using 4 different
@@ -39,6 +39,11 @@ Main Features (v0.7.1)
   otherwise both for trajectory and radial designs. The statistics (mean,
   mean of absolute, and standard deviation) are used as the basis of
   parameter importance ranking.
+- Capability to estimate the first-order (main effect) Sobol' sensitivity
+  indices using two different estimators (Saltelli and Janon).
+- Capability to estimate the total effect Sobol' sensitivity indices using two
+  different estimators (Sobol-Homma and Jansen).
+- All estimated quantities are equipped with their bootstrap samples
 
 Complete log of changes can be found in `CHANGELOG`_.
 
