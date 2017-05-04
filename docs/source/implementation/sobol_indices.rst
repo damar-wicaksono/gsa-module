@@ -223,7 +223,6 @@ where each matrix is matrix :math:`A` with the :math:`d`-th column substituted b
     \vdots	& \ddots & \vdots\\
     a_{N1}  & \cdots  & b_{ND}\\
   \end{pmatrix}
-    :label: ss_sampling_resampling
 
 **Third**, rescale each element in the matrices of samples to the actual values of model parameters according to their actual range of variation through iso-probabilistic transformation.
 
@@ -262,38 +261,31 @@ The general formula of the main-effect sensitivity index estimator is
 
 .. math::
   \widehat{S}_d = \frac{\frac{1}{N}\sum_{n=1}^N f(B)_n \cdot f(A_B^d)_n - \mathbb{E}^2[Y]}{\mathbb{V}[Y]}
-  :label: `ss_main_effect_estimator`
-where and :math:`\mathbb{E}^2[Y]` and :math:`\mathbb{V}[Y]` are as prescribed in Table above.
+  :label:  ss_main_effect_estimator
+where and :math:`\mathbb{E}^2[Y]` and :math:`\mathbb{V}[Y]` are as prescribed in the table above.
 
+The general formula of the total-effect sensitivity indices follows the definition of it as given in :eq:`total_effect_index`.
+The denominator :math:`\mathbb{E}_{\sim d}[\mathbb{V}_{d}[Y|\mathbf{X}_{\sim d}]]` is estimated using the estimators listed in the table below,
+while :math:`\mathbb{V}[Y]` is estimated by the Saltelli et al. estimator in table above.
 
-To estimate the total-effect sensitivity indices, the Jansen estimator~\cite{Jansen1999} is recommended in~\cite{Saltelli2010a}.
-The estimator reads
-\begin{equation}
-  \widehat{ST}_d = \frac{\frac{1}{2N}\sum_{n=1}^{N}\left(f(A)_n - f(A_B^d)_n\right)^2}{\mathbb{V}[Y]}
-\label{eq:ss_jansen_estimator}
-\end{equation}
-where $\mathbb{V}[Y]$ is estimated by the Saltelli et al. estimator in Table~\ref{tab:ss_main_effect_estimator}.
+================= ==================================================================
+Estimator         :math:`\mathbb{E}_{\sim d}[\mathbb{V}_{d}[Y|\mathbf{X}_{\sim d}]]`
+================= ==================================================================
+Sobol-Homma [5]_  :math:`\frac{1}{N} \sum f^2(A)_n \cdot f(A)_n f(AB^d)_n`
+Jansen [10]_      :math:`\frac{1}{2N} \sum \left(f(A)_n - f(AB^d)_n\right)^2`
+================= ==================================================================
 
-================= ===================================================================== ===================================================================================================================================
-Estimator         :math:`\mathbb{E}^2[Y] = \left( \int f d\mathbf{x}\right)^2`          :math:`\mathbb{V}[Y] = \int f^2 d\mathbf{x} - \left( \int f d\mathbf{x}\right)^2`
-================= ===================================================================== ===================================================================================================================================
-Sobol-Homma [7]_  :math:`\frac{1}{N} \sum f(A)_n \cdot f(B)_n`                          :math:`\frac{1}{N}\sum f(A)_n^2-\left(\frac{1}{N}\sum f(A)_n\right)^2`
-Jansen [8]_       :math:`\left(\frac{1}{N} \sum \frac{f(B)_n + f(A_B^d)_n}{2}\right)^2` :math:`\frac{1}{N} \sum \frac{f(B)_n^2 + f(A_B^d)_n^2}{2}\quad - \left(\frac{1}{N} \sum \frac{f(B)_n^2 + f(A_B^d)_n^2}{2}\right)^2`
-================= ===================================================================== ===================================================================================================================================
+The computational cost associated with the estimation of all the main-effect and total-effect indices is :math:`N \times (D + 2)` code runs,
+where :math:`N` is the number of MC samples and :math:`D` is the number of parameters.
+Compare this to the cost of brute force Monte Carlo of :math:`2 \times D \times N^2` code runs to estimate all the main-effect and total-effect sensitivity indices.
 
-The computational cost associated with the estimation of all the main-effect and total-effect indices is $N \times (D + 2)$ code runs,
-\marginpar{computational cost: \\ brute force Monte Carlo vs. Sobol'-Saltelli}
-where $N$ is the number of \gls{mc} samples and $D$ is the number of parameters.
-Compare this to the cost of brute force Monte Carlo of $2 \times D \times N^2$ code runs to estimate all the main-effect and total-effect sensitivity indices.
-
-As an additional comparison, the cost for Morris method to compute the statistics of elementary effect is $N_R \times (D + 1)$ code runs,
-\marginpar{computational cost: \\ Morris vs. Sobol'-Saltelli}
-where $N_R$ is the number of OAT design replications.
-In either methods, the number of samples $N$ (in the case of the Sobol'-Saltelli method) and replications $N_R$ (in the case of the Morris method)
+As an additional comparison, the cost for Morris method to compute the statistics of elementary effect is :math:`N_R \times (D + 1)` code runs,
+where :math`N_R` is the number of OAT design replications.
+In either methods, the number of samples :math`N` (in the case of the Sobol'-Saltelli method) and replications :math:`N_R` (in the case of the Morris method)
 determines the precision of the estimates.
 A larger number of samples (and replications) increases the precision.
-Note, however, that in practice the typical number of Morris replications is between $10^1 - 10^2$~\cite{Saltelli2010},
-while the number of \gls{mc} samples for the Sobol' indices estimation amounts to $10^2 - 10^4$~\cite{Sobol2001}.
+Note, however, that in practice the typical number of Morris replications is between :math:`10^1 - 10^2` [10]_,
+while the number of \gls{mc} samples for the Sobol' indices estimation amounts to :math:`10^2 - 10^4` [4]_.
 
 References
 ----------
@@ -321,3 +313,9 @@ References
 .. [8] A. Janon et al.,
        "Asymptotic normality and efficiency of two Sobol' index estimators,"
        ESAIM: Probability and Statistics, vol. 18, pp. 342-364, 2014.
+.. [9] M. J. W. Jansen,
+       "Analysis of variance designs for model output,"
+       Computer Physics Communications, vol. 117, pp. 35-43, 1999.
+.. [10] F. Campolongo, A. Saltelli, and J. Cariboni,
+       “From Screening to Quantitative Sensitivity Analysis. A Unified Approach,”
+       Computer Physic Communications, vol. 182, no. 4, pp. 978-988, 2011.
