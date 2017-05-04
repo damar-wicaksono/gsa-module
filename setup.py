@@ -17,7 +17,8 @@ setup(
         "console_scripts": [
             "gsa_create_sample=gsa_module.cmdln_interface:create_sample",
             "gsa_morris_generate=gsa_module.cmdln_interface:morris_generate",
-            "gsa_morris_analyze=gsa_module.cmdln_interface:morris_analyze"
+            "gsa_morris_analyze=gsa_module.cmdln_interface:morris_analyze",
+            "gsa_sobol_generate=gsa_module.cmdln_interface:sobol_generate"
         ]
     },
       zip_safe=False, install_requires=['numpy']

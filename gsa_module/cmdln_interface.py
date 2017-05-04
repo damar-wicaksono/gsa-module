@@ -80,7 +80,8 @@ def morris_analyze():
 
     # Read the inputs/outputs file
     dm_norm = np.loadtxt(inputs["normalized_inputs"],
-                         delimiter=sniff_delimiter(inputs["normalized_inputs"]))
+                         delimiter=sniff_delimiter(
+                             inputs["normalized_inputs"]))
 
     if inputs["rescaled_inputs"] is not None:
         dm_resc = np.loadtxt(
@@ -134,3 +135,24 @@ def morris_analyze():
                        fmt="%1.6e", delimiter=",",
                        header="mu, mu_star, std_dev, std_mu, "
                               "std_mu_star, std_std_dev")
+
+
+def sobol_generate():
+    """gsa-module, create Sobol' experimental design command line interface"""
+    from gsa_module import sobol
+
+    # Read command line arguments
+    inputs = sobol.cmdln_args.get_create_sample()
+
+    # Generate DOE
+    dm_dict = sobol.sobol_saltelli.create(
+        num_samples=inputs["num_samples"],
+        num_dimensions=inputs["num_dimensions"],
+        sampling_scheme=inputs["sampling_scheme"],
+        seed_number=inputs["seed_number"],
+        dirnum=inputs["direction_numbers"],
+        interaction=inputs["interaction"]
+    )
+
+    # Save the samples
+    sobol.sobol_saltelli.write(dm_dict, inputs["output_header"])

@@ -8,3 +8,4 @@ Gallery of Applications to Test Functions
 
     test_gallery/ishigami.rst
     test_gallery/morris_modified.rst
+    test_gallery/sobol_g_curved.rst

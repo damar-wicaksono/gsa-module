@@ -33,7 +33,7 @@ def get_create_sample():
     |                  | randomized Morris' formulation, while radial uses    |
     |                  | Saltelli et al. formulation based on Sobol' sequence |
     +------------------+------------------------------------------------------+
-    | filename         | (None or str) The output filename.                   |
+    | output_file      | (None or str) The output filename.                   |
     |                  | By default: "{}_{}_{}_{}.{}" .format(method,         |
     |                  | num_blocks, num_dimensions, num_levels               |
     |                  | (if trajectory), delimiter)                          |
@@ -48,8 +48,8 @@ def get_create_sample():
     | seed_number      | (None or int, >= 0) Seed number for random number    |
     |                  | generation in the trajectory sampling scheme         |
     +------------------+------------------------------------------------------+
-    | direction_numbers| (None or str) the full path to the file containing   |
-    |                  | direction number for Sobol' sequence generator       |
+    | direction_numbers| (None or np.ndarray) the contents of a direction     |
+    |                  | number file for Sobol' sequence generator            |
     |                  | (default: built-in new-joe-kuo-6.21201)              |
     +------------------+------------------------------------------------------+
     """
