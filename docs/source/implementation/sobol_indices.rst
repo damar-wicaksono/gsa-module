@@ -43,7 +43,7 @@ Using Eq. :eq:`unicity` to express each term in Eq. :eq:`hdmr`, it follows that
 
 .. math::
     f_o & = \mathbb{E}[Y] \\
-    f_d(x_d) & = \mathbb{E}_{\sim d}[Y|X_d] \\
+    f_d(x_d) & = \mathbb{E}_{\sim d}[Y|X_d] - \mathbb{E}[Y] \\
     f_{d,e}(x_d,x_e) & = \mathbb{E}_{\sim d,e} [Y|X_d, X_e] - \mathbb{E}_{\sim d}[Y|X_d] - \mathbb{E}_{\sim e}[Y|X_e] - \mathbb{E}[Y]
     :label: conditional_expectation
 

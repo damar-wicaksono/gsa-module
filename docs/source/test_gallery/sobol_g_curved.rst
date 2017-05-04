@@ -50,6 +50,48 @@ where :math:`V_d` is the top marginal variance given below,
 
 The analytical main- and total-effect sensitivity indices can be computed using their respective definition in relation to the variance terms given above.
 
+
+
+Sobol Sensitivity Indices Results
+----------------------------------
+
+The function was used to test the implementation of the Sobol sensitivity
+indices. The main-effect (first order) and total-effect (total order)
+sensitivity indices are both computed. Both the sampling scheme type and the
+estimator for the sensitivity indices were tested. The tested sampling schemes
+are simple random sampling (`srs`), latin-hypercube sampling (`lhs`) and the
+sobol sampling (`sobol`). The tested estimators are `janon` and `saltelli` for
+the main-effect `SI` and `jansen` and `sobol` for the total-effect `SI` (see
+:doc:`../implementation/sobol_indices`).
+
+The following figure shows the convergence of the main-effect `SI` (first
+order) with the number of samples for the second parameter (`param1`) of the
+:math:`G_2` function. Each panel shows the `janon` and `saltelli` estimators,
+with their :math:`1-\sigma` uncertainties, for a given sampling scheme. The
+dotted red line is the analytical solution (i.e. the target value).
+
+.. image:: ../../figures/G2_param1_1st.png
+
+A similar figure is shown below for the total-effect `SI` (tot-order) for the
+`jansen` and `sobol` estimators.
+
+.. image:: ../../figures/G2_param1_tot.png
+
+All estimators for the main- and total-effect `SI` converge to the analytical
+solution with a sufficient number of samples (i.e. :math:`10^4` in the worst
+case). As expected the `sobol` and `lhs` sampling schemes for the design matrix
+are clearly superior to the simple random scheme (`srs`) as the calculated
+main- and total-effect `SI` converge faster and with a lower uncertainies; the
+`sobol` sampling scheme appears to be slightly better than `lhs`. Finally,
+comparing the estimators the `janon` and `jansen` estimators show slightly
+better properties than the `saltelli` and `sobol` estimators. The better
+properties of the estimators and sampling schemes illustrated for `param1` can
+vary slightly from parameter to parameter. The convergence of the calculation,
+however, remains. This confirms the good implementation of the `SI` calculation
+routines.
+
+
+
 References
 ----------
 
