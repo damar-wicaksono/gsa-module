@@ -125,7 +125,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
   line interface
 
 
-[Unreleased]: https://bitbucket.org/lrs-uq/gsa-module/branches/compare/develop%0Dv0.8.0
+[Unreleased]: https://bitbucket.org/lrs-uq/gsa-module/branches/compare/develop%0Dv0.9.0
+[0.9.0]: https://bitbucket.org/lrs-uq/gsa-module/branches/compare/v0.9.0%0Dv0.8.0
 [0.8.0]: https://bitbucket.org/lrs-uq/gsa-module/branches/compare/v0.8.0%0Dv0.7.1
 [0.7.1]: https://bitbucket.org/lrs-uq/gsa-module/branches/compare/v0.7.1%0Dv0.7.0
 [0.7.0]: https://bitbucket.org/lrs-uq/gsa-module/branches/compare/v0.7.0%0Dv0.6.0
