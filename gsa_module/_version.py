@@ -6,4 +6,4 @@
     Module with version number unified across project, used in the module,
     setup.py and other command line interfaces
 """
-__version__ = "0.8.0"
+__version__ = "0.9.0"
