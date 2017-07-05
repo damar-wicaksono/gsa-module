@@ -10,14 +10,15 @@ import numpy as np
 
 
 def bootstrap_ci(si_bootstrap: np.ndarray,
-                 std_err: float = 1.96,
-                 pct: float = 95.) -> np.ndarray:
+                 std_err: float=1.96,
+                 pct: float=95.) -> np.ndarray:
     """Compute the confidence intervals based on the bootstrap samples
 
-    Two kind of confidence intervals are provided, by default both are the 
+    Two kind of confidence intervals are provided, by default both are the
     95% confidence intervals:
-        1. Standard error (normality assumption, +/-1.96*SE gives the coverage)
-        2. Percentile confidence intervals, by using order statistics
+
+    1. Standard error (normality assumption, +/-1.96*SE gives the coverage)
+    2. Percentile confidence intervals, by using order statistics
 
     **References:**
 
@@ -28,8 +29,8 @@ def bootstrap_ci(si_bootstrap: np.ndarray,
     :param si_bootstrap: the bootstrap samples of sensitivity indices estimates
     :param std_err: a factor to multiply the standard error
     :param pct: the percentile confidence interval
-    :return: the bootstrap confidence intervals num_dims * 3, 1st column is 
-        the 1.96 standard error, 2nd column is the (100-pct)/2 percentile, 
+    :return: the bootstrap confidence intervals num_dims * 3, 1st column is
+        the 1.96 standard error, 2nd column is the (100-pct)/2 percentile,
         and the 3rd column is (100+pct)/2 percentile.
     """
     num_dims = si_bootstrap.shape[1]
