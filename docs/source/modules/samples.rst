@@ -1,12 +1,30 @@
 .. _gsa_modules_packages_samples:
 
+-------------------
+``samples`` Package
+-------------------
 
-Samples Package
-===============
+.. automodule:: gsa_module.samples.__init__
+    :members:
+    :undoc-members:
 
-Routines to generate generic purpose design of experiment, including simple
-random sampling (``srs``), latin hypercube (``lhs``), optimized latin hypercube
-(``lhs-opt``), and Sobol' sequence (``sobol``).
+.. _cmdln_args:
+
+:mod:`gsa_module.samples.cmdln_args`
+------------------------------------
+
+.. automodule:: gsa_module.samples.cmdln_args
+    :members:
+    :undoc-members:
+
+.. _hammersley:
+
+:mod:`gsa_module.samples._hammersley`
+-------------------------------------
+
+.. automodule:: gsa_module.samples.hammersley
+    :members:
+    :undoc-members:
 
 .. _srs:
 
@@ -41,11 +59,5 @@ random sampling (``srs``), latin hypercube (``lhs``), optimized latin hypercube
 -------------------------------
 
 .. automodule:: gsa_module.samples.sobol
-    :exclude-members: random_shift
     :members:
     :undoc-members:
-
-Randomization of the quasi-MC samples can be achieved in the easiest manner by
-random shift (or the Cranley-Patterson rotation).
-
-.. autofunction:: gsa_module.samples.sobol.random_shift

@@ -1,16 +1,19 @@
-"""Module to parse command line arguments in creating sample or validation data
+# -*- coding: utf-8 -*-
+"""cmdln_args.py: Module to parse command line arguments in creating sample or
+validation data
 """
 import argparse
 import os
 from ..util import ext_to_delimiter
 from .._version import __version__
 
+
 __author__ = "Damar Wicaksono"
 
 
 def get_create_sample():
     """Get the passed command line arguments
-
+    
     :return:  a dictionary of command line arguments
 
     +------------------+------------------------------------------------------+
@@ -27,9 +30,7 @@ def get_create_sample():
     +------------------+------------------------------------------------------+
     | filename         | (None or str) The output filename.                   |
     |                  | By default: "{}_{}_{}.{}" .format(method,            |
-    |                  |                                   num_samples,       |
-    |                  |                                   num_dimensions,    |
-    |                  |                                   delimiter)         |
+    |                  | num_samples, num_dimensions, delimiter)              |
     +------------------+------------------------------------------------------+
     | delimiter        | ("csv", "tsv", "txt") the delimiter of the design    |
     |                  | matrix file. By default: "csv"                       |
