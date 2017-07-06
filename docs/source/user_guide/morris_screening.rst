@@ -1,5 +1,6 @@
-.. gsa_module_morris_indices:
+.. _gsa_module_morris_indices:
 
+-----------------------
 Morris Screening Method
 -----------------------
 
@@ -20,7 +21,7 @@ Generating Morris Design (Sample)
 
 The first step in conducting sensitivity analysis by Morris screening method
 is to generate One-at-a-Time design.
-The Morris design generator driver script can be invoked from the  terminal using the
+The Morris design generator driver script can be invoked from the terminal using the
 following command::
 
     > gsa_morris_generate -r <number of blocks/replications> \
