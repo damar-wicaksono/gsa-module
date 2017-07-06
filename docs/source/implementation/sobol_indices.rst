@@ -1,4 +1,4 @@
-.. gsa_module_implementation_sobol:
+.. _gsa_module_implementation_sobol:
 
 --------------------------
 Sobol' Sensitivity Indices
@@ -80,13 +80,13 @@ and the index is a global sensitivity measure interpreted as the amount of varia
 A closely related sensitivity index proposed by Homma and Saltelli [5]_ is the Sobol' total-effect index defined as,
 
 .. math::
-    ST_{d} & = \frac{\mathbb{E}_{\sim d}[\mathbb{V}_{d}[Y|\mathbf{X}_{\sim d}]]}{\mathbb{V}[Y]}
+    ST_{d} = \frac{\mathbb{E}_{\sim d}[\mathbb{V}_{d}[Y|\mathbf{X}_{\sim d}]]}{\mathbb{V}[Y]}
     :label: total_effect_index
 
 The index, also a global sensitivity measure, can be interpreted as the amount of variance left in the output if the values of all input parameters,
 *except* :math:`x_d`, can be fixed.
 
-These two sensitivity measures can be related to the objectives of global SA for model assessment as proposed by Saltelli et al. ([2]_ [6]_).
+These two sensitivity measures can be related to the objectives of global SA for model assessment as proposed by Saltelli et al. [2]_ [6]_.
 The main-effect index is relevant to parameter prioritization in the context of identifying the most influential parameter
 since fixing a parameter with the highest index value would, *on average*, lead to
 the greatest reduction in the output variation.
@@ -143,7 +143,7 @@ Next, consider the term conditional expectation shown in Eq. :eq:`ss_variance_in
 
 Note that :math:`\mathbf{x} = \{\mathbf{x}_{\sim d}, x_d\}`.
 
-Following the first term of Eq. :eq:`ss_variance_integral, by squaring Eq. :eq:`ss_expectation_integral
+Following the first term of Eq. :eq:`ss_variance_integral`, by squaring Eq. :eq:`ss_expectation_integral`
 and by defining a dummy vector variable :math:`\mathbf{x}^{\prime}_{\sim d}`,
 the product of the two integrals can be written in terms of a single multiple integrals
 
@@ -202,7 +202,7 @@ Procedures
     :label: ss_two_samples
 
 **Second**, construct :math:`D` additional design of experiment matrices
-where each matrix is matrix :math:`A` with the :math:`d`-th column substituted by the :math:`d`-th column of matrix :math:`B:
+where each matrix is matrix :math:`A` with the :math:`d`-th column substituted by the :math:`d`-th column of matrix :math:`B`:
 
 .. math::
   & A_{B}^1 =
@@ -262,6 +262,7 @@ The general formula of the main-effect sensitivity index estimator is
 .. math::
   \widehat{S}_d = \frac{\frac{1}{N}\sum_{n=1}^N f(B)_n \cdot f(A_B^d)_n - \mathbb{E}^2[Y]}{\mathbb{V}[Y]}
   :label:  ss_main_effect_estimator
+
 where and :math:`\mathbb{E}^2[Y]` and :math:`\mathbb{V}[Y]` are as prescribed in the table above.
 
 The general formula of the total-effect sensitivity indices follows the definition of it as given in :eq:`total_effect_index`.
