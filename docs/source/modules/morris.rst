@@ -1,7 +1,8 @@
 .. _gsa_modules_packages_morris:
 
+------------------
 ``morris`` Package
-==================
+------------------
 
 .. automodule:: gsa_module.morris.__init__
     :members:

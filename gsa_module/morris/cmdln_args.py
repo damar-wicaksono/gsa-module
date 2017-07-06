@@ -227,31 +227,31 @@ def get_analyze():
 
     :return:  a dictionary of command line arguments
 
-    +------------------+------------------------------------------------------+
-    | Key              | Value                                                |
-    +==================+======================================================+
-    | normalized_inputs| (str) The fullname (path + filename) of the          |
-    |                  | normalized inputs file (i.e., value in [0,1]         |
-    |                  | generated using Morris Design of Experiment,         |
-    |                  | either radial or trajectory                          |
-    +------------------+------------------------------------------------------+
-    | rescaled_inputs  | (str) The fullname (path + filename) of the rescaled |
-    |                  | inputs file (i.e., according to the actual model     |
-    |                  | specification)                                       |
-    +------------------+------------------------------------------------------+
-    | outputs          | (str) The fullname (path + filename) of the output   |
-    |                  | from conducting the experimental runs based on the   |
-    |                  | Morris design                                        |
-    +------------------+------------------------------------------------------+
-    | output_file      | (str) The filename for the output of the analysis    |
-    |                  | by default it is "<morris_design_name>-morris.csv"   |
-    +------------------+------------------------------------------------------+
-    | bootstrap_       | (str) The filename for the bootstrap output of the   |
-    | output_file      | analysis. By default it is                           |
-    |                  | "<morris_design_name>-morris-bootstrap.csv"          |
-    +------------------+------------------------------------------------------+
-    | model_checking   | (bool) Flag to verbosely check the model             |
-    +------------------+------------------------------------------------------+
+    +-----------------------+------------------------------------------------------+
+    | Key                   | Value                                                |
+    +=======================+======================================================+
+    | normalized_inputs     | (str) The fullname (path + filename) of the          |
+    |                       | normalized inputs file (i.e., value in [0,1]         |
+    |                       | generated using Morris Design of Experiment,         |
+    |                       | either radial or trajectory                          |
+    +-----------------------+------------------------------------------------------+
+    | rescaled_inputs       | (str) The fullname (path + filename) of the rescaled |
+    |                       | inputs file (i.e., according to the actual model     |
+    |                       | specification)                                       |
+    +-----------------------+------------------------------------------------------+
+    | outputs               | (str) The fullname (path + filename) of the output   |
+    |                       | from conducting the experimental runs based on the   |
+    |                       | Morris design                                        |
+    +-----------------------+------------------------------------------------------+
+    | output_file           | (str) The filename for the output of the analysis    |
+    |                       | by default it is "<morris_design_name>-morris.csv"   |
+    +-----------------------+------------------------------------------------------+
+    | bootstrap_output_file | (str) The filename for the bootstrap output of the   |
+    |                       | analysis. By default it is                           |
+    |                       | "<morris_design_name>-morris-bootstrap.csv"          |
+    +-----------------------+------------------------------------------------------+
+    | model_checking        | (bool) Flag to verbosely check the model             |
+    +-----------------------+------------------------------------------------------+
     """
     import os
 

@@ -68,7 +68,7 @@ def read_dirnumfile(dirnumfile: str, d: int) -> np.ndarray:
     The parser read direction number file to get parameters "s", "a", and
     "m_i". It only output as many as the requested dimension
 
-    The structure of the file is the following:
+    The structure of the file is the following::
 
         d       s       a       m_i
         2       1       0       1
@@ -236,6 +236,9 @@ def create(n: int, d: int,
 
 def random_shift(dm: np.ndarray, seed: int) -> np.ndarray:
     """Randomize a given Sobol' design by random shifting
+
+    Randomization of the quasi-MC samples can be achieved in the easiest manner by
+    random shift (or the Cranley-Patterson rotation).
 
     **Reference:**
 

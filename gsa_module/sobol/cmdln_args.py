@@ -15,9 +15,9 @@ from .._version import __version__
 
 def get_create_sample():
     """Get the command line arguments to generate DOE for Sobol' var. decomp.
-    
+
     :return: a dictionary of parsed command line arguments
-    
+
     +------------------+------------------------------------------------------+
     | Key              | Value                                                |
     +==================+======================================================+
@@ -37,7 +37,7 @@ def get_create_sample():
     |                  | By default: "{}_{}_{}_{}_{}.{}" .format(method,      |
     |                  | num_blocks, num_dimensions, num_levels               |
     |                  | (if trajectory), sampling matrices, delimiter)       |
-    |                  | the first four are the header
+    |                  | the first four are the header                        |
     +------------------+------------------------------------------------------+
     | delimiter        | ("csv", "tsv", "txt") the delimiter of the design    |
     |                  | matrix file. By default: "csv" or parse directly if  |

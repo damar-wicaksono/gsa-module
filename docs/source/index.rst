@@ -6,22 +6,17 @@
 ``gsa-module`` Package
 ======================
 
-``gsa-module`` is a Python3 package implementing several global sensitivity
-analysis methods for computer/simulation experiments.
-The implementation is based on a black-box approach where the computer model
-(or any generic function) is externally implemented to the module itself.
-The module accepts the model outputs and the design of experiment (optional,
-only for certain methods) and compute the associated sensitivity measures.
-The package also includes routines to generate normalized design of experiment
-file to be used in the simulation experiment based on several algorithms (such
-as simple random sampling or latin hypercube) as well as simple routines to
-post-processed multivariate raw code output such as its maximum, minimum, or
-average.
+Welcome to the ``gsa-module`` package documentation, a python3 package to 
+conduct global sensitivity analysis of model output.
 
-The general calculation flow chart involved in using the ``gsa-module`` can
-be seen in the figure below.
-
-.. image:: ../figures/flowchart.png
+If you're just getting started with ``gsa-module``, please start with 
+:ref:`gsa_module_basics`.
+If you're already familiar with it, refer to :ref:`gsa_module_user_guide`
+and :ref:`gsa_module_reference` for further detail and reference.
+If you're curious with some theories and detail of implementation 
+behind global sensitivity analysis methods check the :ref:`gsa_module_implementation`.
+Finally, if you're thinking to make modification or extend the capability of the package 
+perhaps it is a good idea to check the :ref:`gsa_module_developer_guide`.
 
 ``gsa-module`` Documentation
 ============================
@@ -35,16 +30,7 @@ be seen in the figure below.
    developer_guide
    about
    test_gallery
-
-``gsa-module`` Modules reference documentation
-==============================================
-
-.. toctree::
-   :maxdepth: 1
-
-   modules/samples
-   modules/morris
-   modules/test_functions
+   reference
 
 Indices and tables
 ==================
