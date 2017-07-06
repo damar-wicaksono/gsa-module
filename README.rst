@@ -91,8 +91,12 @@ The current version can be found in the ``/docs`` folder and can be built
 
     make html
 
-to build the html version of the documentation. The index file can then be
-found in::
+to build the html version of the documentation.
+Note that the html documentation used ``rtd-theme`` which can be installed via ``pip``::
+
+    pip install sphinx-rtd-theme
+
+The index file can then be found in::
 
     ./docs/build/html/index.html
 
