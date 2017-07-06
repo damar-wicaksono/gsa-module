@@ -100,6 +100,10 @@ The index file can then be found in::
 
     ./docs/build/html/index.html
 
+The current version of the documentation is also hosted on `readthedocs`_
+
+.. _readthedocs: http://gsa-module.readthedocs.io/en/develop/index.html
+
 Contribute
 ----------
 
