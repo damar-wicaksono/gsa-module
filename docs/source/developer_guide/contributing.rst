@@ -2,3 +2,5 @@
 
 Guidelines for Contributing
 ---------------------------
+
+**This page is still under preparation**
