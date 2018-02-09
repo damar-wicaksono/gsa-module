@@ -104,19 +104,6 @@ The current version of the documentation is also hosted on `readthedocs`_
 
 .. _readthedocs: http://gsa-module.readthedocs.io/en/develop/index.html
 
-Contribute
-----------
-
-``gsa-module`` is hosted on a private repository on `BitBucket`_ under the
-`Global Sensitivity Analysis`_ project.
-Only those who is a team member of `lrs-uq`_ has write access.
-
-- Issue Tracker: https://bitbucket.org/lrs-uq/gsa-module/issues
-- Source Code: https://bitbucket.org/lrs-uq/gsa-module
-
-.. _lrs-uq: https://bitbucket.org/lrs-uq
-.. _Global Sensitivity Analysis: https://bitbucket.org/account/user/lrs-uq/projects/GSA
-
 License
 -------
 
