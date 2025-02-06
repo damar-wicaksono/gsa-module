@@ -3,10 +3,15 @@
 """
 import numpy as np
 
-__author__ = "Damar Wicaksono"
+from numpy.random import Generator, RandomState
+from typing import Optional, Union
 
 
-def create(n: int, d: int, seed: int) -> np.ndarray:
+def create(
+    n: int,
+    d: int,
+    seed: Optional[Union[int, Generator, RandomState]],
+) -> np.ndarray:
     """Generate `n` samples of `d` dimension design matrix
 
     The function returns a numpy array of n-row and d-dimension filled with
@@ -27,17 +32,19 @@ def create(n: int, d: int, seed: int) -> np.ndarray:
     :returns: (ndarray) a numpy array of `n`-by-`d` filled with randomly
         generated random numbers of uniform variate in LHS class
     """
-    if seed is not None:
-        np.random.seed(seed)
+    if seed is None or isinstance(seed, int):
+        rng = np.random.default_rng(seed)
+    else:
+        rng = seed
 
     dm = np.empty([n, d])
 
     for j in range(d):
         for i in range(n):
-            dm[i, j] = np.random.uniform(low=i/n, high=(i+1)/n)
+            dm[i, j] = rng.uniform(low=i/n, high=(i+1)/n)
 
         if j > 0:
             # Shuffle only the d-1 dimension
-            np.random.shuffle(dm[:, j])
+            rng.shuffle(dm[:, j])
 
     return dm

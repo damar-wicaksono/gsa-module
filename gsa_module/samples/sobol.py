@@ -59,7 +59,8 @@ included direction number files in "./dirnumfiles/new-joe-kuo-6.21201"::
 """
 import numpy as np
 
-__author__ = "Damar Wicaksono"
+from numpy.random import Generator, RandomState
+from typing import Union, Optional
 
 
 def read_dirnumfile(dirnumfile: str, d: int) -> np.ndarray:
@@ -118,11 +119,14 @@ def read_dirnumfile(dirnumfile: str, d: int) -> np.ndarray:
     return dirnum
 
 
-def create(n: int, d: int,
-           dirnum: np.ndarray = None,
-           excl_nom: bool = False,
-           randomize: bool = False,
-           seed: int = None) -> np.ndarray:
+def create(
+    n: int,
+    d: int,
+    dirnum: np.ndarray = None,
+    excl_nom: bool = False,
+    randomize: bool = False,
+    seed: Optional[Union[int, Generator, RandomState]] = None,
+) -> np.ndarray:
     r"""Sobol points generator based on graycode order
 
     This implementation is a verbatim copy of a C++ source code by Joe and Kuo.
@@ -234,7 +238,10 @@ def create(n: int, d: int,
     return POINTS
 
 
-def random_shift(dm: np.ndarray, seed: int) -> np.ndarray:
+def random_shift(
+    dm: np.ndarray,
+    seed: Optional[Union[int, Generator, RandomState]] = None,
+) -> np.ndarray:
     """Randomize a given Sobol' design by random shifting
 
     Randomization of the quasi-MC samples can be achieved in the easiest manner by
@@ -250,11 +257,13 @@ def random_shift(dm: np.ndarray, seed: int) -> np.ndarray:
     :param seed: seed number for randomization
     :returns: Randomized Sobol' design matrix
     """
-    if seed is not None:
-        np.random.seed(seed)
+    if seed is None or isinstance(seed, int):
+        rng = np.random.default_rng(seed)
+    else:
+        rng = seed
 
     # Generate random shift matrix from uniform distribution
-    shift = np.repeat(np.random.rand(1, dm.shape[1]), dm.shape[0], axis=0)
+    shift = np.repeat(rng.random((1, dm.shape[1])), dm.shape[0], axis=0)
 
     # Return the shifted Sobol' design
     return (dm + shift) % 1

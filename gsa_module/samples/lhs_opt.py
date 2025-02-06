@@ -5,16 +5,22 @@ Latin Hypercube design
 import numpy as np
 from . import lhs
 
-__author__ = "Damar Wicaksono"
+from numpy.random import Generator, RandomState
+from typing import Optional, Union
 
 
-def create_ese(n: int, d: int, seed: int, max_outer: int,
-               obj_function: str="w2_discrepancy",
-               threshold_init: float=0,
-               num_exchanges: int=0,
-               max_inner: int = 0,
-               improving_params: list = [0.1, 0.8],
-               exploring_params: list = [0.1, 0.8, 0.9, 0.7]) -> np.ndarray:
+def create_ese(
+    n: int,
+    d: int,
+    seed: Optional[Union[int, Generator, RandomState]] = None,
+    max_outer: int = 1,
+    obj_function: str="w2_discrepancy",
+    threshold_init: float=0,
+    num_exchanges: int=0,
+    max_inner: int = 0,
+    improving_params: list = [0.1, 0.8],
+    exploring_params: list = [0.1, 0.8, 0.9, 0.7],
+) -> np.ndarray:
     """Generate an optimized LHS using Enhanced Stochastic Evolutionary Alg.
 
     The default parameters of the optimization can be overridden, if necessary.
