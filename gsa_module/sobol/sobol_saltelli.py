@@ -9,16 +9,21 @@
     to compute the Monte Carlo estimates of the Sobol' indices
 """
 import numpy as np
+
+from numpy.random import Generator, RandomState
+from typing import Union, Optional
+
 from ..samples import srs, lhs, sobol
 
-__author__ = "Damar Wicaksono"
 
-
-def create(num_samples: int, num_dimensions: int,
-           sampling_scheme: str="srs",
-           seed_number: int=None,
-           dirnum: np.ndarray=None,
-           interaction: bool=False):
+def create(
+    num_samples: int,
+    num_dimensions: int,
+    sampling_scheme: str="srs",
+    seed_number: Optional[Union[int, Generator, RandomState]]=None,
+    dirnum: np.ndarray=None,
+    interaction: bool=False,
+):
     r"""Generate Sobol'-Saltelli design matrices
 
     Sobol'-Saltelli design matrices are used to calculate the Sobol' 
@@ -57,8 +62,10 @@ def create(num_samples: int, num_dimensions: int,
         # Exclude the first two rows because each has the same values
         ab = sobol.create(n+2, 2*d, dirnum)
         ab = ab[2:]
-    else:
+    elif sampling_scheme == "srs":
         ab = srs.create(n, 2*d, seed_number)
+    else:
+        raise ValueError(f"scheme {sampling_scheme} is not supported!)")
 
     a = ab[:,:d]
     b = ab[:,d:]
