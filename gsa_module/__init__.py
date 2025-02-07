@@ -2,6 +2,7 @@
 """
 from . import samples
 from . import morris
+from . import shapley
 from . import sobol
 from . import test_functions
 from ._version import __version__
