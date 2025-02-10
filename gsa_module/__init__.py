@@ -1,5 +1,6 @@
 """Module to carry out global sensitivity analysis for model output
 """
+from . import dgsm
 from . import samples
 from . import morris
 from . import shapley
