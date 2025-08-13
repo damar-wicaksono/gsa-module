@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gsa-module"
+dynamic = ["version"]
+description = "Package to conduct global sensitivity analysis of computer simulation"
+authors = [
+    {name = "Damar Wicaksono", email = "damar.wicaksono@outlook.com"}
+]
+license = {text = "MIT"}
+readme = "README.rst"  # Add this if you have a README
+requires-python = ">=3.8"
+dependencies = [
+    "numpy"
+]
+keywords = ["sensitivity analysis", "simulation", "gsa"]  # Optional
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+[project.urls]
+Homepage = "https://github.com/damar-wicaksono/gsa-module"
+Repository = "https://github.com/damar-wicaksono/gsa-module"
+Issues = "https://github.com/damar-wicaksono/gsa-module"
+
+[project.scripts]
+create_validset = "gsa_module.scripts:create_validset"  # You'll need to adjust this
+
+[project.entry-points."console_scripts"]
+gsa_create_sample = "gsa_module.cmdln_interface:create_sample"
+gsa_morris_generate = "gsa_module.cmdln_interface:morris_generate"
+gsa_morris_analyze = "gsa_module.cmdln_interface:morris_analyze"
+gsa_sobol_generate = "gsa_module.cmdln_interface:sobol_generate"
+
+[tool.setuptools.dynamic]
+version = {attr = "gsa_module._version.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["src"]  # This will be needed after your src/ refactor
+
+[tool.setuptools.package-data]
+"*" = ["*.txt", "*.md"]
