@@ -4,7 +4,7 @@
 docs/build/
 docs/_build/
 # PyCharm
-.idea/workspace.xml
+.idea/*
 .ipynb_checkpoints
 # Word Document
 *.docx
