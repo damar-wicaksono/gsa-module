@@ -16,3 +16,5 @@ docs/_build/
 *.ipynb
 #Sandboxing Folder
 sandboxing/
+# build
+build/
