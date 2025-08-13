@@ -8,7 +8,7 @@
 """
 import numpy as np
 
-from . import samples, morris, sobol
+from gsa_module import samples, morris, sobol
 
 def create_sample():
     """gsa-module, create a design of experiment command line interface"""

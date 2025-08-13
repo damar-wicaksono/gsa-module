@@ -7,6 +7,9 @@ from . import morris
 from . import shapley
 from . import sobol
 from . import test_functions
+
+from gsa_module.sobol.indices import SobolIndices
+
 from ._version import __version__
 
 __author__ = 'Damar Wicaksono'

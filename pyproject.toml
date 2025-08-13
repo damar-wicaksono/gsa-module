@@ -33,9 +33,6 @@ Homepage = "https://github.com/damar-wicaksono/gsa-module"
 Repository = "https://github.com/damar-wicaksono/gsa-module"
 Issues = "https://github.com/damar-wicaksono/gsa-module"
 
-[project.scripts]
-create_validset = "gsa_module.scripts:create_validset"  # You'll need to adjust this
-
 [project.entry-points."console_scripts"]
 gsa_create_sample = "gsa_module.cmdln_interface:create_sample"
 gsa_morris_generate = "gsa_module.cmdln_interface:morris_generate"
