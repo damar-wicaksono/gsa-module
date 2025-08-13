@@ -47,7 +47,6 @@ def create_sequential(dm: np.ndarray,
     :returns: the validation data set of size `num_points`
     """
     from . import hammersley
-    from . import opt_alg
 
     # Initialization
     d = dm.shape[1]     # the number of dimension
@@ -57,7 +56,7 @@ def create_sequential(dm: np.ndarray,
     valid_data = np.empty((0, d))
 
     if obj_function == "w2_discrepancy":
-        obj_func = opt_alg.objective_functions.w2_discrepancy_fast
+        obj_func = src.gsa_module.samples.opt_alg.objective_functions.w2_discrepancy_fast
     else:
         raise TypeError("Discrepancy measure not supported!")
 

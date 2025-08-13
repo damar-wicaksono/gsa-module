@@ -1,7 +1,6 @@
 """Driver script to compute Sobol' Sensitivity Indices on some function
 """
 import sys
-import gsa_module
 
 __author__ = "Damar Wicaksono"
 
@@ -16,13 +15,13 @@ def main():
     params_sobol = ["./gsa_module/samples/sobol_seq_gen/sobol.o",
                     "./gsa_module/samples/sobol_seq_gen/new-joe-kuo-6.21201"]
     # make the executable for the generator
-    gsa_module.samples.sobol.makegen("make", gen_path)
-    dm = gsa_module.sobol.sobol_saltelli.create(n, d, scheme, params_sobol)
+    src.gsa_module.samples.sobol.makegen("make", gen_path)
+    dm = src.gsa_module.sobol.sobol_saltelli.create(n, d, scheme, params_sobol)
     # write down
     tag = "sobol_{}_{}" .format(n, d)
-    gsa_module.sobol.sobol_saltelli.write(dm, tag)
+    src.gsa_module.sobol.sobol_saltelli.write(dm, tag)
     # clean the executable for the generator
-    gsa_module.samples.sobol.makegen("clean", gen_path)
+    src.gsa_module.samples.sobol.makegen("clean", gen_path)
 
 
 if __name__ == "__main__":

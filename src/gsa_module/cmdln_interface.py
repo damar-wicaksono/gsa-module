@@ -8,10 +8,10 @@
 """
 import numpy as np
 
+from . import samples, morris, sobol
 
 def create_sample():
     """gsa-module, create a design of experiment command line interface"""
-    from gsa_module import samples
 
     # Get the command line arguments
     inputs = samples.cmdln_args.get_create_sample()
@@ -20,25 +20,25 @@ def create_sample():
     if inputs["method"] == "srs":
         # Create simple random sampling design
         dm = samples.srs.create(inputs["num_samples"], inputs["num_dimensions"],
-                                seed=inputs["seed_number"])
+                                               seed=inputs["seed_number"])
     elif inputs["method"] == "lhs":
         # Create Latin Hypercube Sampling design
         dm = samples.lhs.create(inputs["num_samples"], inputs["num_dimensions"],
-                                seed=inputs["seed_number"])
+                                               seed=inputs["seed_number"])
     elif inputs["method"] == "sobol":
         # Create Sobol' quasirandom sequence design
         dm = samples.sobol.create(inputs["num_samples"],
-                                  inputs["num_dimensions"],
-                                  dirnum=inputs["direction_numbers"],
-                                  excl_nom=inputs["exclude_nominal"],
-                                  randomize=inputs["randomize_sobol"],
-                                  seed=inputs["seed_number"])
+                                                 inputs["num_dimensions"],
+                                                 dirnum=inputs["direction_numbers"],
+                                                 excl_nom=inputs["exclude_nominal"],
+                                                 randomize=inputs["randomize_sobol"],
+                                                 seed=inputs["seed_number"])
     elif inputs["method"] == "lhs-opt":
         # Create an optimized latin hypercube design
         dm = samples.lhs_opt.create_ese(inputs["num_samples"],
-                                        inputs["num_dimensions"],
-                                        seed=inputs["seed_number"],
-                                        max_outer=inputs["num_iterations"])
+                                                       inputs["num_dimensions"],
+                                                       seed=inputs["seed_number"],
+                                                       max_outer=inputs["num_iterations"])
 
     # Save the design into file
     np.savetxt(inputs["filename"], dm,
@@ -47,7 +47,6 @@ def create_sample():
 
 def morris_generate():
     """gsa-module, create Morris experimental design command line interface"""
-    from gsa_module import morris
 
     # Read command line arguments
     inputs = morris.cmdln_args.get_create_sample()
@@ -56,14 +55,14 @@ def morris_generate():
     if inputs["sampling_scheme"] == "trajectory":
         # Create trajectory scheme for DOE
         dm = morris.sample.trajectory(inputs["num_blocks"],
-                                      inputs["num_dimensions"],
-                                      inputs["num_levels"],
-                                      seed=inputs["seed_number"])
+                                                     inputs["num_dimensions"],
+                                                     inputs["num_levels"],
+                                                     seed=inputs["seed_number"])
     elif inputs["sampling_scheme"] == "radial":
         # Create radial sampling scheme for the DOE
         dm = morris.sample.radial(inputs["num_blocks"],
-                                  inputs["num_dimensions"],
-                                  inputs["direction_numbers"])
+                                                 inputs["num_dimensions"],
+                                                 inputs["direction_numbers"])
 
     # Save the sample
     np.savetxt(inputs["output_file"], dm,
@@ -72,7 +71,6 @@ def morris_generate():
 
 def morris_analyze():
     """gsa-module, analyze Morris experimental runs command line interface"""
-    from gsa_module import morris
     from .util import sniff_delimiter
 
     # Read command line arguments
@@ -121,9 +119,9 @@ def morris_analyze():
 
     # Analyze the input/output
     param_rank, bootstrap = morris.analyze.ee(dm_norm,
-                                              outp,
-                                              bootstrap=10000,
-                                              xx_rescaled=dm_resc)
+                                                             outp,
+                                                             bootstrap=10000,
+                                                             xx_rescaled=dm_resc)
 
     # Save the result of the analysis
     np.savetxt(inputs["output_file"], param_rank,
@@ -139,7 +137,6 @@ def morris_analyze():
 
 def sobol_generate():
     """gsa-module, create Sobol' experimental design command line interface"""
-    from gsa_module import sobol
 
     # Read command line arguments
     inputs = sobol.cmdln_args.get_create_sample()
@@ -151,7 +148,7 @@ def sobol_generate():
         sampling_scheme=inputs["sampling_scheme"],
         seed_number=inputs["seed_number"],
         dirnum=inputs["direction_numbers"],
-        interaction=inputs["interaction"]
+        interaction=inputs["interaction"],
     )
 
     # Save the samples
