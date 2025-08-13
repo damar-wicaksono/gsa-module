@@ -1,6 +1,6 @@
 from setuptools import setup
 
-exec(open('gsa_module/_version.py').read())
+exec(open('src/gsa_module/_version.py').read())
 setup(
     name="gsa-module",
     version=__version__,
@@ -10,6 +10,7 @@ setup(
     author_email="damar.wicaksono@gmail.com",
     license="MIT",
     packages=["gsa_module"],
+    package_dir={"": "src"},
     scripts=["bin/create_validset"],
 
     # Provide the following executable scripts on the path

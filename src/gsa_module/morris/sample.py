@@ -120,10 +120,9 @@ def radial(r: int, k: int, dirnum: np.ndarray = None,
     :return: the radial design matrix of dimension r*(k+1)-by-k
     """
     import math
-    from .. import samples
 
     # Generate Sobol quasi-random sequence, twice the size of dimensions
-    sobol_seq = samples.sobol.create(r+shift_exclude, 2*k, dirnum)
+    sobol_seq = src.gsa_module.samples.sobol.create(r + shift_exclude, 2 * k, dirnum)
 
     # Generate the radial design
     dm = np.zeros((r*(k+1), k))
@@ -141,11 +140,11 @@ def radial(r: int, k: int, dirnum: np.ndarray = None,
                 # that point, and add additional point to the auxiliary points
                 j = 0
                 shift_exclude += 1
-                sobol_seq = samples.sobol.create(r + shift_exclude, 2 * k,
-                                                 dirnum=dirnum,
-                                                 excl_nom=False,
-                                                 randomize=False,
-                                                 seed=None)
+                sobol_seq = src.gsa_module.samples.sobol.create(r + shift_exclude, 2 * k,
+                                                                dirnum=dirnum,
+                                                                excl_nom=False,
+                                                                randomize=False,
+                                                                seed=None)
             else:
                 j += 1
 

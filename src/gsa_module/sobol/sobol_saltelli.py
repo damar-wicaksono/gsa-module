@@ -57,13 +57,13 @@ def create(
     d = num_dimensions
 
     if sampling_scheme == "lhs":
-        ab = lhs.create(n, 2*d, seed_number)
+        ab = lhs.create(n, 2 * d, seed_number)
     elif sampling_scheme == "sobol":
         # Exclude the first two rows because each has the same values
-        ab = sobol.create(n+2, 2*d, dirnum)
+        ab = sobol.create(n + 2, 2 * d, dirnum)
         ab = ab[2:]
     elif sampling_scheme == "srs":
-        ab = srs.create(n, 2*d, seed_number)
+        ab = srs.create(n, 2 * d, seed_number)
     else:
         raise ValueError(f"scheme {sampling_scheme} is not supported!)")
 
